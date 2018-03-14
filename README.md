@@ -19,5 +19,5 @@ eventual consistency) remains unconsidered for this small project.
 
 ## License
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). Feel free to
-use, extend or fit to your needs.
+use, extend or fit it to your needs.
 
