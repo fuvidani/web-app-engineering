@@ -1,4 +1,4 @@
-# Web Application Engineering and Content Management
+# Web Application Engineering and Content Management [![Build Status](https://travis-ci.com/fuvidani/web-app-engineering.svg?token=nWakM5wh7rnyXAfUiELD&branch=master)](https://travis-ci.com/fuvidani/web-app-engineering)
 Web Application Engineering in 2018 with cutting-edge technologies.
 
 ## Structure
