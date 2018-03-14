@@ -1,0 +1,7 @@
+spring:
+  security:
+    user:
+      name: user
+      password: EprL4Meb8nitcQwf
+  application:
+    name: Web Application Engineering Backend
