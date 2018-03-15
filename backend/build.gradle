@@ -11,6 +11,9 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
     }
 }
+plugins {
+    id 'com.sourcemuse.mongo' version '1.0.6'
+}
 
 version '1.0-SNAPSHOT'
 
@@ -35,6 +38,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
     compile 'com.fasterxml.jackson.module:jackson-module-kotlin'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.0.3'
 }
 
 compileKotlin {
@@ -42,4 +46,13 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+test {
+    runWithMongoDb = true
+}
+
+mongo {
+    port 'RANDOM'
+    logging 'console'
 }
