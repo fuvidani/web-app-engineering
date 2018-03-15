@@ -1,7 +1,13 @@
 package at.ac.tuwien.waecm.ss18.group09.web
 
+import at.ac.tuwien.waecm.ss18.group09.repository.CounterRepository
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
 /**
@@ -15,20 +21,29 @@ import reactor.core.publisher.Mono
  */
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-class BackendController {
+class BackendController(private val repository: CounterRepository) {
 
-  private var dummyCounter = Counter(0)
+  private val id = "counter"
 
   @GetMapping("/counter")
-  fun getCounter(): Mono<Counter> {
-    return Mono.just(dummyCounter)
+  fun getCounter(): Mono<Int> {
+    return repository.findByIdIgnoringCase(id).map { it.value }
   }
 
   @PostMapping("/counter")
   fun incrementCounter(): Mono<Void> {
-    dummyCounter = Counter(dummyCounter.value + 1)
-    return Mono.empty()
+    return repository.findByIdIgnoringCase(id)
+        .flatMap {
+          it.value = it.value + 1
+          repository.save(it)
+        }.then()
+  }
+
+  @PostMapping("/reset")
+  fun resetCounter(): Mono<Void> {
+    return repository.save(Counter(id, 0)).then()
   }
 }
 
-data class Counter(val value: Int)
+@Document(collection = "counters")
+data class Counter(@Id val id: String, var value: Int)

@@ -13,4 +13,4 @@ spring:
       username: user
       password: devPassword
   profiles:
-    active: dev
+    active: test
