@@ -1,0 +1,23 @@
+# TODO finish this
+version: '3.1'
+
+services:
+  backend:
+    build: ./backend
+    restart: always
+    container_name: backend
+    ports:
+      - 8182:8080
+    #working_dir: /opt/app
+    depends_on:
+      - mongo
+
+  mongo:
+    build: ./database
+    container_name: mongo-db
+    ports:
+      - 27000:27017
+    volumes:
+      - $HOME/data/db:/data/db
+      - $HOME/data/bkp:/data/bkp
+    restart: always
