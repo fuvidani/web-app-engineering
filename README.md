@@ -60,6 +60,8 @@ To manually test the application, hit the following endpoints using `curl` or Po
 - `POST http://localhost:8080/counter` (increments counter)
 - `POST http://localhost:8080/reset` (resets the counter)
 
+**Important**: Don't forget to enable Basic Auth with the credentials from `application.yml` otherwise the
+REST-calls will return `401 Unauthorized`.
  
 ## Running locally through Docker
 Running the project using Docker saves you the trouble starting and setting up a local 
@@ -76,6 +78,9 @@ To manually test the application, hit the following endpoints using `curl` or Po
 - `GET http://localhost:8182/counter` (gets counter)
 - `POST http://localhost:8182/counter` (increments counter)
 - `POST http://localhost:8182/reset` (resets the counter)
+
+**Important**: Don't forget to enable Basic Auth with the credentials from `application.yml` otherwise the
+REST-calls will return `401 Unauthorized`.
 
 ## Troubleshooting
 Contact one of the contributors or open an issue.
