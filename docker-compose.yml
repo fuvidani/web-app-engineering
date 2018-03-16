@@ -1,22 +1,22 @@
-# TODO finish this
 version: '3.1'
 
 services:
   backend:
     build: ./backend
+    image: waecm_backend:waecm-2018-group-09-bsp-1
     restart: always
     container_name: backend
     ports:
       - 8182:8080
-    #working_dir: /opt/app
     depends_on:
       - mongo
 
   mongo:
     build: ./database
-    container_name: mongo-db
+    image:  waecm_mongo:waecm-2018-group-09-bsp-1
+    container_name: waecm-mongo-db
     ports:
-      - 27000:27017
+      - 27017:27017
     volumes:
       - $HOME/data/db:/data/db
       - $HOME/data/bkp:/data/bkp
