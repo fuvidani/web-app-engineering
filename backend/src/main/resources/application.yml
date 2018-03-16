@@ -9,7 +9,7 @@ spring:
     mongodb:
       port: 27017
       database: waecmDatabase
-      host: localhost   # "mongo-db" when docker-compose
+      host: localhost
       username: user
       password: devPassword
   profiles:
