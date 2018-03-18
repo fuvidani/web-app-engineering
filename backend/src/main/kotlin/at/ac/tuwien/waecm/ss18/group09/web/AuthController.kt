@@ -31,19 +31,17 @@ class AuthController {
     private lateinit var jwtService: IJwtService
 
     @Autowired
-    private lateinit var userDetailsRepositoryReactiveAuthenticationManager : ReactiveAuthenticationManager
+    private lateinit var userDetailsRepositoryReactiveAuthenticationManager: ReactiveAuthenticationManager
 
     @PostMapping("/auth")
     fun getAuthenticationToken(@RequestBody authRequest: AuthRequest): Mono<AuthResponse> {
 
         val authentication = UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password)
-      val auth = userDetailsRepositoryReactiveAuthenticationManager.authenticate(authentication)
+        val auth = userDetailsRepositoryReactiveAuthenticationManager.authenticate(authentication)
 
         return auth
-                .map { a -> a.principal as User }
-                .map { u -> jwtService.generateJwt(u) }
-                .map { j -> AuthResponse(j) }
-
+            .map { a -> a.principal as User }
+            .map { u -> jwtService.generateJwt(u) }
+            .map { j -> AuthResponse(j) }
     }
-
 }

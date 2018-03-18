@@ -15,5 +15,5 @@ import reactor.core.publisher.Mono
  */
 interface CounterRepository : ReactiveMongoRepository<Counter, String> {
 
-  fun findByIdIgnoringCase(id: String): Mono<Counter>
+    fun findByIdIgnoringCase(id: String): Mono<Counter>
 }

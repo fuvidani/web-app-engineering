@@ -17,15 +17,14 @@ import reactor.core.publisher.Mono
  */
 class JwtServerAuthenticationEntryPoint : ServerAuthenticationEntryPoint {
 
-  private val authenticateHeader = "WWW-Authenticate"
-  private val headerValue = "Bearer"
+    private val authenticateHeader = "WWW-Authenticate"
+    private val headerValue = "Bearer"
 
-  override fun commence(exchange: ServerWebExchange, e: AuthenticationException): Mono<Void> {
-    return Mono.fromRunnable {
-      val response = exchange.response
-      response.statusCode = HttpStatus.UNAUTHORIZED
-      response.headers.set(authenticateHeader, headerValue)
+    override fun commence(exchange: ServerWebExchange, e: AuthenticationException): Mono<Void> {
+        return Mono.fromRunnable {
+            val response = exchange.response
+            response.statusCode = HttpStatus.UNAUTHORIZED
+            response.headers.set(authenticateHeader, headerValue)
+        }
     }
-  }
-
 }
