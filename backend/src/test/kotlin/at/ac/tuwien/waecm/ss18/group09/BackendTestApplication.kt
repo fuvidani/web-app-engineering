@@ -1,10 +1,14 @@
 package at.ac.tuwien.waecm.ss18.group09
 
+import at.ac.tuwien.waecm.ss18.group09.auth.IJwtService
+import at.ac.tuwien.waecm.ss18.group09.auth.JwtService
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.ServerHttpSecurity
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.web.reactive.config.EnableWebFlux
 
@@ -30,5 +34,15 @@ class BackendTestApplication {
             .anyExchange().permitAll()
             .and().csrf().disable()
         return http.build()
+    }
+
+    @Bean
+    fun userDetailsRepositoryReactiveAuthenticationManager(userDetailsRepository: MapReactiveUserDetailsService): UserDetailsRepositoryReactiveAuthenticationManager {
+        return UserDetailsRepositoryReactiveAuthenticationManager(userDetailsRepository)
+    }
+
+    @Bean
+    fun jwtService(): IJwtService {
+        return JwtService()
     }
 }
