@@ -29,55 +29,42 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 class SecurityConfig {
 
     @Bean
-    fun userDetailsRepository(@Value("\${spring.security.user.name}") username: String,
-                              @Value("\${spring.security.user.password}") password: String)
-            : MapReactiveUserDetailsService {
+    fun userDetailsRepository(
+        @Value("\${spring.security.user.name}") username: String,
+        @Value("\${spring.security.user.password}") password: String
+    ): MapReactiveUserDetailsService {
         val user = User
-                .withUsername(username)
-                .password("{noop}$password")
-                .roles("USER")
-                .build()
+            .withUsername(username)
+            .password("{noop}$password")
+            .roles("USER")
+            .build()
         return MapReactiveUserDetailsService(user)
     }
 
     @Bean
-    fun userDetailsRepositoryReactiveAuthenticationManager(userDetailsRepository : MapReactiveUserDetailsService)
-            : UserDetailsRepositoryReactiveAuthenticationManager {
+    fun userDetailsRepositoryReactiveAuthenticationManager(userDetailsRepository: MapReactiveUserDetailsService): UserDetailsRepositoryReactiveAuthenticationManager {
         return UserDetailsRepositoryReactiveAuthenticationManager(userDetailsRepository)
     }
 
     @Bean
-    fun jwtService() : IJwtService {
+    fun jwtService(): IJwtService {
         return JwtService()
     }
 
-    /*@Bean
+    @Bean
     fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
-        http.httpBasic().disable();
-        http.formLogin().disable();
-        http.csrf().disable();
-        http.logout().disable();
+        http.httpBasic().disable()
+        http.formLogin().disable()
+        http.csrf().disable()
+        http.logout().disable()
 
         val jwtReactiveAuthenticationManager = JwtReactiveAuthenticationManager(jwtService())
         val jwtAuthWebFilter = JwtAuthWebFilter(jwtReactiveAuthenticationManager)
 
-        http.authorizeExchange().pathMatchers("/auth").permitAll();
+        http.authorizeExchange().pathMatchers("/auth").permitAll()
         http.authorizeExchange().anyExchange().authenticated()
-                .and().addFilterAt(jwtAuthWebFilter, SecurityWebFiltersOrder.HTTP_BASIC);
+            .and().addFilterAt(jwtAuthWebFilter, SecurityWebFiltersOrder.HTTP_BASIC)
 
-        return http.build();
-    }*/
-
-    @Bean
-    fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
-        http
-                .authorizeExchange()
-                .anyExchange().authenticated()
-                .and()
-                .httpBasic().and()
-                .formLogin()
-                .and().csrf().disable()
         return http.build()
     }
-
 }

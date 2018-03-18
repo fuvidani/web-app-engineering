@@ -3,7 +3,6 @@ package at.ac.tuwien.waecm.ss18.group09
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
-
 /**
  * <h4>About this class</h4>
  *
@@ -22,5 +21,4 @@ class BackendApplication {
             SpringApplication.run(BackendApplication::class.java, *args)
         }
     }
-
 }

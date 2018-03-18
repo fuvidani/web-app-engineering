@@ -30,13 +30,13 @@ import reactor.core.publisher.onErrorResume
 class JwtAuthWebFilter(private val reactiveJwtAuthenticationManager: ReactiveAuthenticationManager) : WebFilter {
 
     private var authenticationSuccessHandler: ServerAuthenticationSuccessHandler =
-            WebFilterChainServerAuthenticationSuccessHandler()
+        WebFilterChainServerAuthenticationSuccessHandler()
 
     private var authenticationFailureHandler: ServerAuthenticationFailureHandler =
-            ServerAuthenticationEntryPointFailureHandler(JwtServerAuthenticationEntryPoint())
+        ServerAuthenticationEntryPointFailureHandler(JwtServerAuthenticationEntryPoint())
 
     private val requiresAuthenticationMatcher =
-            ServerWebExchangeMatchers.anyExchange()
+        ServerWebExchangeMatchers.anyExchange()
 
     private val jwtHeaderExtractor: JwtHeaderExtractor = JwtHeaderExtractor()
 
@@ -44,30 +44,37 @@ class JwtAuthWebFilter(private val reactiveJwtAuthenticationManager: ReactiveAut
 
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         return this.requiresAuthenticationMatcher.matches(exchange)
-                .filter { matchResult -> matchResult.isMatch }
-                .flatMap<Authentication> { matchResult -> this.jwtHeaderExtractor.apply(exchange) }
-                .switchIfEmpty(chain.filter(exchange).then(Mono.empty<Authentication>()))
-                .flatMap { token -> authenticate(exchange, chain, token) }
+            .filter { matchResult -> matchResult.isMatch }
+            .flatMap<Authentication> { _ -> this.jwtHeaderExtractor.apply(exchange) }
+            .switchIfEmpty(chain.filter(exchange).then(Mono.empty<Authentication>()))
+            .flatMap { token -> authenticate(exchange, chain, token) }
     }
 
-    private fun authenticate(exchange: ServerWebExchange,
-                             chain: WebFilterChain, token: Authentication): Mono<Void> {
+    private fun authenticate(
+        exchange: ServerWebExchange,
+        chain: WebFilterChain,
+        token: Authentication
+    ): Mono<Void> {
         val webFilterExchange = WebFilterExchange(exchange, chain)
         return this.reactiveJwtAuthenticationManager.authenticate(token)
-                .flatMap({ authentication -> onAuthenticationSuccess(authentication, webFilterExchange) })
-                .onErrorResume(AuthenticationException::class, { e ->
-                    this.authenticationFailureHandler.onAuthenticationFailure(webFilterExchange, e)
-                })
+            .flatMap({ authentication -> onAuthenticationSuccess(authentication, webFilterExchange) })
+            .onErrorResume(AuthenticationException::class, { e ->
+                this.authenticationFailureHandler.onAuthenticationFailure(webFilterExchange, e)
+            })
     }
 
-    private fun onAuthenticationSuccess(authentication: Authentication, webFilterExchange: WebFilterExchange): Mono<Void> {
+    private fun onAuthenticationSuccess(
+        authentication: Authentication,
+        webFilterExchange: WebFilterExchange
+    ): Mono<Void> {
         val exchange = webFilterExchange.exchange
         val securityContext = SecurityContextImpl()
         securityContext.authentication = authentication
         return this.securityContextRepository.save(exchange, securityContext)
-                .then<Void>(this.authenticationSuccessHandler
-                        .onAuthenticationSuccess(webFilterExchange, authentication))
-                .subscriberContext(ReactiveSecurityContextHolder.withSecurityContext(Mono.just(securityContext)))
+            .then<Void>(
+                this.authenticationSuccessHandler
+                    .onAuthenticationSuccess(webFilterExchange, authentication)
+            )
+            .subscriberContext(ReactiveSecurityContextHolder.withSecurityContext(Mono.just(securityContext)))
     }
-
 }

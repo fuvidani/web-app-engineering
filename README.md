@@ -1,4 +1,7 @@
-# Web Application Engineering and Content Management [![Build Status](https://travis-ci.com/fuvidani/web-app-engineering.svg?token=nWakM5wh7rnyXAfUiELD&branch=master)](https://travis-ci.com/fuvidani/web-app-engineering)
+# Web Application Engineering and Content Management 
+[![Build Status](https://travis-ci.com/fuvidani/web-app-engineering.svg?token=nWakM5wh7rnyXAfUiELD&branch=master)](https://travis-ci.com/fuvidani/web-app-engineering)
+[![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
+
 Web Application Engineering in 2018 with cutting-edge technologies.
 
 ## Structure
@@ -53,15 +56,6 @@ instance, however this time with authorization enabled:
  
 After this, the Spring Boot app should be able to connect to your local mongo db through
 `localhost:27017`. 
-
-To manually test the application, hit the following endpoints using `curl` or Postman:
-
-- `GET http://localhost:8080/counter` (gets counter)
-- `POST http://localhost:8080/counter` (increments counter)
-- `POST http://localhost:8080/reset` (resets the counter)
-
-**Important**: Don't forget to enable Basic Auth with the credentials from `application.yml` otherwise the
-REST-calls will return `401 Unauthorized`.
  
 ## Running locally through Docker
 Running the project using Docker saves you the trouble starting and setting up a local 
@@ -73,14 +67,33 @@ to the project root folder (`web-app-engineering`) and start the docker-compose 
 Note: Presumably your docker will have to download bunch of images, build the images and deploy. 
 It may last 1-2 minutes until everything's up and running. Stare at the console and you'll see what's happening.
 
-To manually test the application, hit the following endpoints using `curl` or Postman (**Mind the changed port**):
+## Authentication and Authorization
+At this point, the application exposes the four following endpoints:
 
-- `GET http://localhost:8182/counter` (gets counter)
-- `POST http://localhost:8182/counter` (increments counter)
-- `POST http://localhost:8182/reset` (resets the counter)
+- `POST http://localhost:8080/auth`
+- `GET http://localhost:8080/counter` (gets counter)
+- `POST http://localhost:8080/counter` (increments counter)
+- `POST http://localhost:8080/reset` (resets the counter)
 
-**Important**: Don't forget to enable Basic Auth with the credentials from `application.yml` otherwise the
-REST-calls will return `401 Unauthorized`.
+The last three endpoints are protected by a `Bearer Token` authorization using [JWT](https://jwt.io/).
+This means that first the user has to authenticate themselves through the `/auth` endpoint. 
+The endpoint expects a username and a password and returns a token if these are valid.
+Example using `curl`:
+ ```shell
+ curl -H "Content-Type: application/json" -X POST -d '{"username":"user","password":"EprL4Meb8nitcQw"}' http://localhost:8080/auth
+ ```
+Upon successful authentication, the result might look like this:
+ ```shell
+ {"token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE1MjE0ODExNTksImlhdCI6MTUyMTM5NDc1OX0.eDPMllIQoatJq657WEd6GMv-8I0UzsPY3CbRVVBJiOk"}
+ ```
+The obtained token has to be provided on each subsequent invocation using the [Bearer schema](https://tools.ietf.org/html/rfc6750),
+like so:
+ ```shell
+ curl http://localhost:8080/counter -v -H "Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE1MjE0ODExNTksImlhdCI6MTUyMTM5NDc1OX0.eDPMllIQoatJq657WEd6GMv-8I0UzsPY3CbRVVBJiOk"
+ ```
+Should you forget to provide a valid token, the endpoints will return `401 Unauthorized`.
+
+**Important: In case of the docker-based deployment, the API uses the port 8182 instead of 8080!!**
 
 ## Troubleshooting
 Contact one of the contributors or open an issue.

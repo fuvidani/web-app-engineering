@@ -7,9 +7,12 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.User
-import java.util.*
+import java.util.Date
 import javax.crypto.spec.SecretKeySpec
 import javax.xml.bind.DatatypeConverter
+import kotlin.collections.HashMap
+import kotlin.collections.Map
+import kotlin.collections.set
 
 /**
  * <h4>About this class</h4>
@@ -22,7 +25,7 @@ import javax.xml.bind.DatatypeConverter
  */
 class JwtService : IJwtService {
 
-    private val CLAIM_ROLES = "roles"
+    private val roles = "roles"
 
     @Value("\${spring.security.token.secret}")
     private val tokenSecret: String? = null
@@ -42,14 +45,13 @@ class JwtService : IJwtService {
         val tokenKey = SecretKeySpec(tokenSecretBytes, signatureAlgorithm.jcaName)
 
         val jwtBuilder = Jwts.builder()
-                .setClaims(generatePrivateClaims(user))
-                .setSubject(user.username)
-                .setIssuedAt(nowDate)
-                .setExpiration(expirationDate)
-                .signWith(signatureAlgorithm, tokenKey)
+            .setClaims(generatePrivateClaims(user))
+            .setSubject(user.username)
+            .setIssuedAt(nowDate)
+            .setExpiration(expirationDate)
+            .signWith(signatureAlgorithm, tokenKey)
 
         return jwtBuilder.compact()
-
     }
 
     /**
@@ -70,10 +72,8 @@ class JwtService : IJwtService {
             separator = ","
         }
 
-        claims[CLAIM_ROLES] = stringBuilder.toString()
-
+        claims[roles] = stringBuilder.toString()
         return claims
-
     }
 
     @Throws(JwtServiceException::class)
@@ -81,11 +81,10 @@ class JwtService : IJwtService {
 
         val claims = getClaims(token)
 
-        val authorities = claims[CLAIM_ROLES] as String
+        val authorities = claims[roles] as String
         val grantedAuthorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities)
 
         return User(claims.subject, "[PROTECTED]", grantedAuthorityList)
-
     }
 
     /**
@@ -99,12 +98,10 @@ class JwtService : IJwtService {
 
         try {
             return Jwts.parser()
-                    .setSigningKey(tokenSecret)
-                    .parseClaimsJws(token).body
+                .setSigningKey(tokenSecret)
+                .parseClaimsJws(token).body
         } catch (e: JwtException) {
             throw JwtServiceException("Error while parsing the claims of the jwt: " + e.message)
         }
-
     }
-
 }

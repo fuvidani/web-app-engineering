@@ -25,57 +25,57 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @AutoConfigureWebTestClient
 class BackendControllerTest {
 
-  @Autowired
-  private lateinit var client: WebTestClient
+    @Autowired
+    private lateinit var client: WebTestClient
 
-  @Before
-  fun setUp() {
-    resetCounter()
-  }
+    @Before
+    fun setUp() {
+        resetCounter()
+    }
 
-  @Test
-  fun testGetCounter() {
-    assertGetCounter(0)
-  }
+    @Test
+    fun testGetCounter() {
+        assertGetCounter(0)
+    }
 
-  @Test
-  fun testPostCounter() {
-    postIncrement()
-    postIncrement()
-    assertGetCounter(2)
-  }
+    @Test
+    fun testPostCounter() {
+        postIncrement()
+        postIncrement()
+        assertGetCounter(2)
+    }
 
-  @Test
-  fun testResetPostAndGetCombination() {
-    assertGetCounter(0)
-    postIncrement()
-    postIncrement()
-    postIncrement()
-    assertGetCounter(3)
-    resetCounter()
-    assertGetCounter(0)
-  }
+    @Test
+    fun testResetPostAndGetCombination() {
+        assertGetCounter(0)
+        postIncrement()
+        postIncrement()
+        postIncrement()
+        assertGetCounter(3)
+        resetCounter()
+        assertGetCounter(0)
+    }
 
-  private fun postIncrement() {
-    client.post().uri("/counter")
-        .accept(MediaType.APPLICATION_JSON_UTF8)
-        .exchange()
-        .expectStatus().isOk
-  }
+    private fun postIncrement() {
+        client.post().uri("/counter")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .exchange()
+            .expectStatus().isOk
+    }
 
-  private fun assertGetCounter(expectedCount: Int) {
-    client.get().uri("/counter")
-        .accept(MediaType.APPLICATION_JSON_UTF8)
-        .exchange()
-        .expectStatus().isOk
-        .expectBody()
-        .json("$expectedCount")
-  }
+    private fun assertGetCounter(expectedCount: Int) {
+        client.get().uri("/counter")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json("$expectedCount")
+    }
 
-  private fun resetCounter() {
-    client.post().uri("/reset")
-        .accept(MediaType.APPLICATION_JSON_UTF8)
-        .exchange()
-        .expectStatus().isOk
-  }
+    private fun resetCounter() {
+        client.post().uri("/reset")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .exchange()
+            .expectStatus().isOk
+    }
 }

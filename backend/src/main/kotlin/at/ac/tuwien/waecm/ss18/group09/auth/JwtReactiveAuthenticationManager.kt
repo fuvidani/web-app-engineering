@@ -18,18 +18,13 @@ class JwtReactiveAuthenticationManager(private val jwtService: IJwtService) : Re
 
     override fun authenticate(authentication: Authentication): Mono<Authentication> {
 
-        try {
-
+        return try {
             val jwt = authentication.credentials as String
             val user = jwtService.parseJwt(jwt)
             val authResult = JwtAuthenticationToken(user.username, jwt, user.authorities)
-
-            return Mono.just(authResult)
-
+            Mono.just(authResult)
         } catch (e: JwtServiceException) {
-            return Mono.error(BadCredentialsException("Token not valid."))
+            Mono.error(BadCredentialsException("Token not valid."))
         }
-
     }
-
 }

@@ -15,12 +15,12 @@ interface IJwtService {
 
     /**
      * This method generates a signed JWT for the given UserDetails.
-     * @param userDetails the details from the user which are stored in the payload of the JWT.
+     * @param user the details from the user which are stored in the payload of the JWT.
      * @return the generated JWT, with the UserDetails in the payload.
      * @throws JwtServiceException this exception is thrown if an error occurs while generating the JWT.
      */
     @Throws(JwtServiceException::class)
-    abstract fun generateJwt(user: User): String
+    fun generateJwt(user: User): String
 
     /**
      * This method parses the signed JWT and extracts the information from the payload to construct the UserDetails.
@@ -29,6 +29,5 @@ interface IJwtService {
      * @throws JwtServiceException this exception is thrown if an error occurs while parsing the JWT.
      */
     @Throws(JwtServiceException::class)
-    abstract fun parseJwt(token: String): User
-
+    fun parseJwt(token: String): User
 }
