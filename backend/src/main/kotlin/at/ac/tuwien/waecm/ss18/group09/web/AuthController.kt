@@ -1,9 +1,8 @@
 package at.ac.tuwien.waecm.ss18.group09.web
 
-import at.ac.tuwien.waecm.ss18.group09.auth.IJwtService
+import at.ac.tuwien.waecm.ss18.group09.auth.JwtService
 import at.ac.tuwien.waecm.ss18.group09.dto.AuthRequest
 import at.ac.tuwien.waecm.ss18.group09.dto.AuthResponse
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -25,13 +24,10 @@ import reactor.core.publisher.Mono
  */
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-class AuthController {
-
-    @Autowired
-    private lateinit var jwtService: IJwtService
-
-    @Autowired
-    private lateinit var userDetailsRepositoryReactiveAuthenticationManager: ReactiveAuthenticationManager
+class AuthController(
+    private val jwtService: JwtService,
+    private val userDetailsRepositoryReactiveAuthenticationManager: ReactiveAuthenticationManager
+) {
 
     @PostMapping("/auth")
     fun getAuthenticationToken(@RequestBody authRequest: AuthRequest): Mono<AuthResponse> {

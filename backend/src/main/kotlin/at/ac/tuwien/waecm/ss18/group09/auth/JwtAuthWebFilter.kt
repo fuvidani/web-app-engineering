@@ -45,7 +45,7 @@ class JwtAuthWebFilter(private val reactiveJwtAuthenticationManager: ReactiveAut
     override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
         return this.requiresAuthenticationMatcher.matches(exchange)
             .filter { matchResult -> matchResult.isMatch }
-            .flatMap<Authentication> { matchResult -> this.jwtHeaderExtractor.apply(exchange) }
+            .flatMap<Authentication> { _ -> this.jwtHeaderExtractor.apply(exchange) }
             .switchIfEmpty(chain.filter(exchange).then(Mono.empty<Authentication>()))
             .flatMap { token -> authenticate(exchange, chain, token) }
     }

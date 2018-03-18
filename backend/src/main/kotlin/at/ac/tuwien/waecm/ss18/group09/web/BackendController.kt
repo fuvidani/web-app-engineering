@@ -1,8 +1,7 @@
 package at.ac.tuwien.waecm.ss18.group09.web
 
+import at.ac.tuwien.waecm.ss18.group09.dto.Counter
 import at.ac.tuwien.waecm.ss18.group09.repository.CounterRepository
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -44,6 +43,3 @@ class BackendController(private val repository: CounterRepository) {
         return repository.save(Counter(id, 0)).then()
     }
 }
-
-@Document(collection = "counters")
-data class Counter(@Id val id: String, var value: Int)
