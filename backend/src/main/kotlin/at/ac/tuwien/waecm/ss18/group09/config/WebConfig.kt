@@ -14,5 +14,4 @@ import org.springframework.web.reactive.config.EnableWebFlux
  */
 @EnableWebFlux
 @Configuration
-class WebConfig {
-}
+class WebConfig

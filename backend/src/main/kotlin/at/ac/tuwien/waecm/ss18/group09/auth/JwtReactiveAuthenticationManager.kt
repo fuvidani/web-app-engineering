@@ -14,22 +14,19 @@ import reactor.core.publisher.Mono
  * @version 1.0.0
  * @since 1.0.0
  */
-class JwtReactiveAuthenticationManager(private val jwtService: IJwtService) : ReactiveAuthenticationManager {
+class JwtReactiveAuthenticationManager(private val jwtService: IJwtService)
+  : ReactiveAuthenticationManager {
 
-    override fun authenticate(authentication: Authentication): Mono<Authentication> {
+  override fun authenticate(authentication: Authentication): Mono<Authentication> {
 
-        try {
-
-            val jwt = authentication.credentials as String
-            val user = jwtService.parseJwt(jwt)
-            val authResult = JwtAuthenticationToken(user.username, jwt, user.authorities)
-
-            return Mono.just(authResult)
-
-        } catch (e: JwtServiceException) {
-            return Mono.error(BadCredentialsException("Token not valid."))
-        }
-
+    return try {
+      val jwt = authentication.credentials as String
+      val user = jwtService.parseJwt(jwt)
+      val authResult = JwtAuthenticationToken(user.username, jwt, user.authorities)
+      Mono.just(authResult)
+    } catch (e: JwtServiceException) {
+      Mono.error(BadCredentialsException("Token not valid."))
     }
+  }
 
 }

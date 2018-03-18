@@ -17,22 +17,22 @@ import java.util.function.Function
  */
 class JwtHeaderExtractor : Function<ServerWebExchange, Mono<Authentication>> {
 
-    private val TOKEN_TYPE = "Bearer"
-    private val HEADER_NAME = "Authorization"
+  private val tokenType = "Bearer"
+  private val header = "Authorization"
 
-    override fun apply(exchange: ServerWebExchange): Mono<Authentication> {
+  override fun apply(exchange: ServerWebExchange): Mono<Authentication> {
 
-        val request = exchange.request
-        val authorizationHeader = request.headers.getFirst(HEADER_NAME)
+    val request = exchange.request
+    val authorizationHeader = request.headers.getFirst(header)
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_TYPE)) {
-            return Mono.empty()
-        }
-
-        val jwt = authorizationHeader.substring(TOKEN_TYPE.length + 1)
-        val authentication = UsernamePasswordAuthenticationToken(null, jwt)
-        return Mono.just(authentication)
-
+    if (authorizationHeader == null || !authorizationHeader.startsWith(tokenType)) {
+      return Mono.empty()
     }
+
+    val jwt = authorizationHeader.substring(tokenType.length + 1)
+    val authentication = UsernamePasswordAuthenticationToken(null, jwt)
+    return Mono.just(authentication)
+
+  }
 
 }
