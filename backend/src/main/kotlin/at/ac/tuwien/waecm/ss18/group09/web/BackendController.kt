@@ -2,10 +2,8 @@ package at.ac.tuwien.waecm.ss18.group09.web
 
 import at.ac.tuwien.waecm.ss18.group09.dto.Counter
 import at.ac.tuwien.waecm.ss18.group09.repository.CounterRepository
-import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
@@ -19,7 +17,6 @@ import reactor.core.publisher.Mono
  * @since 1.0.0
  */
 @RestController
-@RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
 class BackendController(private val repository: CounterRepository) {
 
     private val id = "counter"
