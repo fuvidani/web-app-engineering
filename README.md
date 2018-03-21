@@ -20,7 +20,7 @@ For this task, the database is also separated and put into a container. The idea
 approach is to be able to easily scale the backend if needed. Scaling the database (data-replication,
 eventual consistency) remains unconsidered for this small project.
 
-## Running locally through IDE
+## Running locally through IDE (for development purposes)
 In order to start the backend successfully, a local mongo db has to be started and configured appropriately.
 
 The first step is to [install MongoDB](https://docs.mongodb.com/manual/administration/install-community/) on your preferred OS. 
@@ -56,16 +56,25 @@ instance, however this time with authorization enabled:
  
 After this, the Spring Boot app should be able to connect to your local mongo db through
 `localhost:27017`. 
+
+**Main endpoint: http://localhost:8080**
  
 ## Running locally through Docker
 Running the project using Docker saves you the trouble starting and setting up a local 
-mongo db. Assuming you have working Docker on your machine, simply navigate in your console
+mongo db. 
+Assuming you have working Docker on your machine, simply navigate in your console
 to the project root folder (`web-app-engineering`) and start the docker-compose yaml file:
  ```shell
  docker-compose up
  ```
-Note: Presumably your docker will have to download bunch of images, build the images and deploy. 
+**Note (development)**: Presumably your docker will have to download bunch of images, build the images and deploy. 
 It may last 1-2 minutes until everything's up and running. Stare at the console and you'll see what's happening.
+
+**Note 2**: If you want to execute `docker-compose up` so that the images get built locally
+(instead of pulling them from registry), the jar file for the backend has to exist in `backend/build/libs/`.
+For this, simply execute `gradlew build` (or `./gradlew build`) and the jar will be built.
+
+**Main endpoint: http://localhost:8182**
 
 ## Authentication and Authorization
 At this point, the application exposes the four following endpoints:
@@ -80,7 +89,7 @@ This means that first the user has to authenticate themselves through the `/auth
 The endpoint expects a username and a password and returns a token if these are valid.
 Example using `curl`:
  ```shell
- curl -H "Content-Type: application/json" -X POST -d '{"username":"user","password":"EprL4Meb8nitcQw"}' http://localhost:8080/auth
+ curl -H "Content-Type: application/json" -X POST -d '{"username":"user","password":"password"}' http://localhost:8080/auth
  ```
 Upon successful authentication, the result might look like this:
  ```shell
