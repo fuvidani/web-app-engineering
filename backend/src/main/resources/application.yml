@@ -2,7 +2,7 @@ spring:
   security:
     user:
       name: user
-      password: EprL4Meb8nitcQwf
+      password: password
     token:
       secret: FZrYPOqwVDVGQ9FtiHsa
       expiration: 86400000
