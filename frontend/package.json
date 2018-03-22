@@ -7,7 +7,7 @@
     "build": "webpack --config webpack.config.js --progress --profile --colors",
     "start": "webpack-dev-server --config webpack.config.js --progress --profile --colors",
     "lint": "eslint --ext js --ext jsx src || exit 0",
-    "dev": " webpack-dashboard -- webpack-dev-server",
+    "dev": " webpack-dev-server --config webpack.config.js --progress --profile --colors --content-base src --hot --inline",
     "test": "set NODE_ENV=test && jest"
   },
   "repository": {
@@ -20,6 +20,7 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
+    "axios": "^0.18.0",
     "material-ui": "^0.20.0",
     "node-sass": "^4.7.2",
     "normalize.css": "^8.0.0",

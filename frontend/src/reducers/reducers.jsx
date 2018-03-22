@@ -1,7 +1,7 @@
 import {combineReducers} from "redux";
 
-import ws from "./wsReducer";
+import counter from "./counterReducer";
 
 export default combineReducers({
-    ws
+  counter
 });
