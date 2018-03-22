@@ -2,6 +2,7 @@ package at.ac.tuwien.waecm.ss18.group09.web
 
 import at.ac.tuwien.waecm.ss18.group09.dto.Counter
 import at.ac.tuwien.waecm.ss18.group09.repository.CounterRepository
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono
  * @version 1.0.0
  * @since 1.0.0
  */
+@CrossOrigin
 @RestController
 class BackendController(private val repository: CounterRepository) {
 
