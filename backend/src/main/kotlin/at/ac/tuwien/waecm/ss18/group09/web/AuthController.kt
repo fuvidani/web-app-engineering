@@ -7,10 +7,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.User
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
 /**
@@ -30,6 +27,7 @@ class AuthController(
 ) {
 
     @PostMapping("/auth")
+    @CrossOrigin
     fun getAuthenticationToken(@RequestBody authRequest: AuthRequest): Mono<AuthResponse> {
 
         val authentication = UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password)
