@@ -22,6 +22,19 @@ services:
       - $HOME/data/bkp:/data/bkp
     restart: always
 
+  swagger:
+    environment:
+      - API_URL=http://localhost:8182/swagger
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    ports:
+      - 8888:8080
+    depends_on:
+      - mongo
+      - backend
+    restart: always
+
+
   frontend:
     build: ./frontend
     image:  rasakul/waecm-2018-group-09-bsp-1-frontend
