@@ -68,7 +68,7 @@ to the project root folder (`web-app-engineering`) and pull the images from dock
  ```
 In order to start the containers, use:
  ```shell
- docker-compose up
+ docker-compose up -d
  ```
 
 **Note**: If you want to execute `docker-compose build` so that the images get built locally
