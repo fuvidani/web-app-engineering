@@ -9,7 +9,7 @@ export default class Dashboard extends React.Component {
 
   render() {
     return <div>
-      <Paper zDepth={2} />
+      BLAA
     </div>;
   }
 }

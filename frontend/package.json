@@ -4,11 +4,9 @@
   "description": "Web application for WAE Project",
   "main": "webpack.config.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js --progress --profile --colors",
-    "start": "webpack-dev-server --config webpack.config.js --progress --profile --colors",
-    "lint": "eslint --ext js --ext jsx src || exit 0",
-    "dev": " webpack-dev-server --config webpack.config.js --progress --profile --colors --content-base src --hot --inline",
-    "test": "set NODE_ENV=test && jest"
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production",
+    "start": "webpack-dev-server --mode development --open"
   },
   "repository": {
     "type": "git",

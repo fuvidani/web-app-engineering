@@ -18,12 +18,7 @@ module.exports = [
       {
         loader: "css-loader"
       }, {
-        loader: "sass-loader",
-        options: {
-          sourceMap: true,
-          precision: 8,
-          data: "$ENV: " + "PRODUCTION" + ";"
-        },
+        loader: "sass-loader"
       }],
   },
   {

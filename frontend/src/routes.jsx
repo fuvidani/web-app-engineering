@@ -4,7 +4,6 @@ import {
   Route
 } from 'react-router-dom';
 import App from './app';
-import 'styles/index.scss';
 
 const Routes = () => (
   <Router>
