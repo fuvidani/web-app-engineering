@@ -62,33 +62,49 @@ After this, the Spring Boot app should be able to connect to your local mongo db
 Running the project using Docker saves you the trouble starting and setting up a local 
 mongo db. 
 Assuming you have working Docker on your machine, simply navigate in your console
-to the project root folder (`web-app-engineering`) and start the docker-compose yaml file:
+to the project root folder (`web-app-engineering`) and pull the images from dockerhub: 
+ ```shell
+ docker-compose pull
+ ```
+In order to start the containers, use:
  ```shell
  docker-compose up
  ```
-**Note (development)**: Presumably your docker will have to download bunch of images, build the images and deploy. 
-It may last 1-2 minutes until everything's up and running. Stare at the console and you'll see what's happening.
 
-**Note 2**: If you want to execute `docker-compose up` so that the images get built locally
+**Note**: If you want to execute `docker-compose build` so that the images get built locally
 (instead of pulling them from registry), the jar file for the backend has to exist in `backend/build/libs/`.
 For this, simply execute `gradlew build` (or `./gradlew build`) and the jar will be built.
 
 **Main endpoint: http://localhost:8182**
 
+### Docker Images
+
+The following docker images are used:
+
+- rasakul/waecm-2018-group-09-bsp-1-backend
+    - based on "node:9"
+    - hash: TODO
+- rasakul/waecm-2018-group-09-bsp-1-mongo
+    - based on "mongo:3"
+    - hash: TODO
+- rasakul/waecm-2018-group-09-bsp-1-frontend
+    - based on "java:8-jre"
+    - hash: TODO
+
 ## Authentication and Authorization
 At this point, the application exposes the four following endpoints:
 
-- `POST http://localhost:8080/auth`
-- `GET http://localhost:8080/counter` (gets counter)
-- `POST http://localhost:8080/counter` (increments counter)
-- `POST http://localhost:8080/reset` (resets the counter)
+- `POST http://localhost:8182/auth`
+- `GET http://localhost:8182/counter` (gets counter)
+- `POST http://localhost:8182/counter` (increments counter)
+- `POST http://localhost:8182/reset` (resets the counter)
 
 The last three endpoints are protected by a `Bearer Token` authorization using [JWT](https://jwt.io/).
 This means that first the user has to authenticate themselves through the `/auth` endpoint. 
 The endpoint expects a username and a password and returns a token if these are valid.
 Example using `curl`:
  ```shell
- curl -H "Content-Type: application/json" -X POST -d '{"username":"user","password":"password"}' http://localhost:8080/auth
+ curl -H "Content-Type: application/json" -X POST -d '{"username":"user","password":"password"}' http://localhost:8182/auth
  ```
 Upon successful authentication, the result might look like this:
  ```shell
@@ -97,11 +113,11 @@ Upon successful authentication, the result might look like this:
 The obtained token has to be provided on each subsequent invocation using the [Bearer schema](https://tools.ietf.org/html/rfc6750),
 like so:
  ```shell
- curl http://localhost:8080/counter -v -H "Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE1MjE0ODExNTksImlhdCI6MTUyMTM5NDc1OX0.eDPMllIQoatJq657WEd6GMv-8I0UzsPY3CbRVVBJiOk"
+ curl http://localhost:8182/counter -v -H "Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE1MjE0ODExNTksImlhdCI6MTUyMTM5NDc1OX0.eDPMllIQoatJq657WEd6GMv-8I0UzsPY3CbRVVBJiOk"
  ```
 Should you forget to provide a valid token, the endpoints will return `401 Unauthorized`.
 
-**Important: In case of the docker-based deployment, the API uses the port 8182 instead of 8080!!**
+**Important: In case of the non docker-based deployment, the API uses the port 8080 instead of 8182!!**
 
 ## Troubleshooting
 Contact one of the contributors or open an issue.
