@@ -8,7 +8,7 @@ export function auth(username, password) {
       password: password
     })
     .then((response) => {
-      dispatch({type: "AUTH_FULFILLED", payload: response.data});
+      dispatch({type: "AUTH_FULFILLED", payload: response.data.token});
     })
     .catch((err) => {
       dispatch({type: "AUTH_REJECTED", payload: err});
@@ -16,11 +16,17 @@ export function auth(username, password) {
   };
 }
 
+export function logout() {
+  return function (dispatch) {
+    dispatch({type: "LOGOUT"});
+  };
+}
+
 export function fetchCounter() {
 	return function (dispatch) {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwtToken');
 
-    axios.get(serverConfig.url + "/counter")
+    axios.get(serverConfig.url + "/counter",)
     .then((response) => {
       dispatch({type: "FETCH_COUNTER_FULFILLED", payload: response.data});
     })
@@ -35,7 +41,7 @@ export function incrementCounter() {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwtToken');
 
     axios.post(serverConfig.url + "/counter")
-    .then((response) => {
+    .then(() => {
       dispatch({type: "INCREMENT_COUNTER_FULFILLED"});
     })
     .catch((err) => {

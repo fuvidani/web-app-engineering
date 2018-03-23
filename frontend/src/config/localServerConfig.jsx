@@ -1,5 +1,5 @@
 export const serverConf = {
     url: "http://localhost",
-    port: "8082",
+    port: "8080",
     logging: true
 };
