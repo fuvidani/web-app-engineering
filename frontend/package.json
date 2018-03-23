@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "webpack --mode development",
     "build": "webpack --mode production",
-    "start": "webpack-dev-server --mode development --open"
+    "dev-server": "webpack-dev-server --mode development --open",
+    "start": "webpack-serve --port 8069 --no-hot"
   },
   "repository": {
     "type": "git",
@@ -70,7 +71,8 @@
     "webpack-cli": "^2.0.12",
     "webpack-dashboard": "^1.0.2",
     "webpack-dev-server": "^3.1.1",
-    "webpack-merge": "^4.1.2"
+    "webpack-merge": "^4.1.2",
+    "webpack-serve": "^0.2.0"
   },
   "jest": {
     "verbose": true,
