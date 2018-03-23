@@ -11,12 +11,12 @@ COPY . .
 # Install `serve` to run the application.
 RUN npm install
 
-CMD npm run build
-CMD npm install -g serve
-CMD serve -s build
+RUN npm run build
+RUN npm install -g serve
+CMD [ "serve", "-s", "-p 8069", "public" ]
 
 # Set the command to start the node server.
 # CMD npm start
 
 # Tell Docker about the port we'll run on.
-EXPOSE 5000
+EXPOSE 8069

@@ -14,6 +14,10 @@ import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.web.cors.reactive.CorsWebFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
+import org.springframework.web.util.pattern.PathPatternParser
 
 /**
  * <h4>About this class</h4>
@@ -67,8 +71,22 @@ class SecurityConfig {
             .pathMatchers("/swagger")
             .permitAll()
         http.authorizeExchange().anyExchange().authenticated()
-            .and().addFilterAt(jwtAuthWebFilter, SecurityWebFiltersOrder.HTTP_BASIC)
+                .and().addFilterAt(jwtAuthWebFilter, SecurityWebFiltersOrder.HTTP_BASIC).addFilterAt(corsFilter(), SecurityWebFiltersOrder.HTTP_BASIC)
 
         return http.build()
+    }
+
+    fun corsFilter(): CorsWebFilter {
+        val config = CorsConfiguration()
+
+        config.allowCredentials = true
+        config.addAllowedOrigin("*")
+        config.addAllowedHeader("*")
+        config.addAllowedMethod("*")
+
+        val source = UrlBasedCorsConfigurationSource(PathPatternParser())
+        source.registerCorsConfiguration("/**", config)
+
+        return CorsWebFilter(source)
     }
 }

@@ -22,8 +22,8 @@ import java.io.InputStreamReader
  * @version 1.0.0
  * @since 1.0.0
  */
-@RestController
 @CrossOrigin
+@RestController
 class BackendController(private val repository: CounterRepository, private val gson: Gson) {
 
     private val id = "counter"

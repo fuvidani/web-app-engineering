@@ -34,13 +34,12 @@ services:
       - backend
     restart: always
 
-
   frontend:
     build: ./frontend
     image:  rasakul/waecm-2018-group-09-bsp-1-frontend
     restart: always
     container_name: waecm-frontend
     ports:
-      - 5000:5000
+      - 8069:8069
     depends_on:
       - backend
