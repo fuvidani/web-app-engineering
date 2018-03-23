@@ -83,13 +83,13 @@ The following docker images are used:
 
 - rasakul/waecm-2018-group-09-bsp-1-backend
     - based on "node:9"
-    - hash: TODO
+    - hash: sha256:0b70798631d9df7b3281beb96d283c28db93634d5854cd8e1e82b92d1d42facc
 - rasakul/waecm-2018-group-09-bsp-1-mongo
     - based on "mongo:3"
-    - hash: TODO
+    - hash: sha256:769a42386c7ed07c2d135265d179dcb2f5f5c9dc7a5c8dab6af0498239325cb8
 - rasakul/waecm-2018-group-09-bsp-1-frontend
     - based on "java:8-jre"
-    - hash: TODO
+    - hash: sha256:f76a107eafd89892627b7b7cc490f2c8e2664a3b8259d04a1a847904df642b1c
 
 ## Authentication and Authorization
 At this point, the application exposes the four following endpoints:
