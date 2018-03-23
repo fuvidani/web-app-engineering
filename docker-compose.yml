@@ -3,9 +3,9 @@ version: '3.1'
 services:
   backend:
     build: ./backend
-    image: waecm_backend:waecm-2018-group-09-bsp-1
+    image: rasakul/waecm-2018-group-09-bsp-1-backend
     restart: always
-    container_name: backend
+    container_name: waecm-backend
     ports:
       - 8182:8080
     depends_on:
@@ -13,7 +13,7 @@ services:
 
   mongo:
     build: ./database
-    image:  waecm_mongo:waecm-2018-group-09-bsp-1
+    image:  rasakul/waecm-2018-group-09-bsp-1-mongo
     container_name: waecm-mongo-db
     ports:
       - 27017:27017
@@ -21,3 +21,25 @@ services:
       - $HOME/data/db:/data/db
       - $HOME/data/bkp:/data/bkp
     restart: always
+
+  swagger:
+    environment:
+      - API_URL=http://localhost:8182/swagger
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    ports:
+      - 8888:8080
+    depends_on:
+      - mongo
+      - backend
+    restart: always
+
+  frontend:
+    build: ./frontend
+    image:  rasakul/waecm-2018-group-09-bsp-1-frontend
+    restart: always
+    container_name: waecm-frontend
+    ports:
+      - 8069:8069
+    depends_on:
+      - backend

@@ -32,6 +32,7 @@ class AuthController(
 ) {
 
     @PostMapping("/auth")
+    @CrossOrigin
     fun getAuthenticationToken(@RequestBody authRequest: AuthRequest): Mono<AuthResponse> {
 
         val authentication = UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password)

@@ -23,8 +23,10 @@ apply plugin: 'kotlin-spring'
 apply plugin: "kotlin-allopen"
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'jacoco'
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 sourceSets {
     main.java.srcDirs += 'src/main/kotlin/'
@@ -44,6 +46,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
     compile 'com.fasterxml.jackson.module:jackson-module-kotlin'
     compile 'io.jsonwebtoken:jjwt:0.9.0'
+    compile 'com.google.code.gson:gson:2.8.2'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.0.3'
 }
@@ -80,3 +83,12 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     //noinspection GroovyAssignabilityCheck
     args "-F", "src/**/*.kt"
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
+}
+
+check.dependsOn jacocoTestReport
