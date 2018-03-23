@@ -19,6 +19,9 @@ For this task, the database is also separated and put into a container. The idea
 approach is to be able to easily scale the backend if needed. Scaling the database (data-replication,
 eventual consistency) remains unconsidered for this small project.
 
+We use MongoDB because it is fairly easy to work with plus it has a reactive behaviour support (in
+contrast to JDBC for example) so that it integrates well with Spring Data and WebFlux. 
+
 ## Running locally through IDE (for development purposes)
 In order to start the backend successfully, a local mongo db has to be started and configured appropriately.
 
@@ -56,7 +59,7 @@ instance, however this time with authorization enabled:
 After this, the Spring Boot app should be able to connect to your local mongo db through
 `localhost:27017`. 
 
-**Main endpoint: http://localhost:8080**
+**Development main endpoint: http://localhost:8080**
  
 ## Running locally through Docker
 Running the project using Docker saves you the trouble starting and setting up a local 
@@ -75,24 +78,33 @@ In order to start the containers, use:
 (instead of pulling them from registry), the jar file for the backend has to exist in `backend/build/libs/`.
 For this, simply execute `gradlew build` (or `./gradlew build`) and the jar will be built.
 
-**Main endpoint: http://localhost:8182**
+For endpoints see next section.
+
+## Endpoints
+
+- **Frontend**: http://localhost:8069
+- **Swagger-UI**: http://localhost:8888
+- **Backend**: http://localhost:8182
 
 ### Docker Images
 
 The following docker images are used:
 
 - rasakul/waecm-2018-group-09-bsp-1-backend
-    - based on "node:9"
+    - based on "java:8-jre"
     - hash: sha256:0b70798631d9df7b3281beb96d283c28db93634d5854cd8e1e82b92d1d42facc
 - rasakul/waecm-2018-group-09-bsp-1-mongo
     - based on "mongo:3"
     - hash: sha256:769a42386c7ed07c2d135265d179dcb2f5f5c9dc7a5c8dab6af0498239325cb8
 - rasakul/waecm-2018-group-09-bsp-1-frontend
-    - based on "java:8-jre"
+    - based on "node:9"
     - hash: sha256:f76a107eafd89892627b7b7cc490f2c8e2664a3b8259d04a1a847904df642b1c
+- swaggerapi/swagger-ui
+    - [Link](https://hub.docker.com/r/swaggerapi/swagger-ui/)
+    - hash: 3a96c9da0b2fcb7a813821a0203f4a15cfebaad7d7549763d7840b865fcc9855    
 
 ## Authentication and Authorization
-At this point, the application exposes the four following endpoints:
+At this point, the backend exposes the four following endpoints:
 
 - `POST http://localhost:8182/auth`
 - `GET http://localhost:8182/counter` (gets counter)
