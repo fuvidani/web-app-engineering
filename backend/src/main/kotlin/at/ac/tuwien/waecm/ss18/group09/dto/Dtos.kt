@@ -18,3 +18,10 @@ data class AuthResponse(val token: String)
 
 @Document(collection = "counters")
 data class Counter(@Id val id: String, var value: Int)
+
+enum class Gender {
+    MALE, FEMALE
+}
+
+@Document(collection = "users")
+data class User(@Id var id: String?, var email: String, var password: String, var name: String, var gender: Gender, var birthday: String)
