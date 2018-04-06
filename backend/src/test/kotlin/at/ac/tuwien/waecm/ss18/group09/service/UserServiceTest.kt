@@ -10,7 +10,6 @@ import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.After
 import org.junit.Assert.assertNotEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +31,6 @@ class UserServiceTest {
     fun tearDown() {
         mongoTemplate.dropCollection(User::class.java)
     }
-
 
     @Test
     fun create_creatingValidUser_shouldPersistUserAndReturn() {
@@ -79,4 +77,3 @@ class UserServiceTest {
         return User(null, "kalureg@gmx.at", "needstobehashed", "dummy", Gender.MALE, "02.02.99")
     }
 }
-
