@@ -37,8 +37,8 @@ class SecurityConfig {
 
     @Bean
     fun userDetailsRepository(
-            @Value("\${spring.security.user.name}") username: String,
-            @Value("\${spring.security.user.password}") password: String
+        @Value("\${spring.security.user.name}") username: String,
+        @Value("\${spring.security.user.password}") password: String
     ): MapReactiveUserDetailsService {
         val user = User
                 .withUsername(username)
@@ -99,5 +99,4 @@ class SecurityConfig {
         //15 rounds in BCrypt - uses already a salt internally
         return BCryptPasswordEncoder(15, SecureRandom())
     }
-
 }

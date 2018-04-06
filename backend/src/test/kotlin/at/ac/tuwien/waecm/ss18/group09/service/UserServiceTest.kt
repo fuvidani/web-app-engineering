@@ -3,7 +3,11 @@ package at.ac.tuwien.waecm.ss18.group09.service
 import at.ac.tuwien.waecm.ss18.group09.BackendTestApplication
 import at.ac.tuwien.waecm.ss18.group09.dto.Gender
 import at.ac.tuwien.waecm.ss18.group09.dto.User
-import junit.framework.Assert.*
+import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertNull
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,7 +61,6 @@ class UserServiceTest {
         val foundEmailAfterCreation = userService.checkIfEMailExists(email).block()
         assertTrue("the email address must be found after a user has been created with it", foundEmailAfterCreation)
     }
-
 
     private fun getDummyUser(): User {
 

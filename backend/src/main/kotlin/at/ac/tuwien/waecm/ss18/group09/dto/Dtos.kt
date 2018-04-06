@@ -1,6 +1,5 @@
 package at.ac.tuwien.waecm.ss18.group09.dto
 
-
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import javax.validation.constraints.Email
@@ -29,22 +28,22 @@ enum class Gender {
 
 @Document(collection = "users")
 data class User(
-        @Id
-        var id: String?,
+    @Id
+    var id: String?,
 
-        @get: Email
-        @get: NotBlank
-        var email: String = "",
+    @get: Email
+    @get: NotBlank
+    var email: String = "",
 
-        @get: NotBlank
-        var password: String,
+    @get: NotBlank
+    var password: String,
 
-        @NotBlank
-        var name: String,
+    @NotBlank
+    var name: String,
 
-        @get: NotNull
-        var gender: Gender,
+    @get: NotNull
+    var gender: Gender,
 
-        @get: NotBlank
-        var birthday: String
+    @get: NotBlank
+    var birthday: String
 )

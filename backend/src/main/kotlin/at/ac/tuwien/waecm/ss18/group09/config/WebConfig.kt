@@ -23,5 +23,4 @@ class WebConfig {
         val bean = LocalValidatorFactoryBean()
         return bean
     }
-
 }

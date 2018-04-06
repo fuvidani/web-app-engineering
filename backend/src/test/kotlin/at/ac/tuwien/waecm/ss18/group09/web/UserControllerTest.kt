@@ -21,7 +21,6 @@ class UserControllerTest {
     @Autowired
     private lateinit var client: WebTestClient
 
-
     @Test
     fun register_registerWithValidUser_shouldReturnPersistedUser() {
         val user = getDummyUser()
@@ -33,9 +32,7 @@ class UserControllerTest {
                 .expectStatus().isOk
                 .expectBody()
                 .jsonPath("$.id").isNotEmpty
-
     }
-
 
     @Test
     fun register_registerWithInvalidUser_shouldReturnServerErrorBecauseOfInvalidUser() {
@@ -49,9 +46,7 @@ class UserControllerTest {
                 .expectStatus().is4xxClientError
     }
 
-
     private fun getDummyUser(): User {
         return User(null, "kalu@gmail.com", "tobehashed", "dummy", Gender.MALE, "02.02.99")
     }
-
 }

@@ -20,7 +20,6 @@ interface IUserService {
 @Component("userService")
 class UserService(private val repository: UserRepository, private val passwordEncoder: PasswordEncoder) : IUserService {
 
-
     override fun create(user: User): Mono<User> {
         user.password = passwordEncoder.encode(user.password)
         return repository.save(user)
