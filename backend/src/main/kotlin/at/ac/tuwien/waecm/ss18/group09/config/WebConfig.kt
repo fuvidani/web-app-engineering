@@ -1,6 +1,8 @@
 package at.ac.tuwien.waecm.ss18.group09.config
 
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
 import org.springframework.web.reactive.config.EnableWebFlux
 
 /**
@@ -14,4 +16,12 @@ import org.springframework.web.reactive.config.EnableWebFlux
  */
 @EnableWebFlux
 @Configuration
-class WebConfig
+class WebConfig {
+
+    @Bean(name = ["validator"])
+    fun validator(): LocalValidatorFactoryBean {
+        val bean = LocalValidatorFactoryBean()
+        return bean
+    }
+
+}

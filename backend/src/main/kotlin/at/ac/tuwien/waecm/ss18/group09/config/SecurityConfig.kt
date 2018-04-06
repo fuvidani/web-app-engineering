@@ -13,11 +13,14 @@ import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService
 import org.springframework.security.core.userdetails.User
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.server.SecurityWebFilterChain
-import org.springframework.web.cors.reactive.CorsWebFilter
 import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.reactive.CorsWebFilter
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 import org.springframework.web.util.pattern.PathPatternParser
+import java.security.SecureRandom
 
 /**
  * <h4>About this class</h4>
@@ -34,14 +37,14 @@ class SecurityConfig {
 
     @Bean
     fun userDetailsRepository(
-        @Value("\${spring.security.user.name}") username: String,
-        @Value("\${spring.security.user.password}") password: String
+            @Value("\${spring.security.user.name}") username: String,
+            @Value("\${spring.security.user.password}") password: String
     ): MapReactiveUserDetailsService {
         val user = User
-            .withUsername(username)
-            .password("{noop}$password")
-            .roles("USER")
-            .build()
+                .withUsername(username)
+                .password("{noop}$password")
+                .roles("USER")
+                .build()
         return MapReactiveUserDetailsService(user)
     }
 
@@ -66,13 +69,13 @@ class SecurityConfig {
         val jwtAuthWebFilter = JwtAuthWebFilter(jwtReactiveAuthenticationManager)
 
         http.authorizeExchange().pathMatchers("/auth").permitAll()
-            .and()
-            .authorizeExchange()
-            .pathMatchers("/swagger")
-            .permitAll()
+                .and()
+                .authorizeExchange()
+                .pathMatchers("/swagger")
+                .permitAll()
         http.authorizeExchange().anyExchange().authenticated()
-            .and().addFilterAt(jwtAuthWebFilter, SecurityWebFiltersOrder.HTTP_BASIC)
-            .addFilterAt(corsFilter(), SecurityWebFiltersOrder.HTTP_BASIC)
+                .and().addFilterAt(jwtAuthWebFilter, SecurityWebFiltersOrder.HTTP_BASIC)
+                .addFilterAt(corsFilter(), SecurityWebFiltersOrder.HTTP_BASIC)
 
         return http.build()
     }
@@ -90,4 +93,11 @@ class SecurityConfig {
 
         return CorsWebFilter(source)
     }
+
+    @Bean(name = ["passwordEncoder"])
+    fun passwordencoder(): PasswordEncoder {
+        //15 rounds in BCrypt - uses already a salt internally
+        return BCryptPasswordEncoder(15, SecureRandom())
+    }
+
 }

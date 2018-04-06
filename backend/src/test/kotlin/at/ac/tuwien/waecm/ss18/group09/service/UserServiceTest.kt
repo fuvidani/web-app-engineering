@@ -4,6 +4,7 @@ import at.ac.tuwien.waecm.ss18.group09.BackendTestApplication
 import at.ac.tuwien.waecm.ss18.group09.dto.Gender
 import at.ac.tuwien.waecm.ss18.group09.dto.User
 import junit.framework.Assert.*
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,10 +21,12 @@ class UserServiceTest {
     @Test
     fun create_creatingValidUser_shouldPersistUserAndReturn() {
         val user = getDummyUser()
+        val plainTextPassword = user.password
         assertNull("the id of the user must be null", user.id)
         userService.create(user).block()
         assertNotNull("the created user must be persisted and returned", user)
         assertNotNull("the id of the user must be set by the database", user.id)
+        assertNotEquals("the clear text input password must be hashed after creation", plainTextPassword, user.password)
     }
 
     @Test
@@ -34,7 +37,6 @@ class UserServiceTest {
         val id: String = toCreate?.id ?: ""
         val foundUser = userService.findById(id).block()
         assertEquals("the created and found user must be equal", toCreate, foundUser)
-
     }
 
     @Test
@@ -58,6 +60,7 @@ class UserServiceTest {
 
 
     private fun getDummyUser(): User {
-        return User(id = null, email = "kalureg@gmx.at", password = "needstobehashed", name = "dummy", gender = Gender.MALE, birthday = "02.02.99")
+
+        return User(null, "kalureg@gmx.at", "needstobehashed", "dummy", Gender.MALE, "02.02.99")
     }
 }
