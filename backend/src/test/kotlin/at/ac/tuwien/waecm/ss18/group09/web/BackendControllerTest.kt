@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.data.mongodb.core.MongoTemplate
+
 
 /**
  * <h4>About this class</h4>
@@ -27,6 +29,7 @@ class BackendControllerTest {
 
     @Autowired
     private lateinit var client: WebTestClient
+
 
     @Before
     fun setUp() {
@@ -58,24 +61,24 @@ class BackendControllerTest {
 
     private fun postIncrement() {
         client.post().uri("/counter")
-            .accept(MediaType.APPLICATION_JSON_UTF8)
-            .exchange()
-            .expectStatus().isOk
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .exchange()
+                .expectStatus().isOk
     }
 
     private fun assertGetCounter(expectedCount: Int) {
         client.get().uri("/counter")
-            .accept(MediaType.APPLICATION_JSON_UTF8)
-            .exchange()
-            .expectStatus().isOk
-            .expectBody()
-            .json("$expectedCount")
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .json("$expectedCount")
     }
 
     private fun resetCounter() {
         client.post().uri("/reset")
-            .accept(MediaType.APPLICATION_JSON_UTF8)
-            .exchange()
-            .expectStatus().isOk
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .exchange()
+                .expectStatus().isOk
     }
 }

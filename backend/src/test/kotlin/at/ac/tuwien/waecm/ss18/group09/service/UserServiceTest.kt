@@ -8,11 +8,14 @@ import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
+import org.junit.After
 import org.junit.Assert.assertNotEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
@@ -21,6 +24,15 @@ class UserServiceTest {
 
     @Autowired
     private lateinit var userService: IUserService
+
+    @Autowired
+    private lateinit var mongoTemplate: MongoTemplate
+
+    @After
+    fun tearDown() {
+        mongoTemplate.dropCollection(User::class.java)
+    }
+
 
     @Test
     fun create_creatingValidUser_shouldPersistUserAndReturn() {
@@ -67,3 +79,4 @@ class UserServiceTest {
         return User(null, "kalureg@gmx.at", "needstobehashed", "dummy", Gender.MALE, "02.02.99")
     }
 }
+
