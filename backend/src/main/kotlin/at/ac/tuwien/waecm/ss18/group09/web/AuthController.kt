@@ -6,6 +6,7 @@ import at.ac.tuwien.waecm.ss18.group09.dto.AuthResponse
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PostMapping
@@ -35,12 +36,16 @@ class AuthController(
     @CrossOrigin
     fun getAuthenticationToken(@RequestBody authRequest: AuthRequest): Mono<AuthResponse> {
 
-        val authentication = UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password)
-        val auth = userDetailsRepositoryReactiveAuthenticationManager.authenticate(authentication)
+        val authenticationToken = UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password)
+        val auth = userDetailsRepositoryReactiveAuthenticationManager.authenticate(authenticationToken)
 
         return auth
-            .map { a -> a.principal as User }
-            .map { u -> jwtService.generateJwt(u) }
-            .map { j -> AuthResponse(j) }
+                .map { authentication -> parseAuthenticationToUser(authentication) }
+                .map { user -> jwtService.generateJwt(user) }
+                .map { token -> AuthResponse(token) }
+    }
+
+    fun parseAuthenticationToUser(authentication: Authentication): User {
+        return User(authentication.principal.toString(), authentication.credentials as String, authentication.authorities)
     }
 }

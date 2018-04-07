@@ -2,8 +2,11 @@ package at.ac.tuwien.waecm.ss18.group09.web
 
 import at.ac.tuwien.waecm.ss18.group09.BackendTestApplication
 import at.ac.tuwien.waecm.ss18.group09.TestDataProvider
+import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
+import at.ac.tuwien.waecm.ss18.group09.dto.AuthRequest
+import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
 import at.ac.tuwien.waecm.ss18.group09.dto.User
-import com.google.gson.Gson
+import at.ac.tuwien.waecm.ss18.group09.service.IUserService
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,7 +22,7 @@ import reactor.core.publisher.Mono
 @RunWith(SpringRunner::class)
 @SpringBootTest(value = ["application.yml"], classes = [BackendTestApplication::class])
 @AutoConfigureWebTestClient
-class UserControllerTest {
+class AuthControllerTest {
 
     private val testDataProvider = TestDataProvider()
 
@@ -29,37 +32,31 @@ class UserControllerTest {
     @Autowired
     private lateinit var mongoTemplate: MongoTemplate
 
+    @Autowired
+    private lateinit var userService: IUserService
+
     @Before
     fun setUp() {
+        mongoTemplate.dropCollection(AbstractUser::class.java)
         mongoTemplate.dropCollection(User::class.java)
+        mongoTemplate.dropCollection(ResearchFacility::class.java)
     }
 
     @Test
-    fun register_registerWithValidUser_shouldReturnPersistedUser() {
+    fun auth_tryToLoginWithCreatedUser_shouldSuccessfullyAuthorize() {
         val user = testDataProvider.getDummyUser()
-        val gson = Gson()
-        val userString = gson.toJson(user)
-        println(gson.toJson(user))
+        val plainTextPw = user.password
+        val userName = user.email
 
-        client.post().uri("/user/register")
+        userService.create(user).block()
+
+        val authRequest = AuthRequest(userName, password = plainTextPw)
+
+        client.post().uri("/auth")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(user), User::class.java)
+                .body(Mono.just(authRequest), AuthRequest::class.java)
                 .exchange()
                 .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.id").isNotEmpty
-    }
-
-    @Test
-    fun register_registerWithInvalidUser_shouldReturnServerErrorBecauseOfInvalidUser() {
-        val user = testDataProvider.getDummyUser()
-        user.password = ""
-        client.post().uri("/user/register")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(user), User::class.java)
-                .exchange()
-                .expectStatus().is4xxClientError
     }
 }

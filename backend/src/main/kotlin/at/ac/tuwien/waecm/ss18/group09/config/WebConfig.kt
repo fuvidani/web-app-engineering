@@ -1,5 +1,6 @@
 package at.ac.tuwien.waecm.ss18.group09.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
@@ -17,6 +18,13 @@ import org.springframework.web.reactive.config.EnableWebFlux
 @EnableWebFlux
 @Configuration
 class WebConfig {
+
+    @Bean
+    fun jacksonObjectMapper(): ObjectMapper {
+        val objectMapper = ObjectMapper()
+        objectMapper.enableDefaultTyping()
+        return objectMapper
+    }
 
     @Bean(name = ["validator"])
     fun validator(): LocalValidatorFactoryBean {

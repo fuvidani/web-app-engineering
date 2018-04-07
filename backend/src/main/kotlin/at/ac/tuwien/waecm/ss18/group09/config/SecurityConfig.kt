@@ -4,17 +4,14 @@ import at.ac.tuwien.waecm.ss18.group09.auth.IJwtService
 import at.ac.tuwien.waecm.ss18.group09.auth.JwtAuthWebFilter
 import at.ac.tuwien.waecm.ss18.group09.auth.JwtReactiveAuthenticationManager
 import at.ac.tuwien.waecm.ss18.group09.auth.JwtService
-import org.springframework.beans.factory.annotation.Value
+import at.ac.tuwien.waecm.ss18.group09.service.IUserService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
-import org.springframework.security.core.userdetails.MapReactiveUserDetailsService
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.reactive.CorsWebFilter
@@ -36,21 +33,10 @@ import java.security.SecureRandom
 class SecurityConfig {
 
     @Bean
-    fun userDetailsRepository(
-        @Value("\${spring.security.user.name}") username: String,
-        @Value("\${spring.security.user.password}") password: String
-    ): MapReactiveUserDetailsService {
-        val user = User
-                .withUsername(username)
-                .password("{noop}$password")
-                .roles("USER")
-                .build()
-        return MapReactiveUserDetailsService(user)
-    }
-
-    @Bean
-    fun userDetailsRepositoryReactiveAuthenticationManager(userDetailsRepository: MapReactiveUserDetailsService): UserDetailsRepositoryReactiveAuthenticationManager {
-        return UserDetailsRepositoryReactiveAuthenticationManager(userDetailsRepository)
+    fun userDetailsRepositoryReactiveAuthenticationManager(userService: IUserService): UserDetailsRepositoryReactiveAuthenticationManager {
+        val manager = UserDetailsRepositoryReactiveAuthenticationManager(userService)
+        manager.setPasswordEncoder(passwordEncoder())
+        return manager
     }
 
     @Bean
@@ -68,7 +54,7 @@ class SecurityConfig {
         val jwtReactiveAuthenticationManager = JwtReactiveAuthenticationManager(jwtService())
         val jwtAuthWebFilter = JwtAuthWebFilter(jwtReactiveAuthenticationManager)
 
-        http.authorizeExchange().pathMatchers("/auth").permitAll()
+        http.authorizeExchange().pathMatchers("/auth", "/user/register").permitAll()
                 .and()
                 .authorizeExchange()
                 .pathMatchers("/swagger")
@@ -95,7 +81,7 @@ class SecurityConfig {
     }
 
     @Bean(name = ["passwordEncoder"])
-    fun passwordencoder(): PasswordEncoder {
+    fun passwordEncoder(): BCryptPasswordEncoder {
         //15 rounds in BCrypt - uses already a salt internally
         return BCryptPasswordEncoder(15, SecureRandom())
     }
