@@ -1,6 +1,7 @@
 package at.ac.tuwien.waecm.ss18.group09
 
 import at.ac.tuwien.waecm.ss18.group09.dto.Gender
+import at.ac.tuwien.waecm.ss18.group09.dto.MedicalInformation
 import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
 import at.ac.tuwien.waecm.ss18.group09.dto.User
 
@@ -25,6 +26,10 @@ class TestDataProvider {
 
     fun getResearchFacilities(): List<ResearchFacility> {
         return listOf(getDummyResearcher(), getAdditionalResearcher())
+    }
+
+    fun getValidMedicalInformation(): MedicalInformation {
+        return MedicalInformation(title = "my disease", description = "some description", image = "image", tags = listOf("disease"))
     }
 
     private fun getAdditionalResearcher(): ResearchFacility {

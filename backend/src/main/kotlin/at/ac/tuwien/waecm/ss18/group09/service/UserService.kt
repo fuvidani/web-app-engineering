@@ -30,20 +30,10 @@ class UserService(private val repository: UserRepository, private val passwordEn
 
     @Throws(DuplicatedEmailException::class)
     override fun create(user: AbstractUser): Mono<AbstractUser> {
-        val email = user.email
-        val exists = checkIfEMailExists(email).block()
-
-//        return checkIfEMailExists(email).filter { it -> it == true }
-//                .switchIfEmpty(Mono.defer {
-//                    Mono.error<DuplicatedEmailException>(DuplicatedEmailException("the email exists already in the database")
-//                }).thenReturn (repository -> {})
-
-        if (exists) {
-            throw DuplicatedEmailException("the email exists already in the database")
-        } else {
-            user.password = passwordEncoder.encode(user.password)
-            return repository.save(user)
-        }
+        user.password = passwordEncoder.encode(user.password)
+        return this.findByEMail(user.email)
+                .flatMap({ existingUser -> Mono.error<DuplicatedEmailException>(DuplicatedEmailException("the email ${existingUser.email} exists already")) })
+                .then(this.repository.save(user))
     }
 
     override fun findById(id: String): Mono<AbstractUser> {
