@@ -2,15 +2,11 @@ package at.ac.tuwien.waecm.ss18.group09.service
 
 import at.ac.tuwien.waecm.ss18.group09.BackendTestApplication
 import at.ac.tuwien.waecm.ss18.group09.TestDataProvider
-import at.ac.tuwien.waecm.ss18.group09.dto.User
 import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
 import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
-import com.google.gson.Gson
-import junit.framework.TestCase.assertNotNull
-import junit.framework.TestCase.assertNull
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertFalse
-import junit.framework.TestCase.assertTrue
+import at.ac.tuwien.waecm.ss18.group09.dto.User
+/* ktlint-disable no-wildcard-imports */
+import junit.framework.TestCase.*
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
@@ -51,6 +47,17 @@ class UserServiceTest {
     }
 
     @Test
+    fun create_createValidResearchFacility_shouldPersistAndReturn() {
+        val researchFacility = testDataProvider.getDummyResearcher()
+        val plainTextPassword = researchFacility.password
+        assertNull("the id of the user must be null", researchFacility.id)
+        userService.create(researchFacility).block()
+        assertNotNull("the created user must be persisted and returned", researchFacility)
+        assertNotNull("the id of the user must be set by the database", researchFacility.id)
+        assertNotEquals("the clear text input password must be hashed after creation", plainTextPassword, researchFacility.password)
+    }
+
+    @Test
     fun findById_creatingAndFindingUserById_shouldPersistAndReturnSameUser() {
         val toCreate = testDataProvider.getDummyUser()
         userService.create(toCreate).block()
@@ -82,16 +89,23 @@ class UserServiceTest {
     @Test(expected = DuplicatedEmailException::class)
     fun create_invalidCreationWithTwoIdenticalEmails_shouldThrowException() {
         val user = testDataProvider.getDummyUser()
-        val second = testDataProvider.getDummyResearcher()
-        second.email = user.email
+        val researchFacility = testDataProvider.getDummyResearcher()
+        researchFacility.email = user.email
         userService.create(user).block()
-        userService.create(second).block()
+        userService.create(researchFacility).block()
     }
 
     @Test
-    fun x() {
+    fun findByEmail_creatingUserAndResearcherFindingByEmail_shouldReturnObjects() {
         val user = testDataProvider.getDummyUser()
-        val gson = Gson()
-        println(gson.toJson(user))
+        val researchFacility = testDataProvider.getDummyResearcher()
+        userService.create(user).block()
+        userService.create(researchFacility).block()
+
+        val foundUser = userService.findByEMail(user.email).block()
+        val foundResearcher = userService.findByEMail(researchFacility.email).block()
+
+        assertEquals("the found user must be equal to the created one", user, foundUser)
+        assertEquals("the found researcher must be equal to the created one", researchFacility, foundResearcher)
     }
 }

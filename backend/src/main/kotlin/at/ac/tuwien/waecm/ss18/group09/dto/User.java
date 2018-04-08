@@ -1,34 +1,19 @@
 package at.ac.tuwien.waecm.ss18.group09.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-@Document(collection = "users")
 public class User extends AbstractUser {
 
-
-
-  @NotBlank
-  private String name;
-  @NotNull
-  private Gender gender;
-  @NotBlank
-  private String birthday;
-
+  @NotBlank private String name;
+  @NotNull private Gender gender;
+  @NotBlank private String birthday;
 
   public String getName() {
     return name;
@@ -54,16 +39,14 @@ public class User extends AbstractUser {
     this.birthday = birthday;
   }
 
-
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     User user = (User) o;
-    return Objects.equals(name, user.name) &&
-            gender == user.gender &&
-            Objects.equals(birthday, user.birthday);
+    return Objects.equals(name, user.name)
+        && gender == user.gender
+        && Objects.equals(birthday, user.birthday);
   }
 
   @Override
@@ -102,6 +85,4 @@ public class User extends AbstractUser {
     String rolesStr = "ROLE_END_USER";
     return AuthorityUtils.commaSeparatedStringToAuthorityList(rolesStr);
   }
-
-
 }

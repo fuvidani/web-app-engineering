@@ -14,9 +14,9 @@ killall -9 mongod
 
 # INIT DUMP EXECUTION
 (
-if test -n "counters-dump.js"; then
-    echo "execute dump file"
-	until mongo waecmDatabase ${auth} counters-dump.js; do sleep 5; done
+if test -n "insert_script.js"; then
+    echo "execute insert script"
+	until mongo waecmDatabase ${auth} insert_script.js; do sleep 5; done
 fi
 ) &
 

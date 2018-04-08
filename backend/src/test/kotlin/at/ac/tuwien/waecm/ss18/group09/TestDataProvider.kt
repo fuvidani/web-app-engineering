@@ -18,8 +18,19 @@ class TestDataProvider() {
 
     fun getDummyResearcher(): ResearchFacility {
         val researcher = ResearchFacility()
-        researcher.email = "research@ixo.com"
-        researcher.password = "hashthis"
+        researcher.email = "research@who.com"
+        researcher.password = "password"
+        return researcher
+    }
+
+    fun getResearchFacilities(): List<ResearchFacility> {
+        return listOf(getDummyResearcher(), getAdditionalResearcher())
+    }
+
+    private fun getAdditionalResearcher(): ResearchFacility {
+        val researcher = ResearchFacility()
+        researcher.email = "research@bayer.com"
+        researcher.password = "password"
         return researcher
     }
 }

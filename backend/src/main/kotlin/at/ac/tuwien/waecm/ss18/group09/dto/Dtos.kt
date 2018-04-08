@@ -1,8 +1,5 @@
 package at.ac.tuwien.waecm.ss18.group09.dto
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
-
 /**
  * <h4>About this class</h4>
  *
@@ -14,10 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document
  */
 data class AuthRequest(val username: String, val password: String)
 
-data class AuthResponse(val token: String)
-
-@Document(collection = "counters")
-data class Counter(@Id val id: String, var value: Int)
+data class AuthResponse(val token: String, val user: String)
 
 enum class Gender {
     MALE, FEMALE

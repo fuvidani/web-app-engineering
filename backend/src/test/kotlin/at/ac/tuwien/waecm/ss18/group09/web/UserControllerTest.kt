@@ -5,7 +5,6 @@ import at.ac.tuwien.waecm.ss18.group09.TestDataProvider
 import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
 import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
 import at.ac.tuwien.waecm.ss18.group09.dto.User
-import com.google.gson.Gson
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,8 +40,6 @@ class UserControllerTest {
     @Test
     fun register_registerWithValidUser_shouldReturnPersistedUser() {
         val user = testDataProvider.getDummyUser()
-        val gson = Gson()
-
 
         client.post().uri("/user/register")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)

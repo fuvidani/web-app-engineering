@@ -3,16 +3,15 @@ package at.ac.tuwien.waecm.ss18.group09.web
 import at.ac.tuwien.waecm.ss18.group09.auth.IJwtService
 import at.ac.tuwien.waecm.ss18.group09.dto.AuthRequest
 import at.ac.tuwien.waecm.ss18.group09.dto.AuthResponse
+import at.ac.tuwien.waecm.ss18.group09.service.IUserService
+import com.google.gson.Gson
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+/* ktlint-disable no-wildcard-imports */
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
 /**
@@ -28,24 +27,27 @@ import reactor.core.publisher.Mono
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
 class AuthController(
+    private val gson: Gson,
     private val jwtService: IJwtService,
+    private val userService: IUserService,
     private val userDetailsRepositoryReactiveAuthenticationManager: ReactiveAuthenticationManager
 ) {
-
-    @PostMapping("/auth")
     @CrossOrigin
+    @PostMapping("/auth")
     fun getAuthenticationToken(@RequestBody authRequest: AuthRequest): Mono<AuthResponse> {
-
         val authenticationToken = UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password)
         val auth = userDetailsRepositoryReactiveAuthenticationManager.authenticate(authenticationToken)
-
         return auth
                 .map { authentication -> parseAuthenticationToUser(authentication) }
-                .map { user -> jwtService.generateJwt(user) }
-                .map { token -> AuthResponse(token) }
+                .map { user -> AuthResponse(jwtService.generateJwt(user), getUserFromPrincipal(user.username)) }
     }
 
     fun parseAuthenticationToUser(authentication: Authentication): User {
-        return User(authentication.principal.toString(), authentication.credentials as String, authentication.authorities)
+        val user = authentication.principal as at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
+        return User(user.email, user.password, user.authorities)
+    }
+
+    fun getUserFromPrincipal(email: String): String {
+        return gson.toJson(userService.findByEMail(email).block())
     }
 }
