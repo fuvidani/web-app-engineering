@@ -1,11 +1,11 @@
 package at.ac.tuwien.waecm.ss18.group09.service
 
+/* ktlint-disable no-wildcard-imports */
 import at.ac.tuwien.waecm.ss18.group09.BackendTestApplication
 import at.ac.tuwien.waecm.ss18.group09.TestDataProvider
 import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
 import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
 import at.ac.tuwien.waecm.ss18.group09.dto.User
-/* ktlint-disable no-wildcard-imports */
 import junit.framework.TestCase.*
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.test.context.junit4.SpringRunner
+import reactor.test.StepVerifier
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(value = ["application.yml"], classes = [BackendTestApplication::class])
@@ -44,9 +45,9 @@ class UserServiceTest {
         assertNotNull("the created user must be persisted and returned", user)
         assertNotNull("the id of the user must be set by the database", user.id)
         assertNotEquals(
-            "the clear text input password must be hashed after creation",
-            plainTextPassword,
-            user.password
+                "the clear text input password must be hashed after creation",
+                plainTextPassword,
+                user.password
         )
     }
 
@@ -59,9 +60,9 @@ class UserServiceTest {
         assertNotNull("the created user must be persisted and returned", researchFacility)
         assertNotNull("the id of the user must be set by the database", researchFacility.id)
         assertNotEquals(
-            "the clear text input password must be hashed after creation",
-            plainTextPassword,
-            researchFacility.password
+                "the clear text input password must be hashed after creation",
+                plainTextPassword,
+                researchFacility.password
         )
         assertEquals("research@who.com", researchFacility.username)
         assertTrue(researchFacility.isAccountNonExpired)
@@ -107,24 +108,26 @@ class UserServiceTest {
         val email = toCreate.email
         val foundEmailBeforeCreation = userService.checkIfEMailExists(email).block()
         assertFalse(
-            "the email address must not be found in the empty database",
-            foundEmailBeforeCreation!!
+                "the email address must not be found in the empty database",
+                foundEmailBeforeCreation!!
         )
         userService.create(toCreate).block()
         val foundEmailAfterCreation = userService.checkIfEMailExists(email).block()
         assertTrue(
-            "the email address must be found after a user has been created with it",
-            foundEmailAfterCreation!!
+                "the email address must be found after a user has been created with it",
+                foundEmailAfterCreation!!
         )
     }
 
-    @Test(expected = DuplicatedEmailException::class)
+    @Test
     fun create_invalidCreationWithTwoIdenticalEmails_shouldThrowException() {
         val user = testDataProvider.getDummyUser()
         val researchFacility = testDataProvider.getDummyResearcher()
         researchFacility.email = user.email
         userService.create(user).block()
-        userService.create(researchFacility).block()
+        StepVerifier.create(userService.create(researchFacility))
+                .expectError(DuplicatedEmailException::class.java)
+                .verify()
     }
 
     @Test
@@ -139,9 +142,9 @@ class UserServiceTest {
 
         assertEquals("the found user must be equal to the created one", user, foundUser)
         assertEquals(
-            "the found researcher must be equal to the created one",
-            researchFacility,
-            foundResearcher
+                "the found researcher must be equal to the created one",
+                researchFacility,
+                foundResearcher
         )
     }
 }
