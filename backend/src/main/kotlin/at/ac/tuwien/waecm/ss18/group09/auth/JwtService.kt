@@ -44,11 +44,11 @@ class JwtService : IJwtService {
         val tokenKey = SecretKeySpec(tokenSecretBytes, signatureAlgorithm.jcaName)
 
         val jwtBuilder = Jwts.builder()
-                .setClaims(generatePrivateClaims(user))
-                .setSubject(user.username)
-                .setIssuedAt(nowDate)
-                .setExpiration(expirationDate)
-                .signWith(signatureAlgorithm, tokenKey)
+            .setClaims(generatePrivateClaims(user))
+            .setSubject(user.username)
+            .setIssuedAt(nowDate)
+            .setExpiration(expirationDate)
+            .signWith(signatureAlgorithm, tokenKey)
 
         return jwtBuilder.compact()
     }
@@ -97,8 +97,8 @@ class JwtService : IJwtService {
 
         try {
             return Jwts.parser()
-                    .setSigningKey(tokenSecret)
-                    .parseClaimsJws(token).body
+                .setSigningKey(tokenSecret)
+                .parseClaimsJws(token).body
         } catch (e: JwtException) {
             throw JwtServiceException("Error while parsing the claims of the jwt: " + e.message)
         }

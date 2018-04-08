@@ -1,5 +1,5 @@
 # Web Application Engineering and Content Management 
-[![Build Status](https://travis-ci.com/fuvidani/web-app-engineering.svg?token=nWakM5wh7rnyXAfUiELD&branch=master)](https://travis-ci.com/fuvidani/web-app-engineering)  [![codecov](https://codecov.io/gh/fuvidani/web-app-engineering/branch/master/graph/badge.svg?token=TjVLRsAmuK)](https://codecov.io/gh/fuvidani/web-app-engineering)  [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
+[![Build Status](https://travis-ci.com/fuvidani/web-app-engineering.svg?token=nWakM5wh7rnyXAfUiELD&branch=master)](https://travis-ci.com/fuvidani/web-app-engineering)  [![codecov](https://codecov.io/gh/fuvidani/web-app-engineering/branch/master/graph/badge.svg?token=TjVLRsAmuK)](https://codecov.io/gh/fuvidani/web-app-engineering)  [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Web Application Engineering in 2018 with cutting-edge technologies.
 

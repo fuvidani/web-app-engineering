@@ -15,7 +15,7 @@ plugins {
     id 'com.sourcemuse.mongo' version '1.0.6'
 }
 
-version '1.0-SNAPSHOT'
+version = '1.0-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
@@ -67,8 +67,8 @@ test {
 }
 
 mongo {
-    port 'RANDOM'
-    logging 'console'
+    port = 'RANDOM'
+    logging = 'console'
 }
 
 task ktlint(type: JavaExec, group: "verification") {
@@ -90,8 +90,8 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
 
 jacocoTestReport {
     reports {
-        xml.enabled true
-        html.enabled false
+        xml.enabled = true
+        html.enabled = false
     }
 }
 

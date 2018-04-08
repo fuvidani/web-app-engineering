@@ -4,7 +4,7 @@ import at.ac.tuwien.waecm.ss18.group09.dto.Gender
 import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
 import at.ac.tuwien.waecm.ss18.group09.dto.User
 
-class TestDataProvider() {
+class TestDataProvider {
 
     fun getDummyUser(): User {
         val user = User()

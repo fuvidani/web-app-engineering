@@ -1,13 +1,12 @@
 package at.ac.tuwien.waecm.ss18.group09.dto;
 
+import java.util.Objects;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import java.util.Objects;
 
 @Document(collection = "abstract_user")
 public abstract class AbstractUser implements UserDetails {
@@ -48,8 +47,12 @@ public abstract class AbstractUser implements UserDetails {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+          return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+          return false;
+      }
     AbstractUser that = (AbstractUser) o;
     return Objects.equals(id, that.id)
         && Objects.equals(email, that.email)

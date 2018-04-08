@@ -55,13 +55,13 @@ class SecurityConfig {
         val jwtAuthWebFilter = JwtAuthWebFilter(jwtReactiveAuthenticationManager)
 
         http.authorizeExchange().pathMatchers("/auth", "/user/register").permitAll()
-                .and()
-                .authorizeExchange()
-                .pathMatchers("/swagger")
-                .permitAll()
+            .and()
+            .authorizeExchange()
+            .pathMatchers("/swagger")
+            .permitAll()
         http.authorizeExchange().anyExchange().authenticated()
-                .and().addFilterAt(jwtAuthWebFilter, SecurityWebFiltersOrder.HTTP_BASIC)
-                .addFilterAt(corsFilter(), SecurityWebFiltersOrder.HTTP_BASIC)
+            .and().addFilterAt(jwtAuthWebFilter, SecurityWebFiltersOrder.HTTP_BASIC)
+            .addFilterAt(corsFilter(), SecurityWebFiltersOrder.HTTP_BASIC)
 
         return http.build()
     }

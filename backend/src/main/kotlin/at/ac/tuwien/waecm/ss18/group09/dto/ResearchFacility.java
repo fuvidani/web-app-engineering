@@ -1,9 +1,8 @@
 package at.ac.tuwien.waecm.ss18.group09.dto;
 
+import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-
-import java.util.Collection;
 
 public class ResearchFacility extends AbstractUser {
 

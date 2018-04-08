@@ -7,4 +7,9 @@ notifications:
   email:
     recipients:
       - daniel.fuevesi@gmail.com
+      - david.bese.molnar@gmail.com
+      - lukas.kathrein@gmx.net
+      - lukas.baronyai@gmail.com
+      - michael.p.sober@gmail.com
     on_failure: always
+    on_success: change

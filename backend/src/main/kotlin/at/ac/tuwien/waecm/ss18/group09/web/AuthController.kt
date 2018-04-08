@@ -38,8 +38,8 @@ class AuthController(
         val authenticationToken = UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password)
         val auth = userDetailsRepositoryReactiveAuthenticationManager.authenticate(authenticationToken)
         return auth
-                .map { authentication -> parseAuthenticationToUser(authentication) }
-                .map { user -> AuthResponse(jwtService.generateJwt(user), getUserFromPrincipal(user.username)) }
+            .map { authentication -> parseAuthenticationToUser(authentication) }
+            .map { user -> AuthResponse(jwtService.generateJwt(user), getUserFromPrincipal(user.username)) }
     }
 
     fun parseAuthenticationToUser(authentication: Authentication): User {

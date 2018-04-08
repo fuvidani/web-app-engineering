@@ -43,7 +43,11 @@ class UserServiceTest {
         userService.create(user).block()
         assertNotNull("the created user must be persisted and returned", user)
         assertNotNull("the id of the user must be set by the database", user.id)
-        assertNotEquals("the clear text input password must be hashed after creation", plainTextPassword, user.password)
+        assertNotEquals(
+            "the clear text input password must be hashed after creation",
+            plainTextPassword,
+            user.password
+        )
     }
 
     @Test
@@ -54,7 +58,20 @@ class UserServiceTest {
         userService.create(researchFacility).block()
         assertNotNull("the created user must be persisted and returned", researchFacility)
         assertNotNull("the id of the user must be set by the database", researchFacility.id)
-        assertNotEquals("the clear text input password must be hashed after creation", plainTextPassword, researchFacility.password)
+        assertNotEquals(
+            "the clear text input password must be hashed after creation",
+            plainTextPassword,
+            researchFacility.password
+        )
+        assertEquals("research@who.com", researchFacility.username)
+        assertTrue(researchFacility.isAccountNonExpired)
+        assertTrue(researchFacility.isAccountNonLocked)
+        assertTrue(researchFacility.isCredentialsNonExpired)
+        assertTrue(researchFacility.isEnabled)
+        assertTrue(researchFacility.authorities.toMutableList()[0].authority == "ROLE_RESEARCH")
+        assertNotNull(researchFacility.hashCode())
+        assertEquals(researchFacility, researchFacility)
+        assertNotEquals(researchFacility, null)
     }
 
     @Test
@@ -65,6 +82,14 @@ class UserServiceTest {
         val id: String = toCreate?.id ?: ""
         val foundUser = userService.findById(id).block()
         assertEquals("the created and found user must be equal", toCreate, foundUser)
+        assertEquals(toCreate.name, (foundUser as User).name)
+        assertEquals(toCreate.birthday, foundUser.birthday)
+        assertEquals(toCreate.gender, foundUser.gender)
+        assertNotNull(toCreate.hashCode())
+        assertNotNull(toCreate.toString())
+        assertNotNull(foundUser.toString())
+        assertNotEquals(toCreate, testDataProvider.getResearchFacilities())
+        assertEquals(toCreate, toCreate)
     }
 
     @Test
@@ -73,6 +98,7 @@ class UserServiceTest {
         userService.create(toCreate).block()
         val foundUser = userService.findByEMail(toCreate.email).block()
         assertEquals("the created and found user must be equal", toCreate, foundUser)
+        assertNotNull(toCreate.toString())
     }
 
     @Test
@@ -80,10 +106,16 @@ class UserServiceTest {
         val toCreate = testDataProvider.getDummyUser()
         val email = toCreate.email
         val foundEmailBeforeCreation = userService.checkIfEMailExists(email).block()
-        assertFalse("the email address must not be found in the empty database", foundEmailBeforeCreation)
+        assertFalse(
+            "the email address must not be found in the empty database",
+            foundEmailBeforeCreation!!
+        )
         userService.create(toCreate).block()
         val foundEmailAfterCreation = userService.checkIfEMailExists(email).block()
-        assertTrue("the email address must be found after a user has been created with it", foundEmailAfterCreation)
+        assertTrue(
+            "the email address must be found after a user has been created with it",
+            foundEmailAfterCreation!!
+        )
     }
 
     @Test(expected = DuplicatedEmailException::class)
@@ -106,6 +138,10 @@ class UserServiceTest {
         val foundResearcher = userService.findByEMail(researchFacility.email).block()
 
         assertEquals("the found user must be equal to the created one", user, foundUser)
-        assertEquals("the found researcher must be equal to the created one", researchFacility, foundResearcher)
+        assertEquals(
+            "the found researcher must be equal to the created one",
+            researchFacility,
+            foundResearcher
+        )
     }
 }

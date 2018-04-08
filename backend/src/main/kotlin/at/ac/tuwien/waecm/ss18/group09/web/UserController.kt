@@ -17,9 +17,8 @@ class UserController(private val userService: IUserService) {
 
     @PostMapping("/register")
     fun registerUser(@Valid @RequestBody user: User): Mono<ResponseEntity<AbstractUser>> {
-
         return userService.create(user)
-                .map { user -> ResponseEntity<AbstractUser>(user, HttpStatus.OK) }
-                .defaultIfEmpty(ResponseEntity<AbstractUser>(HttpStatus.BAD_REQUEST))
+            .map { u -> ResponseEntity<AbstractUser>(u, HttpStatus.OK) }
+            .defaultIfEmpty(ResponseEntity<AbstractUser>(HttpStatus.BAD_REQUEST))
     }
 }

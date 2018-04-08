@@ -1,7 +1,5 @@
 package at.ac.tuwien.waecm.ss18.group09
 
-import at.ac.tuwien.waecm.ss18.group09.auth.IJwtService
-import at.ac.tuwien.waecm.ss18.group09.auth.JwtService
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -28,14 +26,9 @@ class BackendTestApplication {
     @Bean
     fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         http
-                .authorizeExchange()
-                .anyExchange().permitAll()
-                .and().csrf().disable()
+            .authorizeExchange()
+            .anyExchange().permitAll()
+            .and().csrf().disable()
         return http.build()
-    }
-
-    @Bean
-    fun jwtService(): IJwtService {
-        return JwtService()
     }
 }

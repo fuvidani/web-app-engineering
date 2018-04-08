@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(value = ["application.yml"], classes = [BackendTestApplication::class])
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "15000")
 class AuthControllerTest {
 
     private val testDataProvider = TestDataProvider()
@@ -67,14 +67,14 @@ class AuthControllerTest {
 
     private fun makeValidAuthRequest(authRequest: AuthRequest, user: AbstractUser) {
         client.post().uri("/auth")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(authRequest), AuthRequest::class.java)
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.token").isNotEmpty
-                .jsonPath("$.user").isEqualTo(getUserAsJson(user))
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(authRequest), AuthRequest::class.java)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.token").isNotEmpty
+            .jsonPath("$.user").isEqualTo(getUserAsJson(user))
     }
 
     @Test
@@ -82,11 +82,11 @@ class AuthControllerTest {
         val user = testDataProvider.getDummyUser()
         val userAuthRequest = getAuthRequestForUser(user)
         client.post().uri("/auth")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(userAuthRequest), AuthRequest::class.java)
-                .exchange()
-                .expectStatus().is5xxServerError
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(userAuthRequest), AuthRequest::class.java)
+            .exchange()
+            .expectStatus().is5xxServerError
     }
 
     private fun getUserAsJson(user: AbstractUser): String {
