@@ -2,6 +2,8 @@ package at.ac.tuwien.waecm.ss18.group09.web
 
 import at.ac.tuwien.waecm.ss18.group09.BackendTestApplication
 import at.ac.tuwien.waecm.ss18.group09.TestDataProvider
+import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
+import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
 import at.ac.tuwien.waecm.ss18.group09.dto.User
 import com.google.gson.Gson
 import org.junit.Before
@@ -31,15 +33,16 @@ class UserControllerTest {
 
     @Before
     fun setUp() {
+        mongoTemplate.dropCollection(AbstractUser::class.java)
         mongoTemplate.dropCollection(User::class.java)
+        mongoTemplate.dropCollection(ResearchFacility::class.java)
     }
 
     @Test
     fun register_registerWithValidUser_shouldReturnPersistedUser() {
         val user = testDataProvider.getDummyUser()
         val gson = Gson()
-        val userString = gson.toJson(user)
-        println(gson.toJson(user))
+
 
         client.post().uri("/user/register")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
