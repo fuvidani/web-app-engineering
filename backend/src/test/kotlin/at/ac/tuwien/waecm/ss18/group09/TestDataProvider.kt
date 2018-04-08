@@ -29,7 +29,7 @@ class TestDataProvider {
     }
 
     fun getValidMedicalInformation(): MedicalInformation {
-        return MedicalInformation(title = "my disease", description = "some description", image = "image", tags = listOf("disease"))
+        return MedicalInformation(title = "my disease", description = "some description", image = "image", tags = arrayOf("disease"))
     }
 
     private fun getAdditionalResearcher(): ResearchFacility {

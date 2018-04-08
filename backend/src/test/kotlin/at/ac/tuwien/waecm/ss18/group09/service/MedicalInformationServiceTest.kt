@@ -43,7 +43,7 @@ class MedicalInformationServiceTest {
     private fun getMedicalInformationWithUserReference(): MedicalInformation {
         val user = userService.create(testDataProvider.getDummyUser()).block()
         val medicalInformation = testDataProvider.getValidMedicalInformation()
-        medicalInformation.user = user
+        medicalInformation.user = user.id
         return medicalInformation
     }
 
@@ -74,7 +74,7 @@ class MedicalInformationServiceTest {
     @Test(expected = ValidationException::class)
     fun create_invalidCreateWithNoTags_shouldThrowValidationException() {
         val medicalInformation = getMedicalInformationWithUserReference()
-        medicalInformation.tags = listOf()
+        medicalInformation.tags = emptyArray()
         medicalInformationService.create(medicalInformation).block()
     }
 
@@ -102,22 +102,22 @@ class MedicalInformationServiceTest {
         userService.create(secondUser).block()
 
         val firstObject = testDataProvider.getValidMedicalInformation()
-        firstObject.user = firstUser
+        firstObject.user = firstUser.id
         medicalInformationService.create(firstObject).block()
 
         val unrelevantInformation = testDataProvider.getValidMedicalInformation()
-        unrelevantInformation.user = secondUser
+        unrelevantInformation.user = secondUser.id
         medicalInformationService.create(unrelevantInformation).block()
 
         val secondObject = testDataProvider.getValidMedicalInformation()
         secondObject.title = "other title"
         secondObject.description = "my rash"
-        secondObject.user = firstUser
+        secondObject.user = firstUser.id
 
         medicalInformationService.create(firstObject).block()
         medicalInformationService.create(secondObject).block()
 
-        StepVerifier.create(medicalInformationService.findByUser(firstUser))
+        StepVerifier.create(medicalInformationService.findByUser(firstUser.id))
                 .expectNext(firstObject)
                 .expectNext(secondObject)
                 .verifyComplete()

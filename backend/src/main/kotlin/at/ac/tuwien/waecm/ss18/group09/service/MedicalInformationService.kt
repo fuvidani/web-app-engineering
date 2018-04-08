@@ -1,6 +1,5 @@
 package at.ac.tuwien.waecm.ss18.group09.service
 
-import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalInformation
 import at.ac.tuwien.waecm.ss18.group09.repository.MedicalInformationRepository
 import org.springframework.stereotype.Component
@@ -14,7 +13,7 @@ interface IMedicalInformationService {
 
     fun findById(id: String): Mono<MedicalInformation>
 
-    fun findByUser(user: AbstractUser): Flux<MedicalInformation>
+    fun findByUser(user: String): Flux<MedicalInformation>
 }
 
 @Component("medicalInformationService")
@@ -30,14 +29,14 @@ class MedicalInformationService(private val repository: MedicalInformationReposi
         return repository.findById(id)
     }
 
-    override fun findByUser(user: AbstractUser): Flux<MedicalInformation> {
+    override fun findByUser(user: String): Flux<MedicalInformation> {
         return repository.findByUser(user)
     }
 
     @Throws(ValidationException::class)
     private fun validate(medicalInformation: MedicalInformation) {
 
-        if (medicalInformation.user == null)
+        if (medicalInformation.user.trim().isEmpty())
             throw ValidationException("no user reference was provided")
 
         if (medicalInformation.title.trim().isEmpty())
