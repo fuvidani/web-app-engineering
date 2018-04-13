@@ -1,9 +1,7 @@
 package at.ac.tuwien.waecm.ss18.group09
 
-import at.ac.tuwien.waecm.ss18.group09.dto.Gender
-import at.ac.tuwien.waecm.ss18.group09.dto.MedicalInformation
-import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
-import at.ac.tuwien.waecm.ss18.group09.dto.User
+/* ktlint-disable no-wildcard-imports */
+import at.ac.tuwien.waecm.ss18.group09.dto.*
 
 class TestDataProvider {
 
@@ -37,5 +35,9 @@ class TestDataProvider {
         researcher.email = "research@bayer.com"
         researcher.password = "password"
         return researcher
+    }
+
+    fun getValidMedicalQuery(): MedicalQuery {
+        return MedicalQuery(name = "my_query", description = "some description", financialOffering = 5.05, minAge = Integer(18), maxAge = Integer(35), gender = Gender.FEMALE, tags = arrayOf("disease"))
     }
 }

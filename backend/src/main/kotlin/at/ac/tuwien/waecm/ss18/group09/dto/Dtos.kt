@@ -4,7 +4,9 @@ package at.ac.tuwien.waecm.ss18.group09.dto
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
+import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 
 /**
  * <h4>About this class</h4>
@@ -57,6 +59,54 @@ data class MedicalInformation(
         result = 31 * result + title.hashCode()
         result = 31 * result + description.hashCode()
         result = 31 * result + image.hashCode()
+        result = 31 * result + Arrays.hashCode(tags)
+        return result
+    }
+}
+
+@Document(collection = "medicalQuery")
+data class MedicalQuery(
+    @Id
+    var id: String? = null,
+    var researchFacility: String = "",
+    @get: NotBlank
+    var name: String = "",
+    @get: NotBlank
+    var description: String = "",
+    @get: NotNull
+    @get: Min(0)
+    var financialOffering: Double = 0.0,
+    var minAge: Integer = Integer(0),
+    var maxAge: Integer = Integer(0),
+    var gender: Gender?,
+    var tags: Array<String> = emptyArray()
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MedicalQuery
+
+        if (id != other.id) return false
+        if (researchFacility != other.researchFacility) return false
+        if (name != other.name) return false
+        if (description != other.description) return false
+        if (financialOffering != other.financialOffering) return false
+        if (minAge != other.minAge) return false
+        if (maxAge != other.maxAge) return false
+        if (!Arrays.equals(tags, other.tags)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + researchFacility.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + description.hashCode()
+        result = 31 * result + financialOffering.hashCode()
+        result = 31 * result + minAge.hashCode()
+        result = 31 * result + maxAge.hashCode()
         result = 31 * result + Arrays.hashCode(tags)
         return result
     }
