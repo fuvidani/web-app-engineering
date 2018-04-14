@@ -1,22 +1,38 @@
-# You should always specify a full version here to ensure all of your developers
-# are running the same version of Node.
-FROM node:9
+### STAGE 1: Build ###
 
-# The base node image sets a very verbose log level.
-ENV NPM_CONFIG_LOGLEVEL warn
+# We label our stage as 'builder'
+FROM node:8-alpine as builder
 
-# Copy all local files into the image.
+# Metadata
+LABEL maintainer="michael.sober@ymail.com"
+LABEL version="1.0"
+LABEL description="Dockerfile for the angular frontend of web app engineering"
+
+COPY package.json ./
+
+RUN npm set progress=false && npm config set depth 0 && npm cache clean --force
+
+## Storing node modules on a separate layer will prevent unnecessary npm installs at each build
+RUN npm i && mkdir /ng-app && cp -R ./node_modules ./ng-app
+
+WORKDIR /ng-app
+
 COPY . .
 
-# Install `serve` to run the application.
-RUN npm install
+## Build the angular app in production mode and store the artifacts in dist folder
+RUN $(npm bin)/ng build --prod --build-optimizer
 
-RUN npm run build
-RUN npm install -g serve
-CMD [ "serve", "-s", "-p 8069", "public" ]
+### STAGE 2: Setup ###
 
-# Set the command to start the node server.
-# CMD npm start
+FROM nginx:1.13.3-alpine
 
-# Tell Docker about the port we'll run on.
-EXPOSE 8069
+## Copy our default nginx config
+COPY nginx/default.conf /etc/nginx/conf.d/
+
+## Remove default nginx website
+RUN rm -rf /usr/share/nginx/html/*
+
+## From 'builder' stage copy over the artifacts in dist folder to default nginx public folder
+COPY --from=builder /ng-app/dist /usr/share/nginx/html
+
+CMD ["nginx", "-g", "daemon off;"]
