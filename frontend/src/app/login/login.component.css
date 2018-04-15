@@ -1,0 +1,12 @@
+.login-card {
+  margin: auto;
+  width: 25%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.alert {
+  color: red;
+}
