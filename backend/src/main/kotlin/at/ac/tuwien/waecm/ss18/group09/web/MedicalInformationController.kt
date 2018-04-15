@@ -18,7 +18,7 @@ class MedicalInformationController(private val medicalInformationService: IMedic
     fun createMedicalInformation(@RequestBody medicalInformation: MedicalInformation): Mono<ResponseEntity<MedicalInformation>> {
         return medicalInformationService.create(medicalInformation)
                 .map { i -> ResponseEntity<MedicalInformation>(i, HttpStatus.OK) }
-                .defaultIfEmpty(ResponseEntity<MedicalInformation>(HttpStatus.BAD_REQUEST))
+                .defaultIfEmpty(ResponseEntity(HttpStatus.BAD_REQUEST))
     }
 
     @GetMapping(produces = ["text/event-stream"])
