@@ -15,7 +15,11 @@ import {AuthService} from "./service/auth.service";
 import {AuthGuard} from "./guard/auth.guard";
 import {UserGuard} from "./guard/user.guard";
 import {ResearchfacilityGuard} from "./guard/researchfacility.guard";
+import {JwtModule} from "@auth0/angular-jwt";
 
+export function tokenGetter() {
+  return localStorage.getItem("access_token");
+}
 
 @NgModule({
   declarations: [
@@ -31,6 +35,13 @@ import {ResearchfacilityGuard} from "./guard/researchfacility.guard";
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: ["localhost:8080"],
+        blacklistedRoutes: ["localhost:8080/auth", "localhost:8080/user/register"]
+      }
+    }),
     AppRoutingModule
   ],
   providers: [
