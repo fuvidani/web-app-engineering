@@ -31,6 +31,17 @@ export class AuthService {
     return true;
   }
 
+  getPrincipal(){
+    if(!this.isAuthenticated()){
+      return null;
+    }
+
+    const access_token: string = localStorage.getItem("access_token");
+    const decodedToken: DecodedAccessToken = this.jwtHelper.decodeToken(access_token);
+
+    return decodedToken.sub;
+  }
+
   hasRole(role: string) {
     console.log("Checking if user is authorized with role(" + role + ")");
 
