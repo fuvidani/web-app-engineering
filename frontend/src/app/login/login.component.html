@@ -1,0 +1,43 @@
+<div>
+  <div>
+    <mat-toolbar color="primary">
+      <mat-toolbar-row>
+        <button mat-button routerLink="/">Web Application Engineering and Content Management</button>
+        <span class="example-spacer"></span>
+        <button mat-button routerLink="/register">Register</button>
+      </mat-toolbar-row>
+    </mat-toolbar>
+  </div>
+  <div>
+    <mat-card class="login-card">
+      <mat-card-header>
+        <mat-card-title>
+          <h2>
+            Login
+          </h2>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form (submit)="onSubmit()" [formGroup]="loginForm">
+          <table class="full-width">
+            <tr>
+              <td>
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="example@domain.com" formControlName="email" required>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="full-width">
+                  <input matInput type="password" placeholder="Password" formControlName="password" required>
+                </mat-form-field>
+              </td>
+            </tr>
+          </table>
+          <button mat-raised-button color="primary" type="submit">Login!</button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

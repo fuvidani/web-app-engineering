@@ -94,6 +94,6 @@ class AuthControllerTest {
     }
 
     private fun getAuthRequestForUser(user: AbstractUser): AuthRequest {
-        return AuthRequest(username = user.email, password = user.password)
+        return AuthRequest(email = user.email, password = user.password)
     }
 }
