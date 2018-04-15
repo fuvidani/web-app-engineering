@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {User} from "../model/user";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-register',
@@ -21,7 +22,7 @@ export class RegisterComponent implements OnInit {
   gender: FormControl;
   birthday: FormControl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
     this.user = new User();
@@ -60,6 +61,7 @@ export class RegisterComponent implements OnInit {
       this.http.post<User>("http://localhost:8080/user/register", this.user).subscribe(
         registeredUser => {
           this.registeredUser = registeredUser;
+          this.router.navigate(['/']);
         },
         err => {
           console.error(err);
