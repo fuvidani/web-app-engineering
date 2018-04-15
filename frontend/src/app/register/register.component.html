@@ -1,3 +1,66 @@
-<p>
-  register works!
-</p>
+<div>
+  <mat-card class="register-card">
+    <mat-card-header>
+      <mat-card-title>
+        <h2>
+          Register
+        </h2>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form (submit)="onSubmit()">
+        <table class="full-width">
+          <tr>
+            <td>
+              <mat-form-field class="full-width" floatLabel="never">
+                <input matInput [(ngModel)]="user.email" name="email" placeholder="example@domain.com" required>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <input matInput [(ngModel)]="user.password" name="password" type="password" placeholder="Password" required>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <input matInput type="password" placeholder="Password" required>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <input matInput [(ngModel)]="user.name" name="name" placeholder="Name" required>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <mat-select [(ngModel)]="user.gender" name="gender" placeholder="Gender" required>
+                  <mat-option *ngFor="let gender of genders" [value]="gender">
+                    {{ gender }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <input matInput [matDatepicker]="picker" [(ngModel)]="user.birthday" name="birthday" placeholder="Date of birth" required>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+        <button mat-raised-button color="primary" type="submit">Submit!</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
