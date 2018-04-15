@@ -10,6 +10,7 @@ import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
 import { AppRoutingModule } from "./app-routing.module";
 import { RegisterComponent } from './register/register.component';
+import {HttpClientModule} from "@angular/common/http";
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { RegisterComponent } from './register/register.component';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
     AppRoutingModule
   ],
   providers: [],

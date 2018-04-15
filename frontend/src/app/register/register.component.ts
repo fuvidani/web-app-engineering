@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {User} from "../model/user";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-register',
@@ -10,7 +11,8 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 export class RegisterComponent implements OnInit {
 
   user: User;
-  genders = ["Male", "Female"];
+  registeredUser: User;
+  genders = ["MALE", "FEMALE"];
 
   registerForm: FormGroup;
   email: FormControl;
@@ -19,7 +21,7 @@ export class RegisterComponent implements OnInit {
   gender: FormControl;
   birthday: FormControl;
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.user = new User();
@@ -55,7 +57,15 @@ export class RegisterComponent implements OnInit {
   onSubmit() {
     if(this.registerForm.valid){
       this.user = this.registerForm.value;
-      console.log(this.user);
+      this.http.post<User>("http://localhost:8080/user/register", this.user).subscribe(
+        registeredUser => {
+          this.registeredUser = registeredUser;
+        },
+        err => {
+          console.error(err);
+        },
+        () => console.log("Successfully registered user(" + this.registeredUser.email + ")")
+      );
     }
   }
 
