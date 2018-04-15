@@ -111,3 +111,12 @@ data class MedicalQuery(
         return result
     }
 }
+
+@Document(collection = "sharingPermission")
+data class SharingPermission(
+        @Id
+        var id: String? = null,
+        @get: NotBlank
+        var information: String,
+        @get: NotBlank
+        var query: String)

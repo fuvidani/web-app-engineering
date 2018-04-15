@@ -7,8 +7,7 @@ import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalQuery
 import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
 import at.ac.tuwien.waecm.ss18.group09.dto.User
-import junit.framework.TestCase.assertNotNull
-import junit.framework.TestCase.assertNull
+import junit.framework.TestCase.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,6 +27,9 @@ class MedicalQueryServiceTest {
 
     @Autowired
     lateinit var medicalQueryService: IMedicalQueryService
+
+    @Autowired
+    lateinit var medicalInformationService: MedicalInformationService
 
     @Autowired
     lateinit var mongoTemplate: MongoTemplate
@@ -64,5 +66,23 @@ class MedicalQueryServiceTest {
         medicalQuery.gender = null
         medicalQuery.tags = emptyArray()
         medicalQueryService.create(medicalQuery)
+    }
+
+    @Test
+    fun findMatchingQueries_shouldReturn() {
+        val user = testDataProvider.getDummyUser()
+        userService.create(user).block()
+
+        val info = testDataProvider.getValidMedicalInformation()
+        info.user = user.id
+        medicalInformationService.create(info).block()
+
+        val medicalQuery = getMedicalQueryWithResearchReference()
+        medicalQueryService.create(medicalQuery).block()
+
+        val list = medicalQueryService.findMatchingQueries(userId = user.id).collectList().block()
+
+        assertNotNull("the returned object must not be null", list)
+        assertEquals("List should have size of 1", 1, list.size)
     }
 }

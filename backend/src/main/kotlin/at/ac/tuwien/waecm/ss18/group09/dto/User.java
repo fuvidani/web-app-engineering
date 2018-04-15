@@ -1,7 +1,7 @@
 package at.ac.tuwien.waecm.ss18.group09.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Objects;
 import javax.validation.constraints.NotBlank;
@@ -13,7 +13,8 @@ public class User extends AbstractUser {
 
   @NotBlank private String name;
   @NotNull private Gender gender;
-  @NotBlank private String birthday;
+  @NotBlank
+  private LocalDate birthday;
 
   public String getName() {
     return name;
@@ -31,11 +32,11 @@ public class User extends AbstractUser {
     this.gender = gender;
   }
 
-  public String getBirthday() {
+  public LocalDate getBirthday() {
     return birthday;
   }
 
-  public void setBirthday(String birthday) {
+  public void setBirthday(LocalDate birthday) {
     this.birthday = birthday;
   }
 

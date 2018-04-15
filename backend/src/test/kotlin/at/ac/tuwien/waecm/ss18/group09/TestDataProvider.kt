@@ -2,6 +2,7 @@ package at.ac.tuwien.waecm.ss18.group09
 
 /* ktlint-disable no-wildcard-imports */
 import at.ac.tuwien.waecm.ss18.group09.dto.*
+import java.time.LocalDate
 
 class TestDataProvider {
 
@@ -10,7 +11,7 @@ class TestDataProvider {
         user.email = "kalu@gmx.at"
         user.password = "abc"
         user.name = "lk"
-        user.birthday = "02.02"
+        user.birthday = LocalDate.of(1994, 6, 6)
         user.gender = Gender.MALE
         return user
     }
@@ -27,7 +28,10 @@ class TestDataProvider {
     }
 
     fun getValidMedicalInformation(): MedicalInformation {
-        return MedicalInformation(title = "my disease", description = "some description", image = "image", tags = arrayOf("disease"))
+        return MedicalInformation(title = "my disease",
+                description = "some description",
+                image = "image",
+                tags = arrayOf("disease"))
     }
 
     private fun getAdditionalResearcher(): ResearchFacility {
@@ -38,6 +42,12 @@ class TestDataProvider {
     }
 
     fun getValidMedicalQuery(): MedicalQuery {
-        return MedicalQuery(name = "my_query", description = "some description", financialOffering = 5.05, minAge = Integer(18), maxAge = Integer(35), gender = Gender.FEMALE, tags = arrayOf("disease"))
+        return MedicalQuery(name = "my_query",
+                description = "some description",
+                financialOffering = 5.05,
+                minAge = Integer(18),
+                maxAge = Integer(35),
+                gender = Gender.MALE,
+                tags = arrayOf("disease"))
     }
 }
