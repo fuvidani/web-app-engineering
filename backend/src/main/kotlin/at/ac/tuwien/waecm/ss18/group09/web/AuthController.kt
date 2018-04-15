@@ -35,7 +35,7 @@ class AuthController(
     @CrossOrigin
     @PostMapping("/auth")
     fun getAuthenticationToken(@RequestBody authRequest: AuthRequest): Mono<AuthResponse> {
-        val authenticationToken = UsernamePasswordAuthenticationToken(authRequest.username, authRequest.password)
+        val authenticationToken = UsernamePasswordAuthenticationToken(authRequest.email, authRequest.password)
         val auth = userDetailsRepositoryReactiveAuthenticationManager.authenticate(authenticationToken)
         return auth
             .map { authentication -> parseAuthenticationToUser(authentication) }

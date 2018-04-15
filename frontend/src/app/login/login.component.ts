@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Authentication} from "../model/authentication";
+import {AuthService} from "../service/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,7 @@ export class LoginComponent implements OnInit {
   email: FormControl;
   password: FormControl;
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
     this.authentication = new Authentication();
@@ -31,6 +32,7 @@ export class LoginComponent implements OnInit {
     if(this.loginForm.valid){
      this.authentication = this.loginForm.value;
      console.log(this.authentication);
+     this.authService.login(this.authentication);
     }
   }
 

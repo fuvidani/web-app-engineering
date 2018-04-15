@@ -12,6 +12,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { RegisterComponent } from './register/register.component';
 import {HttpClientModule} from "@angular/common/http";
 import { LoginComponent } from './login/login.component';
+import {AuthService} from "./service/auth.service";
 
 
 @NgModule({
@@ -31,7 +32,7 @@ import { LoginComponent } from './login/login.component';
     HttpClientModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
