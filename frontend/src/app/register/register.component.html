@@ -8,40 +8,48 @@
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form (submit)="onSubmit()">
+      <form (submit)="onSubmit()" [formGroup]="registerForm">
         <table class="full-width">
           <tr>
             <td>
               <mat-form-field class="full-width" floatLabel="never">
-                <input matInput [(ngModel)]="user.email" name="email" placeholder="example@domain.com" required>
+                <input matInput placeholder="example@domain.com" formControlName="email" required>
               </mat-form-field>
+              <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert">
+                <div *ngIf="email.errors.email">
+                  E-Mail must be an valid e-mail address.
+                </div>
+              </div>
             </td>
           </tr>
           <tr>
             <td>
               <mat-form-field class="full-width">
-                <input matInput [(ngModel)]="user.password" name="password" type="password" placeholder="Password" required>
+                <input matInput type="password" placeholder="Password" formControlName="password" required>
               </mat-form-field>
+              <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert">
+                <div *ngIf="password.errors.minlength">
+                  Password must be at least 8 characters long.
+                </div>
+              </div>
             </td>
           </tr>
           <tr>
             <td>
               <mat-form-field class="full-width">
-                <input matInput type="password" placeholder="Password" required>
+                <input matInput placeholder="Name" formControlName="name" required>
               </mat-form-field>
+              <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert">
+                <div *ngIf="name.errors.minlength">
+                  Name must be at least 4 characters long.
+                </div>
+              </div>
             </td>
           </tr>
           <tr>
             <td>
               <mat-form-field class="full-width">
-                <input matInput [(ngModel)]="user.name" name="name" placeholder="Name" required>
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="full-width">
-                <mat-select [(ngModel)]="user.gender" name="gender" placeholder="Gender" required>
+                <mat-select placeholder="Gender" formControlName="gender" required>
                   <mat-option *ngFor="let gender of genders" [value]="gender">
                     {{ gender }}
                   </mat-option>
@@ -52,7 +60,7 @@
           <tr>
             <td>
               <mat-form-field class="full-width">
-                <input matInput [matDatepicker]="picker" [(ngModel)]="user.birthday" name="birthday" placeholder="Date of birth" required>
+                <input matInput [matDatepicker]="picker" placeholder="Date of birth" formControlName="birthday" readonly required>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
