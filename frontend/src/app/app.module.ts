@@ -13,6 +13,9 @@ import { RegisterComponent } from './register/register.component';
 import {HttpClientModule} from "@angular/common/http";
 import { LoginComponent } from './login/login.component';
 import {AuthService} from "./service/auth.service";
+import {AuthGuard} from "./guard/auth.guard";
+import {UserGuard} from "./guard/user.guard";
+import {ResearchfacilityGuard} from "./guard/researchfacility.guard";
 
 
 @NgModule({
@@ -32,7 +35,12 @@ import {AuthService} from "./service/auth.service";
     HttpClientModule,
     AppRoutingModule
   ],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    AuthGuard,
+    UserGuard,
+    ResearchfacilityGuard
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
