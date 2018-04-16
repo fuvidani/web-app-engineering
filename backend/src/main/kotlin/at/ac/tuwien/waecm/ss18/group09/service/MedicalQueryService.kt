@@ -12,6 +12,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.time.Period
+import java.util.*
 
 interface IMedicalQueryService {
 
@@ -81,9 +82,40 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
         val permissions = sharingPermissionRepository.findByQuery(id)
         val anonymizer = PseduoAnonymizer(userService)
 
+        /**
+         * user -> info list
+         *
+         * for each permission
+         *      medicalinfo
+         *
+         *
+         */
+
+
         return permissions
-                .map { p -> medicalInformationService.findById(p.information).block() }
-                .map { info -> anonymizer.anonymize(info) }
+                .flatMap { p -> medicalInformationService.findById(p.information) }
+                .sort { medicalInformation, medicalInformation2 -> Integer.compare(medicalInformation.user.hashCode(), medicalInformation2.user.hashCode()) }
+                .groupBy { info -> info.user }
+                .flatMap { groupedFlux ->
+                    groupedFlux
+                            .map { medicalInformation -> AnonymizedUserInformation("", mutableListOf(medicalInformation), groupedFlux.key()!!, null, null) }
+                            .reduce { a1: AnonymizedUserInformation, a2: AnonymizedUserInformation -> AnonymizedUserInformation("", a1.medicalInformation.union(a2.medicalInformation).toMutableList(), a1.userId, null, null) }
+                }
+                .map { an ->
+                    userService.findById(an.userId).cast(User::class.java)
+                            .map { user ->
+                                an.birthday = user.birthday
+                                an.gender = user.gender
+                                an.id = UUID.randomUUID().toString()
+                                an.userId = UUID.randomUUID().toString()
+                            }
+
+                    an
+                }
+        /*val result = permissions
+                .flatMap { p -> medicalInformationService.findById(p.information) }
+                .map { medicalInformation -> anonymizer.anonymize(medicalInformation) }
+        return result*/
     }
 
     @Throws(ValidationException::class)
