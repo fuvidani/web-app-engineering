@@ -1,0 +1,18 @@
+{
+  "register": {
+    "login-button-text": "Login",
+    "card-title": "Register",
+    "e-mail-placeholder": "E-mail address",
+    "e-mail-error": "E-Mail must be an valid e-mail address.",
+    "password-placeholder": "Password",
+    "password-length-error": "Password must be at least 8 characters long.",
+    "name-placeholder": "Name",
+    "name-length-error": "Name must be at least 4 characters long.",
+    "gender-placeholder": "Gender",
+    "gender-male": "Male",
+    "gender-female": "Female",
+    "birthday-placeholder": "Date of birth",
+    "submit-button-text": "Register!",
+    "register-error": "The user could not be registered."
+  }
+}
