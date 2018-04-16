@@ -1,6 +1,7 @@
 package at.ac.tuwien.waecm.ss18.group09.service
 
-import at.ac.tuwien.waecm.ss18.group09.dto.MedicalInformation
+import at.ac.tuwien.waecm.ss18.group09.PseduoAnonymizer
+import at.ac.tuwien.waecm.ss18.group09.dto.AnonymizedUserInformation
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalQuery
 import at.ac.tuwien.waecm.ss18.group09.dto.SharingPermission
 import at.ac.tuwien.waecm.ss18.group09.dto.User
@@ -27,9 +28,9 @@ interface IMedicalQueryService {
 
     fun createSharingPermission(sharingPermissions: List<SharingPermission>): Mono<List<SharingPermission>>
 
-    fun findAllSharedInformation(researchId: String): Flux<MedicalInformation>
+    fun findAllSharedInformation(researchId: String): Flux<AnonymizedUserInformation>
 
-    fun findSharedInformationForQuery(id: String): Flux<MedicalInformation>
+    fun findSharedInformationForQuery(id: String): Flux<AnonymizedUserInformation>
 }
 
 @Component("medicalQueryService")
@@ -71,16 +72,18 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
         return Mono.just(sharingPermissions)
     }
 
-    override fun findAllSharedInformation(researchId: String): Flux<MedicalInformation> {
+    override fun findAllSharedInformation(researchId: String): Flux<AnonymizedUserInformation> {
         val queries = findByResearchFacility(researchId)
         return queries.map { q -> findSharedInformationForQuery(q.id!!) }.flatMap { it }
     }
 
-    override fun findSharedInformationForQuery(id: String): Flux<MedicalInformation> {
+    override fun findSharedInformationForQuery(id: String): Flux<AnonymizedUserInformation> {
         val permissions = sharingPermissionRepository.findByQuery(id)
+        val anonymizer = PseduoAnonymizer(userService)
 
-        TODO("Anonymize")
-        return permissions.map { p -> medicalInformationService.findById(p.information).block() }
+        return permissions
+                .map { p -> medicalInformationService.findById(p.information).block() }
+                .map { info -> anonymizer.anonymize(info) }
     }
 
     @Throws(ValidationException::class)

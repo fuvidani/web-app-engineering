@@ -1,6 +1,7 @@
 package at.ac.tuwien.waecm.ss18.group09.web
 
 /* ktlint-disable no-wildcard-imports */
+import at.ac.tuwien.waecm.ss18.group09.dto.AnonymizedUserInformation
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalInformation
 import at.ac.tuwien.waecm.ss18.group09.service.IMedicalInformationService
 import at.ac.tuwien.waecm.ss18.group09.service.MedicalQueryService
@@ -30,7 +31,7 @@ class MedicalInformationController(private val medicalInformationService: IMedic
     }
 
     @GetMapping(path = ["/shared"], produces = ["text/event-stream"])
-    fun getAllSharedMedicalInformations(@PathVariable("id") id: String): Flux<MedicalInformation> {
+    fun getAllSharedMedicalInformations(@PathVariable("id") id: String): Flux<AnonymizedUserInformation> {
         return medicalQueryService.findAllSharedInformation(id)
     }
 

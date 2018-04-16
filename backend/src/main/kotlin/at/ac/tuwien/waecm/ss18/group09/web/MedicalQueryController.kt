@@ -1,6 +1,6 @@
 package at.ac.tuwien.waecm.ss18.group09.web
 
-import at.ac.tuwien.waecm.ss18.group09.dto.MedicalInformation
+import at.ac.tuwien.waecm.ss18.group09.dto.AnonymizedUserInformation
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalQuery
 import at.ac.tuwien.waecm.ss18.group09.dto.SharingPermission
 import at.ac.tuwien.waecm.ss18.group09.service.MedicalQueryService
@@ -49,7 +49,7 @@ class MedicalQueryController(private val medicalQueryService: MedicalQueryServic
     }
 
     @PostMapping(path = ["{qid}/shared"])
-    fun getSharedInformationForQuery(@PathVariable("qid") qid: String): Flux<MedicalInformation> {
+    fun getSharedInformationForQuery(@PathVariable("qid") qid: String): Flux<AnonymizedUserInformation> {
         return medicalQueryService.findSharedInformationForQuery(qid)
     }
 }
