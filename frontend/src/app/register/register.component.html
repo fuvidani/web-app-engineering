@@ -92,6 +92,9 @@
           <button mat-raised-button color="primary" type="submit">
             {{ "register.submit-button-text" | translate }}
           </button>
+          <div *ngIf="error" class="error">
+            {{ "register.register-error" | translate }}
+          </div>
         </form>
       </mat-card-content>
     </mat-card>

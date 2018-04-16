@@ -18,6 +18,7 @@ export class RegisterComponent implements OnInit {
     new Gender("1", "register.gender-male", "MALE"),
     new Gender("2", "register.gender-female", "FEMALE")
   ];
+  error: boolean = false;
 
   registerForm: FormGroup;
   email: FormControl;
@@ -101,6 +102,7 @@ export class RegisterComponent implements OnInit {
 
   handleFailedRegistration(errorResponse: HttpErrorResponse) {
     console.error(errorResponse);
+    this.error = true;
   }
 
   handleFinishedRegistration() {

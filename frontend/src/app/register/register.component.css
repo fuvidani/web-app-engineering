@@ -11,6 +11,11 @@
   color: red;
 }
 
+.error {
+  margin-top: 10px;
+  color: red;
+}
+
 .example-icon {
   padding: 0 14px;
 }
