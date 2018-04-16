@@ -36,6 +36,9 @@
             </tr>
           </table>
           <button mat-raised-button color="primary" type="submit">Login!</button>
+          <div *ngIf="error" class="error">
+              Wrong username or password.
+          </div>
         </form>
       </mat-card-content>
     </mat-card>
