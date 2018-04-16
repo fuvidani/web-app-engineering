@@ -3,6 +3,9 @@ import {User} from "../model/user";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
+import {TranslateService} from "@ngx-translate/core";
+import {DateAdapter} from "@angular/material";
+import {Gender} from "../model/gender";
 
 @Component({
   selector: 'app-register',
@@ -13,7 +16,10 @@ export class RegisterComponent implements OnInit {
 
   user: User;
   registeredUser: User;
-  genders = ["MALE", "FEMALE"];
+  genders = [
+    new Gender("1", "register.gender-male", "MALE"),
+    new Gender("2", "register.gender-female", "FEMALE")
+  ];
 
   registerForm: FormGroup;
   email: FormControl;
@@ -22,9 +28,15 @@ export class RegisterComponent implements OnInit {
   gender: FormControl;
   birthday: FormControl;
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private translate: TranslateService,
+    private adapter: DateAdapter<any>
+  ) { }
 
   ngOnInit() {
+    this.configureLanguage();
     this.user = new User();
     this.email = new FormControl(
       this.user.email,
@@ -53,6 +65,19 @@ export class RegisterComponent implements OnInit {
       gender: this.gender,
       birthday: this.birthday
     });
+  }
+
+  configureLanguage(){
+    const lang = window.navigator.language;
+    console.log("Detected browser language(" + lang + ")");
+    if(lang === "de"){
+      this.translate.setDefaultLang("de");
+      this.adapter.setLocale("de");
+      console.log("Set language to german");
+    }else{
+      this.translate.setDefaultLang("en");
+      console.log("Set language to english");
+    }
   }
 
   onSubmit() {

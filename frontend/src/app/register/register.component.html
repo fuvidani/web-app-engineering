@@ -4,7 +4,7 @@
       <mat-toolbar-row>
         <button mat-button routerLink="/">Web Application Engineering and Content Management</button>
         <span class="example-spacer"></span>
-        <button mat-button routerLink="/login">Login</button>
+        <button mat-button routerLink="/login">{{ "register.login-button-text" | translate }}</button>
       </mat-toolbar-row>
     </mat-toolbar>
   </div>
@@ -13,7 +13,7 @@
       <mat-card-header>
         <mat-card-title>
           <h2>
-            Register
+            {{ "register.card-title" | translate }}
           </h2>
         </mat-card-title>
       </mat-card-header>
@@ -23,11 +23,14 @@
             <tr>
               <td>
                 <mat-form-field class="full-width">
-                  <input matInput placeholder="example@domain.com" formControlName="email" required>
+                  <input matInput formControlName="email" required>
+                  <mat-placeholder>
+                    {{ "register.e-mail-placeholder" | translate }}
+                  </mat-placeholder>
                 </mat-form-field>
                 <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert">
                   <div *ngIf="email.errors.email">
-                    E-Mail must be an valid e-mail address.
+                    {{ "register.e-mail-error" | translate }}
                   </div>
                 </div>
               </td>
@@ -35,11 +38,14 @@
             <tr>
               <td>
                 <mat-form-field class="full-width">
-                  <input matInput type="password" placeholder="Password" formControlName="password" required>
+                  <input matInput type="password" formControlName="password" required>
+                  <mat-placeholder>
+                    {{ "register.password-placeholder" | translate }}
+                  </mat-placeholder>
                 </mat-form-field>
                 <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert">
                   <div *ngIf="password.errors.minlength">
-                    Password must be at least 8 characters long.
+                    {{ "register.password-length-error" | translate }}
                   </div>
                 </div>
               </td>
@@ -51,7 +57,7 @@
                 </mat-form-field>
                 <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert">
                   <div *ngIf="name.errors.minlength">
-                    Name must be at least 4 characters long.
+                    {{ "register.name-length-error" | translate }}
                   </div>
                 </div>
               </td>
@@ -59,25 +65,33 @@
             <tr>
               <td>
                 <mat-form-field class="full-width">
-                  <mat-select placeholder="Gender" formControlName="gender" required>
-                    <mat-option *ngFor="let gender of genders" [value]="gender">
-                      {{ gender }}
+                  <mat-select formControlName="gender" required>
+                    <mat-option *ngFor="let gender of genders" [value]="gender.value">
+                      {{ gender.i18n | translate }}
                     </mat-option>
                   </mat-select>
+                  <mat-placeholder>
+                    {{ "register.gender-placeholder" | translate }}
+                  </mat-placeholder>
                 </mat-form-field>
               </td>
             </tr>
             <tr>
               <td>
                 <mat-form-field class="full-width">
-                  <input matInput [matDatepicker]="picker" placeholder="Date of birth" formControlName="birthday" readonly required>
+                  <input matInput [matDatepicker]="picker" formControlName="birthday" readonly required>
                   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                   <mat-datepicker #picker></mat-datepicker>
+                  <mat-placeholder>
+                    {{ "register.birthday-placeholder" | translate }}
+                  </mat-placeholder>
                 </mat-form-field>
               </td>
             </tr>
           </table>
-          <button mat-raised-button color="primary" type="submit">Register!</button>
+          <button mat-raised-button color="primary" type="submit">
+            {{ "register.submit-button-text" | translate }}
+          </button>
         </form>
       </mat-card-content>
     </mat-card>
