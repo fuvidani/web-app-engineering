@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {User} from "../model/user";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
 import {DateAdapter} from "@angular/material";
@@ -14,8 +14,6 @@ import {Gender} from "../model/gender";
 })
 export class RegisterComponent implements OnInit {
 
-  user: User;
-  registeredUser: User;
   genders = [
     new Gender("1", "register.gender-male", "MALE"),
     new Gender("2", "register.gender-female", "FEMALE")
@@ -37,25 +35,24 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.configureLanguage();
-    this.user = new User();
     this.email = new FormControl(
-      this.user.email,
+      "",
       [Validators.required, Validators.email]
     );
     this.password = new FormControl(
-      this.user.password,
+      "",
       [Validators.required, Validators.minLength(8)]
     );
     this.name = new FormControl(
-      this.user.name,
+      "",
       [Validators.required, Validators.minLength(4)]
     );
     this.gender = new FormControl(
-      this.user.gender,
+      "",
       [Validators.required]
     );
     this.birthday = new FormControl(
-      this.user.birthday,
+      "",
       [Validators.required]
     );
     this.registerForm = new FormGroup({
@@ -82,18 +79,32 @@ export class RegisterComponent implements OnInit {
 
   onSubmit() {
     if(this.registerForm.valid){
-      this.user = this.registerForm.value;
-      this.http.post<User>("http://localhost:8080/user/register", this.user).subscribe(
+      let user: User = this.registerForm.value;
+      this.http.post<User>("http://localhost:8080/user/register", user).subscribe(
         registeredUser => {
-          this.registeredUser = registeredUser;
-          this.router.navigate(['/']);
+          this.handleSuccessFullRegistration();
         },
         err => {
-          console.error(err);
+          this.handleFailedRegistration(err);
         },
-        () => console.log("Successfully registered user(" + this.registeredUser.email + ")")
+        () => {
+          this.handleFinishedRegistration();
+        }
       );
     }
+  }
+
+  handleSuccessFullRegistration() {
+    console.log("Successfully registered user.");
+    this.router.navigate(['/']);
+  }
+
+  handleFailedRegistration(errorResponse: HttpErrorResponse) {
+    console.error(errorResponse);
+  }
+
+  handleFinishedRegistration() {
+    console.log("Finished user registration");
   }
 
 }

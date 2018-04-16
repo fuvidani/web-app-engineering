@@ -18,6 +18,7 @@ import {ResearchfacilityGuard} from "./guard/researchfacility.guard";
 import {JwtModule} from "@auth0/angular-jwt";
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+import {RegisterService} from "./service/register.service";
 
 export function tokenGetter() {
   return localStorage.getItem("access_token");
@@ -59,6 +60,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   providers: [
     AuthService,
+    RegisterService,
     AuthGuard,
     UserGuard,
     ResearchfacilityGuard
