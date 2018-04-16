@@ -1,0 +1,85 @@
+<div>
+  <div>
+    <mat-toolbar color="primary">
+      <mat-toolbar-row>
+        <button mat-button routerLink="/">Web Application Engineering and Content Management</button>
+        <span class="example-spacer"></span>
+        <button mat-button routerLink="/login">Login</button>
+      </mat-toolbar-row>
+    </mat-toolbar>
+  </div>
+  <div>
+    <mat-card class="register-card">
+      <mat-card-header>
+        <mat-card-title>
+          <h2>
+            Register
+          </h2>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form (submit)="onSubmit()" [formGroup]="registerForm">
+          <table class="full-width">
+            <tr>
+              <td>
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="example@domain.com" formControlName="email" required>
+                </mat-form-field>
+                <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert">
+                  <div *ngIf="email.errors.email">
+                    E-Mail must be an valid e-mail address.
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="full-width">
+                  <input matInput type="password" placeholder="Password" formControlName="password" required>
+                </mat-form-field>
+                <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert">
+                  <div *ngIf="password.errors.minlength">
+                    Password must be at least 8 characters long.
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Name" formControlName="name" required>
+                </mat-form-field>
+                <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert">
+                  <div *ngIf="name.errors.minlength">
+                    Name must be at least 4 characters long.
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="full-width">
+                  <mat-select placeholder="Gender" formControlName="gender" required>
+                    <mat-option *ngFor="let gender of genders" [value]="gender">
+                      {{ gender }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="full-width">
+                  <input matInput [matDatepicker]="picker" placeholder="Date of birth" formControlName="birthday" readonly required>
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+              </td>
+            </tr>
+          </table>
+          <button mat-raised-button color="primary" type="submit">Register!</button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

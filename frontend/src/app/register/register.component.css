@@ -1,0 +1,20 @@
+.register-card {
+  margin: 5% auto;
+  width: 25%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.alert {
+  color: red;
+}
+
+.example-icon {
+  padding: 0 14px;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
