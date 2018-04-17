@@ -1,6 +1,5 @@
 package at.ac.tuwien.waecm.ss18.group09.service
 
-import at.ac.tuwien.waecm.ss18.group09.PseduoAnonymizer
 import at.ac.tuwien.waecm.ss18.group09.dto.AnonymizedUserInformation
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalQuery
 import at.ac.tuwien.waecm.ss18.group09.dto.SharingPermission
@@ -60,7 +59,7 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
         val tags = infos.map { i -> i.tags }.flatMap { list -> Flux.fromArray(list) }.distinct().collectList().block()
         val queries = repository.findByGenderAndMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(user.gender, calcAge(user.birthday), calcAge(user.birthday))
 
-        TODO("handle null filter")
+//        TODO("handle null filter")
         return queries.filter { query -> query.tags.any { qTag -> tags.contains(qTag) } }
     }
 
@@ -80,17 +79,6 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
 
     override fun findSharedInformationForQuery(id: String): Flux<AnonymizedUserInformation> {
         val permissions = sharingPermissionRepository.findByQuery(id)
-        val anonymizer = PseduoAnonymizer(userService)
-
-        /**
-         * user -> info list
-         *
-         * for each permission
-         *      medicalinfo
-         *
-         *
-         */
-
 
         return permissions
                 .flatMap { p -> medicalInformationService.findById(p.information) }
@@ -112,10 +100,6 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
 
                     an
                 }
-        /*val result = permissions
-                .flatMap { p -> medicalInformationService.findById(p.information) }
-                .map { medicalInformation -> anonymizer.anonymize(medicalInformation) }
-        return result*/
     }
 
     @Throws(ValidationException::class)

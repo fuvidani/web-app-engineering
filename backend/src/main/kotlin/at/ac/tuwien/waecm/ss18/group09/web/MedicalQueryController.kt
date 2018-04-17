@@ -34,7 +34,7 @@ class MedicalQueryController(private val medicalQueryService: MedicalQueryServic
         return medicalQueryService.findMatchingQueries(id)
     }
 
-    @PostMapping(path = ["/permission"])
+    @PostMapping(path = ["/permissions"])
     fun createSharingPermission(@RequestBody permissions: List<SharingPermission>): Mono<ResponseEntity<List<SharingPermission>>> {
         return medicalQueryService.createSharingPermission(permissions)
                 .map { list -> ResponseEntity<List<SharingPermission>>(list, HttpStatus.OK) }
