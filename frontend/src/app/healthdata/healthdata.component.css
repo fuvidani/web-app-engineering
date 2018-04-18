@@ -3,14 +3,9 @@
   width: 35%;
 }
 
-.full-width {
-  width: 100%;
-}
-
 .toolbar-spacer {
   flex: 1 1 auto;
 }
-
 
 .mat-fab-custom {
   top: auto;

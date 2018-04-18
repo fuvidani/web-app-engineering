@@ -31,7 +31,11 @@ export class HealthdataComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  scroll(elememt) {
-    elememt.scrollIntoView({behavior:'smooth'});
+  navigateToQueries() {
+    this.router.navigate(['/userqueries']);
+  }
+
+  scroll(element) {
+    element.scrollIntoView({behavior: 'smooth'});
   }
 }
