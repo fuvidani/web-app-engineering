@@ -51,7 +51,13 @@ export class LoginComponent implements OnInit {
 
   handleSuccessFullAuthentication(accessToken: AccessToken) {
     this.authService.setAccessToken(accessToken.token);
-    this.router.navigate(['/']);
+    if (this.authService.hasRole('ROLE_END_USER')) {
+      this.router.navigate(['/healthdata']);
+    } else if (this.authService.hasRole('ROLE_RESEARCH')) {
+      this.router.navigate(['/medicalquery']);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
   handleFailedAuthentication(errorResponse: HttpErrorResponse) {

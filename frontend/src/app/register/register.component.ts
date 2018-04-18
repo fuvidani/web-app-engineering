@@ -97,7 +97,7 @@ export class RegisterComponent implements OnInit {
 
   handleSuccessFullRegistration() {
     console.log("Successfully registered user.");
-    this.router.navigate(['/']);
+    this.router.navigate(['/healthdata']);
   }
 
   handleFailedRegistration(errorResponse: HttpErrorResponse) {

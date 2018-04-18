@@ -22,6 +22,7 @@ import {RegisterService} from './service/register.service';
 import { HealthdataComponent } from './healthdata/healthdata.component';
 import {HealthdataService} from './service/healthdata.service';
 import {FlexLayoutModule} from '@angular/flex-layout';
+import { QueriesComponent } from './healthdata/queries/queries.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -37,7 +38,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     HomeComponent,
     RegisterComponent,
     LoginComponent,
-    HealthdataComponent
+    HealthdataComponent,
+    QueriesComponent
   ],
   imports: [
     BrowserModule,

@@ -32,6 +32,6 @@ export class HealthdataComponent implements OnInit {
   }
 
   scroll(elememt) {
-    elememt.scrollIntoView({behavior:"smooth"});
+    elememt.scrollIntoView({behavior:'smooth'});
   }
 }
