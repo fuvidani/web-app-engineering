@@ -1,11 +1,27 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span>Health Data - {{email}}</span>
+    <span class="example-spacer"></span>
+    <button mat-icon-button>
+      <mat-icon class="example-icon">notifications</mat-icon>
+    </button>
+    <button mat-icon-button (click)="logOut()">
+      <mat-icon class="example-icon">exit_to_app_black</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
 <mat-card class="healthdata-card" *ngFor="let data of healthData">
     <mat-card-header>
-      <div mat-card-avatar class="example-header-image"></div>
       <mat-card-title>{{data.title}}</mat-card-title>
-      <mat-card-subtitle>{{data.tags}}</mat-card-subtitle>
+      <mat-card-subtitle>
+        <span *ngFor="let tag of data.tags">
+          {{'#' + tag + " "}}
+        </span>
+      </mat-card-subtitle>
     </mat-card-header>
-    <img mat-card-image src={{data.image}} alt="Photo of a Shiba Inu">
-    <mat-card-content>
+    <img mat-card-image src={{data.image}} *ngIf="data.image">
+    <mat-card-content *ngIf="data.description">
       <p>
         {{data.description}}
       </p>
