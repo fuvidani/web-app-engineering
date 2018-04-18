@@ -3,27 +3,44 @@
     <span>Health Data - {{email}}</span>
     <span class="example-spacer"></span>
     <button mat-icon-button>
-      <mat-icon class="example-icon">notifications</mat-icon>
+      <mat-icon>notifications</mat-icon>
     </button>
     <button mat-icon-button (click)="logOut()">
-      <mat-icon class="example-icon">exit_to_app_black</mat-icon>
+      <mat-icon>exit_to_app_black</mat-icon>
     </button>
   </mat-toolbar-row>
 </mat-toolbar>
 
 <mat-card class="healthdata-card" *ngFor="let data of healthData">
+  <mat-card-header>
+    <mat-card-title>{{data.title}}</mat-card-title>
+    <mat-card-subtitle>
+          <span *ngFor="let tag of data.tags">
+            {{'#' + tag + " "}}
+          </span>
+    </mat-card-subtitle>
+  </mat-card-header>
+  <img mat-card-image src={{data.image}} *ngIf="data.image">
+  <mat-card-content *ngIf="data.description">
+    <p>
+      {{data.description}}
+    </p>
+  </mat-card-content>
+</mat-card>
+
+<div #newItem>
+  <mat-card class="healthdata-card">
     <mat-card-header>
-      <mat-card-title>{{data.title}}</mat-card-title>
-      <mat-card-subtitle>
-        <span *ngFor="let tag of data.tags">
-          {{'#' + tag + " "}}
-        </span>
-      </mat-card-subtitle>
+      <mat-card-title>Title</mat-card-title>
     </mat-card-header>
-    <img mat-card-image src={{data.image}} *ngIf="data.image">
-    <mat-card-content *ngIf="data.description">
+    <mat-card-content>
       <p>
-        {{data.description}}
+        Description
       </p>
     </mat-card-content>
-</mat-card>
+  </mat-card>
+</div>
+
+<button mat-fab color="primary" class="mat-fab-custom" (click)="scroll(newItem)">
+  <mat-icon>add</mat-icon>
+</button>

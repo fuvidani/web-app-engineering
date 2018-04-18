@@ -1,6 +1,6 @@
 .healthdata-card {
-  margin: 5% auto;
-  width: 25%;
+  margin: 2% auto;
+  width: 35%;
 }
 
 .full-width {
@@ -9,4 +9,12 @@
 
 .example-spacer {
   flex: 1 1 auto;
+}
+
+.mat-fab-custom {
+  top: auto;
+  right: 20px;
+  bottom: 20px;
+  left: auto;
+  position: fixed;
 }

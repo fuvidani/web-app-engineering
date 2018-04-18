@@ -30,4 +30,8 @@ export class HealthdataComponent implements OnInit {
     this.authService.clearAccessToken();
     this.router.navigate(['/']);
   }
+
+  scroll(elememt) {
+    elememt.scrollIntoView({behavior:"smooth"});
+  }
 }
