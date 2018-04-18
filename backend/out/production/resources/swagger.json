@@ -1,0 +1,198 @@
+{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "url": "http://localhost:8182/"
+    }
+  ],
+  "info": {
+    "description": "This is the API specification of the counter backend.",
+    "version": "1.0.0",
+    "title": "WAECM Counter Backend",
+    "contact": {
+      "email": "daniel.fuevesi@tuwien.ac.at"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "tags": [
+    {
+      "name": "Backend",
+      "description": "Everything about the backend"
+    }
+  ],
+  "paths": {
+    "/auth": {
+      "post": {
+        "tags": [
+          "Backend"
+        ],
+        "summary": "Authorize and obtain a token",
+        "description": "Provide valid username and password. The response will contain a JWT token which you should provide on subsequent invocations.",
+        "operationId": "auth",
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Invalid Credentials"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthRequest"
+              }
+            }
+          },
+          "description": "User object consisting of username and password",
+          "required": true
+        }
+      }
+    },
+    "/counter": {
+      "get": {
+        "tags": [
+          "Backend"
+        ],
+        "summary": "Get the current counter",
+        "description": "Returns the value of the counter stored in the database.",
+        "operationId": "counterGet",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "example": 1
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "integer",
+                  "example": 1
+                }
+              },
+              "application/stream+json": {
+                "schema": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "myAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Backend"
+        ],
+        "summary": "Increment the counter",
+        "description": "Increments the counter stored in the database.",
+        "operationId": "counterPost",
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "myAuth": []
+          }
+        ]
+      }
+    },
+    "/reset": {
+      "post": {
+        "tags": [
+          "Backend"
+        ],
+        "summary": "Resets the counter",
+        "description": "Resets the counter to zero stored in the database.",
+        "operationId": "reset",
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "myAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "components": {
+    "securitySchemes": {
+      "myAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "AuthRequest": {
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "username"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE1MjE0ODExNTksImlhdCI6MTUyMTM5NDc1OX0.eDPMllIQoatJq657WEd6GMv-8I0UzsPY3CbRVVBJiOk"
+          }
+        }
+      }
+    }
+  }
+}

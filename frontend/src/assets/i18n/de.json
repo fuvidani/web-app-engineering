@@ -12,7 +12,7 @@
     "gender-male": "Männlich",
     "gender-female": "Weiblich",
     "birthday-placeholder": "Geburtsdatum",
-    "submit-button-text": "Registrieren!",
+    "submit-button-text": "Registrieren",
     "register-error": "Der Benutzer konnte nicht registriert werden."
   }
 }
