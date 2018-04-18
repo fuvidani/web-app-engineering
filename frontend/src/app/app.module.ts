@@ -5,23 +5,26 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomeComponent } from './home/home.component';
-import { AppRoutingModule } from "./app-routing.module";
+import { AppRoutingModule } from './app-routing.module';
 import { RegisterComponent } from './register/register.component';
-import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
-import {AuthService} from "./service/auth.service";
-import {AuthGuard} from "./guard/auth.guard";
-import {UserGuard} from "./guard/user.guard";
-import {ResearchfacilityGuard} from "./guard/researchfacility.guard";
-import {JwtModule} from "@auth0/angular-jwt";
+import {AuthService} from './service/auth.service';
+import {AuthGuard} from './guard/auth.guard';
+import {UserGuard} from './guard/user.guard';
+import {ResearchfacilityGuard} from './guard/researchfacility.guard';
+import {JwtModule} from '@auth0/angular-jwt';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {TranslateHttpLoader} from "@ngx-translate/http-loader";
-import {RegisterService} from "./service/register.service";
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {RegisterService} from './service/register.service';
+import { HealthdataComponent } from './healthdata/healthdata.component';
+import {HealthdataService} from './service/healthdata.service';
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 export function tokenGetter() {
-  return localStorage.getItem("access_token");
+  return localStorage.getItem('access_token');
 }
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -33,13 +36,15 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppComponent,
     HomeComponent,
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    HealthdataComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
     FormsModule,
+    FlexLayoutModule,
     ReactiveFormsModule,
     HttpClientModule,
     TranslateModule.forRoot({
@@ -52,8 +57,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        whitelistedDomains: ["localhost:8080"],
-        blacklistedRoutes: ["localhost:8080/auth", "localhost:8080/user/register"]
+        whitelistedDomains: ['localhost:8080'],
+        blacklistedRoutes: ['localhost:8080/auth', 'localhost:8080/user/register']
       }
     }),
     AppRoutingModule
@@ -61,6 +66,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     AuthService,
     RegisterService,
+    HealthdataService,
     AuthGuard,
     UserGuard,
     ResearchfacilityGuard

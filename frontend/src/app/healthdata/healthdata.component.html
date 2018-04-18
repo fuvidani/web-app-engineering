@@ -1,0 +1,13 @@
+<mat-card class="healthdata-card" *ngFor="let data of healthData">
+    <mat-card-header>
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title>{{data.title}}</mat-card-title>
+      <mat-card-subtitle>{{data.tags}}</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image src={{data.image}} alt="Photo of a Shiba Inu">
+    <mat-card-content>
+      <p>
+        {{data.description}}
+      </p>
+    </mat-card-content>
+</mat-card>
