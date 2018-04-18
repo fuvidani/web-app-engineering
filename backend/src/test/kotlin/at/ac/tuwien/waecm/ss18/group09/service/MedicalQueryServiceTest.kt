@@ -102,7 +102,7 @@ class MedicalQueryServiceTest {
         val list = medicalQueryService.findSharedInformationForQuery(medicalQuery.id!!).collectList().block()
 
         assertNotNull("the returned object must not be null", list)
-        assertEquals("List should have size of 0 (no permissions are granted)", 0, list.size)
+        assertEquals("List should have size of 0 (no permissions are granted)", 0, list!!.size)
 
         val matches = medicalQueryService.findMatchingQueries(user.id).collectList().block()
 
@@ -113,22 +113,30 @@ class MedicalQueryServiceTest {
         var permission = SharingPermission(null, info1.id!!, medicalQuery.id!!)
         permission = medicalQueryService.createSharingPermission(permission).block()!!
 
+        var permission2 = SharingPermission(null, info2.id!!, medicalQuery.id!!)
+        permission2 = medicalQueryService.createSharingPermission(permission2).block()!!
+
         val shared = medicalQueryService.findSharedInformationForQuery(medicalQuery.id!!).collectList().block()
 
         assertNotNull("the returned object must not be null", shared)
-        assertEquals("List should have size of 1", 1, shared.size)
+        assertEquals("List should have size of 1", 1, shared!!.size)
 
-        val anonInfo = shared.get(0)
+        val anonInfo = shared[0]
 
-        assertEquals("The list should contain the inserted & shared info", user.gender, anonInfo.gender)
-        assertEquals("The list should contain the inserted & shared info", user.birthday, anonInfo.birthday)
-        assertNotSame("The list should contain the inserted & shared info", user.id, anonInfo.userId)
-        assertEquals("The list should contain the inserted & shared info", 1, anonInfo.medicalInformation.size)
-        assertEquals("The list should contain the inserted & shared info", info1.title, anonInfo.medicalInformation.get(0).title)
-        assertEquals("The list should contain the inserted & shared info", info1.description, anonInfo.medicalInformation.get(0).description)
-        assertEquals("The list should contain the inserted & shared info", info1.tags, anonInfo.medicalInformation.get(0).tags)
-        assertNotSame("The list should contain the inserted & shared info", user.id, anonInfo.medicalInformation.get(0).user)
-        assertEquals("The list should contain the inserted & shared info", anonInfo.userId, anonInfo.medicalInformation.get(0).user)
+        assertEquals("The anonymized info should contain the inserted & shared info: gender", user.gender, anonInfo.gender)
+        assertEquals("The anonymized info should contain the inserted & shared info: birthday", user.birthday, anonInfo.birthday)
+        assertEquals("The anonymized info should contain the inserted & shared medical info", 2, anonInfo.medicalInformation.size)
+        assertEquals("The anonymized info should contain the inserted & shared info: title", info1.title, anonInfo.medicalInformation[0].title)
+        assertEquals("The anonymized info should contain the inserted & shared info:description", info1.description, anonInfo.medicalInformation[0].description)
+        assertEquals("The anonymized info should contain the inserted & shared info: tags", info1.tags, anonInfo.medicalInformation[0].tags)
+
+        //anonyimzed part
+        assertEquals("The anonymized info should have the same userid than the attached medical information userid", anonInfo.userId, anonInfo.medicalInformation[0].user)
+        assertEquals("The anonymized info should have the same userid than the attached medical information userid", anonInfo.userId, anonInfo.medicalInformation[1].user)
+
+        assertNotSame("The anonymized info should have a different userid then the original user\"", user.id, anonInfo.medicalInformation[0].user)
+        assertNotSame("The anonymized info should have a different userid then the original user\"", user.id, anonInfo.medicalInformation[1].user)
+        assertNotSame("The anonymized info should have a different userid then the original user", user.id, anonInfo.userId)
 
 
     }

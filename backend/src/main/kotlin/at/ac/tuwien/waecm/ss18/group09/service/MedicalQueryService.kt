@@ -82,22 +82,41 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
 
         return permissions
                 .flatMap { p -> medicalInformationService.findById(p.information) }
-                .sort { medicalInformation, medicalInformation2 -> Integer.compare(medicalInformation.user.hashCode(), medicalInformation2.user.hashCode()) }
+                .sort { medicalInformation, medicalInformation2 ->
+                    Integer.compare(
+                            medicalInformation.user.hashCode(),
+                            medicalInformation2.user.hashCode())
+                }
                 .groupBy { info -> info.user }
                 .flatMap { groupedFlux ->
                     groupedFlux
-                            .map { medicalInformation -> AnonymizedUserInformation("", mutableListOf(medicalInformation), groupedFlux.key()!!, null, null) }
-                            .reduce { a1: AnonymizedUserInformation, a2: AnonymizedUserInformation -> AnonymizedUserInformation("", a1.medicalInformation.union(a2.medicalInformation).toMutableList(), a1.userId, null, null) }
+                            .map { medicalInformation ->
+                                AnonymizedUserInformation(
+                                        "",
+                                        mutableListOf(medicalInformation),
+                                        groupedFlux.key()!!,
+                                        null,
+                                        null)
+                            }
+                            .reduce { a1: AnonymizedUserInformation, a2: AnonymizedUserInformation ->
+                                AnonymizedUserInformation(
+                                        "",
+                                        a1.medicalInformation.union(a2.medicalInformation).toMutableList(),
+                                        a1.userId,
+                                        null,
+                                        null)
+                            }
                 }
                 .map { an ->
-                    userService.findById(an.userId).cast(User::class.java)
+                    userService.findById(an.userId)
                             .map { user ->
+                                user as User
+                                println(user)
                                 an.birthday = user.birthday
                                 an.gender = user.gender
                                 an.id = UUID.randomUUID().toString()
                                 an.userId = UUID.randomUUID().toString()
                             }
-
                     an
                 }
     }
