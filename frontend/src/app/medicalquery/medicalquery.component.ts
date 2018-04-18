@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../service/auth.service";
 import {Router} from "@angular/router";
 import {MedicalQuery} from "../model/medicalquery";
+import {MedicalqueryService} from "../service/medicalquery.service";
 
 @Component({
   selector: 'app-medicalquery',
@@ -11,27 +12,21 @@ import {MedicalQuery} from "../model/medicalquery";
 export class MedicalqueryComponent implements OnInit {
 
   email: string;
-  data: MedicalQuery;
+  test = new MedicalQuery(2, "TU Vienna", "Abfrage 1", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 10, 50, 60, "FEMALE", ["cancer", "skin"]);
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private authService: AuthService,
+    private medicalQueryService: MedicalqueryService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.email = this.authService.getPrincipal();
-    this.data = new MedicalQuery(
-      1,
-      "1234",
-      "Abfrage 1",
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      500,
-      18,
-      25,
-      "MALE",
-      ["tag1", "tag2"]
-    );
   }
 
-  scroll(elememt) {
-    elememt.scrollIntoView({behavior:'smooth'});
+  scroll() {
+    //elememt.scrollIntoView({behavior:'smooth'});
+    this.medicalQueryService.addMedicalQuery(this.test);
   }
 
   logOut() {

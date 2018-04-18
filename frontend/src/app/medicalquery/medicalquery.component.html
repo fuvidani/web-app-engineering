@@ -11,31 +11,34 @@
       </button>
     </mat-toolbar-row>
   </mat-toolbar>
-  <mat-card class="medicalquery-card">
+  <mat-card class="medicalquery-card" *ngFor="let query of medicalQueryService.medicalQueries | async">
     <mat-card-header>
-      <mat-card-title>Medical Query - {{data.name}}</mat-card-title>
+      <mat-card-title>Medical Query - {{query.name}}</mat-card-title>
       <mat-card-subtitle>
-          <span *ngFor="let tag of data.tags">
+          <span *ngFor="let tag of query.tags">
             {{'#' + tag + " "}}
           </span>
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <p>
-        <b>Description:</b> {{data.description}}
+        <b>Description:</b> {{query.description}}
       </p>
       <p>
-        <b>Financial Offering:</b> {{data.financialOffering}} €
+        <b>Financial Offering:</b> {{query.financialOffering}} €
       </p>
       <p>
-        <b>Age:</b> {{data.minAge}} - {{data.maxAge}}
+        <b>Age:</b> {{query.minAge}} - {{query.maxAge}}
       </p>
       <p>
-        <b>Gender:</b> {{data.gender}}
+        <b>Gender:</b> {{query.gender}}
       </p>
+      <button mat-icon-button color="primary">
+        <mat-icon>navigate_next</mat-icon>
+      </button>
     </mat-card-content>
   </mat-card>
-  <button mat-fab color="primary" class="mat-fab-custom" (click)="scroll(newItem)">
+  <button mat-fab color="primary" class="mat-fab-custom" (click)="scroll()">
     <mat-icon>add</mat-icon>
   </button>
 </div>
