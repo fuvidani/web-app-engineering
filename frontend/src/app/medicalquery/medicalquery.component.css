@@ -13,3 +13,8 @@
   left: auto;
   position: fixed;
 }
+
+.medicalquery-card {
+  margin: 2% auto;
+  width: 35%;
+}

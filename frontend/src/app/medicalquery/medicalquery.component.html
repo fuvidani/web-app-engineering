@@ -11,6 +11,30 @@
       </button>
     </mat-toolbar-row>
   </mat-toolbar>
+  <mat-card class="medicalquery-card">
+    <mat-card-header>
+      <mat-card-title>Medical Query - {{data.name}}</mat-card-title>
+      <mat-card-subtitle>
+          <span *ngFor="let tag of data.tags">
+            {{'#' + tag + " "}}
+          </span>
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        <b>Description:</b> {{data.description}}
+      </p>
+      <p>
+        <b>Financial Offering:</b> {{data.financialOffering}} €
+      </p>
+      <p>
+        <b>Age:</b> {{data.minAge}} - {{data.maxAge}}
+      </p>
+      <p>
+        <b>Gender:</b> {{data.gender}}
+      </p>
+    </mat-card-content>
+  </mat-card>
   <button mat-fab color="primary" class="mat-fab-custom" (click)="scroll(newItem)">
     <mat-icon>add</mat-icon>
   </button>
