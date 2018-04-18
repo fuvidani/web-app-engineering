@@ -6,6 +6,8 @@ import { LoginComponent } from "./login/login.component";
 import {HealthdataComponent} from './healthdata/healthdata.component';
 import {UserGuard} from './guard/user.guard';
 import {QueriesComponent} from './healthdata/queries/queries.component';
+import {ResearchfacilityGuard} from "./guard/researchfacility.guard";
+import {MedicalqueryComponent} from "./medicalquery/medicalquery.component";
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -15,6 +17,7 @@ const routes: Routes = [
       { path: 'queries', component: QueriesComponent, canActivate: [UserGuard] }
     ]
   },
+  { path: 'medicalquery', component: MedicalqueryComponent, canActivate: [ResearchfacilityGuard] },
   { path: '**', component: HomeComponent }
 ];
 
