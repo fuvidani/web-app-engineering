@@ -1,0 +1,15 @@
+.full-width {
+  width: 100%;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.mat-fab-custom {
+  top: auto;
+  right: 20px;
+  bottom: 20px;
+  left: auto;
+  position: fixed;
+}
