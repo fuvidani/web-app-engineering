@@ -34,6 +34,8 @@ class MedicalQueryServiceTest {
     @Before
     fun setUp() {
         mongoTemplate.dropCollection(MedicalQuery::class.java)
+        mongoTemplate.dropCollection(MedicalInformation::class.java)
+        mongoTemplate.dropCollection(SharingPermission::class.java)
         mongoTemplate.dropCollection(AbstractUser::class.java)
         mongoTemplate.dropCollection(User::class.java)
         mongoTemplate.dropCollection(ResearchFacility::class.java)
@@ -77,11 +79,48 @@ class MedicalQueryServiceTest {
         val medicalQuery = getMedicalQueryWithResearchReference()
         medicalQueryService.create(medicalQuery).block()
 
-        val list = medicalQueryService.findMatchingQueries(userId = user.id).collectList().block()
+        val list = medicalQueryService.findMatchingQueries(userId = user.id).collectList().block()!!
 
         assertNotNull("the returned object must not be null", list)
         assertEquals("List should have size of 1", 1, list.size)
-        assertEquals("The list should contain the inserted info", info, list.get(0))
+        assertEquals("The list should contain the inserted info", medicalQuery, list[0])
+    }
+
+    @Test
+    fun findAllSharedInformation_shouldReturn() {
+        val user = testDataProvider.getDummyUser()
+        userService.create(user).block()
+
+        var info1 = testDataProvider.getValidMedicalInformation()
+        var info2 = testDataProvider.getValidMedicalInformation()
+        info1.user = user.id
+        info2.user = user.id
+        info1 = medicalInformationService.create(info1).block()!!
+        info2 = medicalInformationService.create(info2).block()!!
+
+        var medicalQuery = getMedicalQueryWithResearchReference()
+        medicalQuery = medicalQueryService.create(medicalQuery).block()!!
+
+        val list = medicalQueryService.findAllSharedInformation(medicalQuery.researchFacility).collectList().block()
+
+        assertNotNull("the returned object must not be null", list)
+        assertEquals("List should have size of 0 (no permissions are granted)", 0, list!!.size)
+
+        val matches = medicalQueryService.findMatchingQueries(user.id).collectList().block()!!
+
+        assert(matches.size == 1)
+        assert(matches.contains(medicalQuery))
+
+        var permission = SharingPermission(null, info1.id!!, medicalQuery.id!!)
+        permission = medicalQueryService.createSharingPermission(permission).block()!!
+
+        var permission2 = SharingPermission(null, info2.id!!, medicalQuery.id!!)
+        permission2 = medicalQueryService.createSharingPermission(permission2).block()!!
+
+        val shared = medicalQueryService.findAllSharedInformation(medicalQuery.researchFacility).collectList().block()
+
+        assertNotNull("the returned object must not be null", shared)
+        assertEquals("List should have size of 1", 1, shared!!.size)
     }
 
     @Test
@@ -104,11 +143,10 @@ class MedicalQueryServiceTest {
         assertNotNull("the returned object must not be null", list)
         assertEquals("List should have size of 0 (no permissions are granted)", 0, list!!.size)
 
-        val matches = medicalQueryService.findMatchingQueries(user.id).collectList().block()
+        val matches = medicalQueryService.findMatchingQueries(user.id).collectList().block()!!
 
-//        assert(matches.size == 2)
-//        assert(matches.contains(info1))
-//        assert(matches.contains(info2))
+        assert(matches.size == 1)
+        assert(matches.contains(medicalQuery))
 
         var permission = SharingPermission(null, info1.id!!, medicalQuery.id!!)
         permission = medicalQueryService.createSharingPermission(permission).block()!!
