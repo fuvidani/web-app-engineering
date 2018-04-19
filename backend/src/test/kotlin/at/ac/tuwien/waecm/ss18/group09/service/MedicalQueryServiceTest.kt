@@ -51,7 +51,7 @@ class MedicalQueryServiceTest {
     @Test
     fun create_validCreateOfMedicalQuery_shouldPersistAndReturn() {
         val medicalQuery = getMedicalQueryWithResearchReference()
-        assertNull("the id of the query must be null before creation", medicalQuery.id)
+        assertNull("the id of the queryId must be null before creation", medicalQuery.id)
         medicalQueryService.create(medicalQuery).block()
         assertNotNull("the returned object must not be null", medicalQuery)
         assertNotNull("the id of the stored object must not be null anymore", medicalQuery.id)
@@ -166,7 +166,7 @@ class MedicalQueryServiceTest {
         assertEquals("The anonymized info should contain the inserted & shared medical info", 2, anonInfo.medicalInformation.size)
         assertEquals("The anonymized info should contain the inserted & shared info: title", info1.title, anonInfo.medicalInformation[0].title)
         assertEquals("The anonymized info should contain the inserted & shared info:description", info1.description, anonInfo.medicalInformation[0].description)
-//        assertEquals("The anonymized info should contain the inserted & shared info: tags", info1.tags, anonInfo.medicalInformation[0].tags)
+        assertTrue("The anonymized info should contain the inserted & shared info: tags", info1.tags contentDeepEquals anonInfo.medicalInformation[0].tags)
 
         //anonyimzed part
         assertEquals("The anonymized info should have the same userid than the attached medical information userid", anonInfo.userId, anonInfo.medicalInformation[0].userId)

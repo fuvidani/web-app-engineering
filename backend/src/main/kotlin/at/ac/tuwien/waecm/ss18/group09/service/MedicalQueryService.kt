@@ -120,6 +120,7 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
                     an.gender = user.gender
                     an.id = UUID.randomUUID().toString()
                     an.userId = UUID.randomUUID().toString()
+                    an.medicalInformation.forEach { info -> info.userId = an.userId }
                     an
                 }
     }
