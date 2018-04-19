@@ -33,7 +33,7 @@
       <p>
         <b>Gender:</b> {{query.gender}}
       </p>
-      <button mat-icon-button color="primary">
+      <button mat-icon-button color="primary" (click)="navigateToSharedHealthdata(query.id)">
         <mat-icon>navigate_next</mat-icon>
       </button>
     </mat-card-content>

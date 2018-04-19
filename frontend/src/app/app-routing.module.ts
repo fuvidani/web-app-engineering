@@ -8,6 +8,7 @@ import {UserGuard} from './guard/user.guard';
 import {QueriesComponent} from './healthdata/queries/queries.component';
 import {ResearchfacilityGuard} from "./guard/researchfacility.guard";
 import {MedicalqueryComponent} from "./medicalquery/medicalquery.component";
+import {SharedHealthdataComponent} from "./medicalquery/shared-healthdata/shared-healthdata.component";
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -18,6 +19,7 @@ const routes: Routes = [
     ]
   },
   { path: 'medicalquery', component: MedicalqueryComponent, canActivate: [ResearchfacilityGuard] },
+  { path: 'medicalquery/:qid/shared', component: SharedHealthdataComponent, canActivate: [ResearchfacilityGuard] },
   { path: '**', component: HomeComponent }
 ];
 

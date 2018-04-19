@@ -34,4 +34,8 @@ export class MedicalqueryComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
+  navigateToSharedHealthdata(qid: string){
+    this.router.navigate(['medicalquery', qid, 'shared']);
+  }
+
 }
