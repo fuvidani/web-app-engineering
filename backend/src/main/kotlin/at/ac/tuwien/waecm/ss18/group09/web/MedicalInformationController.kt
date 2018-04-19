@@ -31,8 +31,8 @@ class MedicalInformationController(private val medicalInformationService: IMedic
     }
 
     @GetMapping(path = ["/shared"], produces = ["text/event-stream"])
-    fun getAllSharedMedicalInformations(@PathVariable("id") id: String): Flux<AnonymizedUserInformation> {
-        return medicalQueryService.findAllSharedInformation(id)
+    fun getAllSharedMedicalInformation(@PathVariable("id") id: String): Flux<AnonymizedUserInformation> {
+        return medicalQueryService.findAllSharedInformationOfResearchFacility(id)
     }
 
 }

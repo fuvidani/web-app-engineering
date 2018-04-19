@@ -28,7 +28,7 @@ interface IMedicalQueryService {
 
     fun createSharingPermission(sharingPermissions: List<SharingPermission>): Mono<List<SharingPermission>>
 
-    fun findAllSharedInformation(researchId: String): Flux<AnonymizedUserInformation>
+    fun findAllSharedInformationOfResearchFacility(researchId: String): Flux<AnonymizedUserInformation>
 
     fun findSharedInformationForQuery(queryId: String): Flux<AnonymizedUserInformation>
 }
@@ -74,7 +74,7 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
         return Mono.just(sharingPermissions)
     }
 
-    override fun findAllSharedInformation(researchId: String): Flux<AnonymizedUserInformation> {
+    override fun findAllSharedInformationOfResearchFacility(researchId: String): Flux<AnonymizedUserInformation> {
         val queries = findByResearchFacilityId(researchId)
         return queries.map { q -> findSharedInformationForQuery(q.id!!) }.flatMap { it }
     }

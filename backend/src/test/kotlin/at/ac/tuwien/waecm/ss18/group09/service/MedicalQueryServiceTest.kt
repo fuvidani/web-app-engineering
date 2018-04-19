@@ -101,7 +101,7 @@ class MedicalQueryServiceTest {
         var medicalQuery = getMedicalQueryWithResearchReference()
         medicalQuery = medicalQueryService.create(medicalQuery).block()!!
 
-        val list = medicalQueryService.findAllSharedInformation(medicalQuery.researchFacilityId).collectList().block()
+        val list = medicalQueryService.findAllSharedInformationOfResearchFacility(medicalQuery.researchFacilityId).collectList().block()
 
         assertNotNull("the returned object must not be null", list)
         assertEquals("List should have size of 0 (no permissions are granted)", 0, list!!.size)
@@ -117,7 +117,7 @@ class MedicalQueryServiceTest {
         var permission2 = SharingPermission(null, info2.id!!, medicalQuery.id!!)
         permission2 = medicalQueryService.createSharingPermission(permission2).block()!!
 
-        val shared = medicalQueryService.findAllSharedInformation(medicalQuery.researchFacilityId).collectList().block()
+        val shared = medicalQueryService.findAllSharedInformationOfResearchFacility(medicalQuery.researchFacilityId).collectList().block()
 
         assertNotNull("the returned object must not be null", shared)
         assertEquals("List should have size of 1", 1, shared!!.size)

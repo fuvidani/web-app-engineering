@@ -28,7 +28,6 @@ class MedicalQueryController(private val medicalQueryService: MedicalQueryServic
         return medicalQueryService.findByResearchFacilityId(id)
     }
 
-
     @GetMapping(path = ["/matching"], produces = ["text/event-stream"])
     fun getAllMatchingQueries(@PathVariable("id") id: String): Flux<MedicalQuery> {
         return medicalQueryService.findMatchingQueries(id)
@@ -48,8 +47,8 @@ class MedicalQueryController(private val medicalQueryService: MedicalQueryServic
                 .defaultIfEmpty(ResponseEntity.badRequest().build())
     }
 
-    @PostMapping(path = ["{qid}/shared"])
-    fun getSharedInformationForQuery(@PathVariable("qid") qid: String): Flux<AnonymizedUserInformation> {
+    @PostMapping(path = ["{queryid}/shared"])
+    fun getSharedInformationForQuery(@PathVariable("queryid") qid: String): Flux<AnonymizedUserInformation> {
         return medicalQueryService.findSharedInformationForQuery(qid)
     }
 }
