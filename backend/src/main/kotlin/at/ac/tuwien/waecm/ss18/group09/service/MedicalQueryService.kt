@@ -55,14 +55,17 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
 
     override fun findMatchingQueries(userId: String): Flux<MedicalQuery> {
 
+        val infos = medicalInformationService.findByUserId(userId)
+        val user = userService.findById(userId).cast(User::class.java)
 
-        val user = userService.findById(userId).block() as User
-        val infos = medicalInformationService.findByUserId(userId = userId)
-        val tags = infos.map { i -> i.tags }.flatMap { list -> Flux.fromArray(list) }.distinct().collectList().block()
-        val queries = repository.findByGenderAndMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(user.gender, calcAge(user.birthday), calcAge(user.birthday))
-
-//        TODO("handle null filter")
-        return queries.filter { query -> query.tags.any { qTag -> tags.contains(qTag) } }
+        return infos.zipWith(user)
+                .map { tuple ->
+                    repository.findByGenderAndMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(
+                            tuple.t2.gender,
+                            calcAge(tuple.t2.birthday),
+                            calcAge(tuple.t2.birthday)
+                    ).filter { query -> query.tags.any { qTag -> tuple.t1.tags.contains(qTag) } }
+                }.flatMap { it }
     }
 
     override fun createSharingPermission(sharingPermission: SharingPermission): Mono<SharingPermission> {
