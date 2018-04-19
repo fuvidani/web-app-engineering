@@ -26,7 +26,7 @@ import reactor.core.publisher.Mono
 class AuthControllerTest {
 
     private val testDataProvider = TestDataProvider()
-    private val gson = Gson()
+
     @Autowired
     private lateinit var client: WebTestClient
 
@@ -74,7 +74,6 @@ class AuthControllerTest {
             .expectStatus().isOk
             .expectBody()
             .jsonPath("$.token").isNotEmpty
-            .jsonPath("$.user").isEqualTo(getUserAsJson(user))
     }
 
     @Test
@@ -87,10 +86,6 @@ class AuthControllerTest {
             .body(Mono.just(userAuthRequest), AuthRequest::class.java)
             .exchange()
             .expectStatus().is5xxServerError
-    }
-
-    private fun getUserAsJson(user: AbstractUser): String {
-        return gson.toJson(user)
     }
 
     private fun getAuthRequestForUser(user: AbstractUser): AuthRequest {
