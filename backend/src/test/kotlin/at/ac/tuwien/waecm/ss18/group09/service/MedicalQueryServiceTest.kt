@@ -114,13 +114,15 @@ class MedicalQueryServiceTest {
         var permission = SharingPermission(null, info1.id!!, medicalQuery.id!!)
         permission = medicalQueryService.createSharingPermission(permission).block()!!
 
-        var permission2 = SharingPermission(null, info2.id!!, medicalQuery.id!!)
-        permission2 = medicalQueryService.createSharingPermission(permission2).block()!!
+//        var permission2 = SharingPermission(null, info2.id!!, medicalQuery.id!!)
+//        permission2 = medicalQueryService.createSharingPermission(permission2).block()!!
 
         val shared = medicalQueryService.findAllSharedInformationOfResearchFacility(medicalQuery.researchFacilityId).collectList().block()
 
         assertNotNull("the returned object must not be null", shared)
         assertEquals("List should have size of 1", 1, shared!!.size)
+
+        assertAnonInfo(user, shared[0], info1)
     }
 
     @Test
@@ -151,22 +153,25 @@ class MedicalQueryServiceTest {
         var permission = SharingPermission(null, info1.id!!, medicalQuery.id!!)
         permission = medicalQueryService.createSharingPermission(permission).block()!!
 
-        var permission2 = SharingPermission(null, info2.id!!, medicalQuery.id!!)
-        permission2 = medicalQueryService.createSharingPermission(permission2).block()!!
+//        var permission2 = SharingPermission(null, info2.id!!, medicalQuery.id!!)
+//        permission2 = medicalQueryService.createSharingPermission(permission2).block()!!
 
         val shared = medicalQueryService.findSharedInformationForQuery(medicalQuery.id!!).collectList().block()
 
         assertNotNull("the returned object must not be null", shared)
         assertEquals("List should have size of 1", 1, shared!!.size)
 
-        val anonInfo = shared[0]
+        assertAnonInfo(user, shared[0], info1)
+    }
+
+    private fun assertAnonInfo(user: User, anonInfo: AnonymizedUserInformation, info: MedicalInformation) {
 
         assertEquals("The anonymized info should contain the inserted & shared info: gender", user.gender, anonInfo.gender)
         assertEquals("The anonymized info should contain the inserted & shared info: birthday", user.birthday, anonInfo.birthday)
         assertEquals("The anonymized info should contain the inserted & shared medical info", 2, anonInfo.medicalInformation.size)
-        assertEquals("The anonymized info should contain the inserted & shared info: title", info1.title, anonInfo.medicalInformation[0].title)
-        assertEquals("The anonymized info should contain the inserted & shared info:description", info1.description, anonInfo.medicalInformation[0].description)
-        assertTrue("The anonymized info should contain the inserted & shared info: tags", info1.tags contentDeepEquals anonInfo.medicalInformation[0].tags)
+        assertEquals("The anonymized info should contain the inserted & shared info: title", info.title, anonInfo.medicalInformation[0].title)
+        assertEquals("The anonymized info should contain the inserted & shared info:description", info.description, anonInfo.medicalInformation[0].description)
+        assertTrue("The anonymized info should contain the inserted & shared info: tags", info.tags contentDeepEquals anonInfo.medicalInformation[0].tags)
 
         //anonyimzed part
         assertEquals("The anonymized info should have the same userid than the attached medical information userid", anonInfo.userId, anonInfo.medicalInformation[0].userId)
@@ -175,7 +180,6 @@ class MedicalQueryServiceTest {
         assertNotSame("The anonymized info should have a different userid then the original user\"", user.id, anonInfo.medicalInformation[0].userId)
         assertNotSame("The anonymized info should have a different userid then the original user\"", user.id, anonInfo.medicalInformation[1].userId)
         assertNotSame("The anonymized info should have a different userid then the original user", user.id, anonInfo.userId)
-
 
     }
 }
