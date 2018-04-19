@@ -113,7 +113,6 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
                             }
                 }
                 .map { an ->
-                    println(an)
                     val user = userService.findById(an.userId).block()
                     user as User
                     println(user)

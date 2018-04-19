@@ -120,7 +120,7 @@ data class SharingPermission(
         @get: NotBlank
         var information: String,
         @get: NotBlank
-        var query: String)
+        var queryId: String)
 
 data class AnonymizedUserInformation(
         var id: String,
