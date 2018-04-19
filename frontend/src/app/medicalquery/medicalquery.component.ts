@@ -21,7 +21,7 @@ export class MedicalqueryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.email = this.authService.getPrincipal();
+    this.email = this.authService.getPrincipal().email;
   }
 
   scroll() {

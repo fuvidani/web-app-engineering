@@ -7,7 +7,6 @@ import at.ac.tuwien.waecm.ss18.group09.dto.AuthRequest
 import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
 import at.ac.tuwien.waecm.ss18.group09.dto.User
 import at.ac.tuwien.waecm.ss18.group09.service.IUserService
-import com.google.gson.Gson
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

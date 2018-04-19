@@ -36,5 +36,4 @@ class AuthController(
             .map { authentication -> authentication.principal as AbstractUser }
             .map { user -> AuthResponse(jwtService.generateJwt(user)) }
     }
-
 }
