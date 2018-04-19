@@ -30,7 +30,7 @@ enum class Gender {
 data class MedicalInformation(
         @Id
         var id: String? = null,
-        var user: String = "",
+        var userId: String = "",
         @get: NotBlank
         var title: String = "",
         var description: String = "",
@@ -45,7 +45,7 @@ data class MedicalInformation(
         other as MedicalInformation
 
         if (id != other.id) return false
-        if (user != other.user) return false
+        if (userId != other.userId) return false
         if (title != other.title) return false
         if (description != other.description) return false
         if (image != other.image) return false
@@ -56,7 +56,7 @@ data class MedicalInformation(
 
     override fun hashCode(): Int {
         var result = id?.hashCode() ?: 0
-        result = 31 * result + user.hashCode()
+        result = 31 * result + userId.hashCode()
         result = 31 * result + title.hashCode()
         result = 31 * result + description.hashCode()
         result = 31 * result + image.hashCode()
@@ -69,7 +69,7 @@ data class MedicalInformation(
 data class MedicalQuery(
         @Id
         var id: String? = null,
-        var researchFacility: String = "",
+        var researchFacilityId: String = "",
         @get: NotBlank
         var name: String = "",
         @get: NotBlank
@@ -77,8 +77,8 @@ data class MedicalQuery(
         @get: NotNull
         @get: Min(0)
         var financialOffering: Double = 0.0,
-        var minAge: Integer = Integer(0),
-        var maxAge: Integer = Integer(0),
+        var minAge: Int = 0,
+        var maxAge: Int = 0,
         var gender: Gender?,
         var tags: Array<String> = emptyArray()
 ) {
@@ -89,7 +89,7 @@ data class MedicalQuery(
         other as MedicalQuery
 
         if (id != other.id) return false
-        if (researchFacility != other.researchFacility) return false
+        if (researchFacilityId != other.researchFacilityId) return false
         if (name != other.name) return false
         if (description != other.description) return false
         if (financialOffering != other.financialOffering) return false
@@ -102,7 +102,7 @@ data class MedicalQuery(
 
     override fun hashCode(): Int {
         var result = id?.hashCode() ?: 0
-        result = 31 * result + researchFacility.hashCode()
+        result = 31 * result + researchFacilityId.hashCode()
         result = 31 * result + name.hashCode()
         result = 31 * result + description.hashCode()
         result = 31 * result + financialOffering.hashCode()

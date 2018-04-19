@@ -36,7 +36,7 @@ class MedicalInformationService(private val repository: MedicalInformationReposi
     @Throws(ValidationException::class)
     private fun validate(medicalInformation: MedicalInformation) {
 
-        if (medicalInformation.user.trim().isEmpty())
+        if (medicalInformation.userId.trim().isEmpty())
             throw ValidationException("no user reference was provided")
 
         if (medicalInformation.title.trim().isEmpty())

@@ -41,9 +41,9 @@ class MedicalInformationServiceTest {
     }
 
     private fun getMedicalInformationWithUserReference(): MedicalInformation {
-        val user = userService.create(testDataProvider.getDummyUser()).block()
+        val user = userService.create(testDataProvider.getDummyUser()).block()!!
         val medicalInformation = testDataProvider.getValidMedicalInformation()
-        medicalInformation.user = user.id
+        medicalInformation.userId = user.id
         return medicalInformation
     }
 
@@ -88,31 +88,31 @@ class MedicalInformationServiceTest {
     fun findById_creatingAndSearchingObject_shouldPersistAndReturn() {
         val medicalInformation = getMedicalInformationWithUserReference()
         medicalInformationService.create(medicalInformation).block()
-        val id: String = medicalInformation?.id ?: ""
+        val id: String = medicalInformation.id ?: ""
         val found = medicalInformationService.findById(id).block()
         assertEquals("the created and found object must be equal", medicalInformation, found)
     }
 
     @Test
     fun findByUser_creatingAndSearchingObjects_shouldPersistAndReturn() {
-        val firstUser = userService.create(testDataProvider.getDummyUser()).block()
+        val firstUser = userService.create(testDataProvider.getDummyUser()).block()!!
 
         val secondUser = testDataProvider.getDummyUser()
         secondUser.email = "other@mail.com"
         userService.create(secondUser).block()
 
         val firstObject = testDataProvider.getValidMedicalInformation()
-        firstObject.user = firstUser.id
+        firstObject.userId = firstUser.id
         medicalInformationService.create(firstObject).block()
 
         val unrelevantInformation = testDataProvider.getValidMedicalInformation()
-        unrelevantInformation.user = secondUser.id
+        unrelevantInformation.userId = secondUser.id
         medicalInformationService.create(unrelevantInformation).block()
 
         val secondObject = testDataProvider.getValidMedicalInformation()
         secondObject.title = "other title"
         secondObject.description = "my rash"
-        secondObject.user = firstUser.id
+        secondObject.userId = firstUser.id
 
         medicalInformationService.create(firstObject).block()
         medicalInformationService.create(secondObject).block()

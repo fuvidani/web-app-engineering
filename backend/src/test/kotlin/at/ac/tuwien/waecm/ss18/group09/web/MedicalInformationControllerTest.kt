@@ -52,12 +52,12 @@ class MedicalInformationControllerTest {
         mongoTemplate.dropCollection(ResearchFacility::class.java)
         mongoTemplate.dropCollection(MedicalInformation::class.java)
 
-        user = userService.create(testDataProvider.getDummyUser()).block()
+        user = userService.create(testDataProvider.getDummyUser()).block()!!
     }
 
     private fun getMedicalInformationWithUserReference(): MedicalInformation {
         val medicalInformation = testDataProvider.getValidMedicalInformation()
-        medicalInformation.user = user.id
+        medicalInformation.userId = user.id
         return medicalInformation
     }
 
@@ -101,17 +101,17 @@ class MedicalInformationControllerTest {
         userService.create(secondUser).block()
 
         firstObject = testDataProvider.getValidMedicalInformation()
-        firstObject.user = user.id
+        firstObject.userId = user.id
         medicalInformationService.create(firstObject).block()
 
         val unrelevantInformation = testDataProvider.getValidMedicalInformation()
-        unrelevantInformation.user = secondUser.id
+        unrelevantInformation.userId = secondUser.id
         medicalInformationService.create(unrelevantInformation).block()
 
         secondObject = testDataProvider.getValidMedicalInformation()
         secondObject.title = "other title"
         secondObject.description = "my rash"
-        secondObject.user = user.id
+        secondObject.userId = user.id
 
         medicalInformationService.create(firstObject).block()
         medicalInformationService.create(secondObject).block()

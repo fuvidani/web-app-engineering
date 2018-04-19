@@ -87,7 +87,7 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
 //                            medicalInformation.user.hashCode(),
 //                            medicalInformation2.user.hashCode())
 //                }
-                .groupBy { info -> info.user }
+                .groupBy { info -> info.userId }
                 .flatMap { groupedFlux ->
                     groupedFlux
                             .map { medicalInformation ->
@@ -124,8 +124,8 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
     private fun validate(medicalQuery: MedicalQuery) {
 
         if (
-                medicalQuery.minAge == Integer(0) &&
-                medicalQuery.maxAge == Integer(0) &&
+                medicalQuery.minAge == 0 &&
+                medicalQuery.maxAge == 0 &&
                 medicalQuery.gender == null &&
                 medicalQuery.tags.isEmpty()
         )

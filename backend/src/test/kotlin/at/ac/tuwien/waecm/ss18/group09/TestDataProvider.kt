@@ -45,8 +45,8 @@ class TestDataProvider {
         return MedicalQuery(name = "my_query",
                 description = "some description",
                 financialOffering = 5.05,
-                minAge = Integer(18),
-                maxAge = Integer(35),
+                minAge = 18,
+                maxAge = 35,
                 gender = Gender.MALE,
                 tags = arrayOf("disease"))
     }

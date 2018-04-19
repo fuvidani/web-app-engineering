@@ -49,13 +49,13 @@ internal class MedicalQueryControllerTest {
         mongoTemplate.dropCollection(ResearchFacility::class.java)
         mongoTemplate.dropCollection(MedicalInformation::class.java)
 
-        user = userService.create(testDataProvider.getDummyUser()).block()
+        user = userService.create(testDataProvider.getDummyUser()).block()!!
     }
 
     private fun getMedicalQueryWithResearchReference(): MedicalQuery {
-        val researchFacility = userService.create(testDataProvider.getDummyResearcher()).block()
+        val researchFacility = userService.create(testDataProvider.getDummyResearcher()).block()!!
         val medicalQuery = testDataProvider.getValidMedicalQuery()
-        medicalQuery.researchFacility = researchFacility.id
+        medicalQuery.researchFacilityId = researchFacility.id
         return medicalQuery
     }
 
@@ -98,11 +98,11 @@ internal class MedicalQueryControllerTest {
         userService.create(secondUser).block()
 
         firstObject = testDataProvider.getValidMedicalQuery()
-        firstObject.researchFacility = user.id
+        firstObject.researchFacilityId = user.id
         medicalQueryService.create(firstObject).block()
 
         val unrelevantInformation = testDataProvider.getValidMedicalQuery()
-        unrelevantInformation.researchFacility = secondUser.id
+        unrelevantInformation.researchFacilityId = secondUser.id
         medicalQueryService.create(unrelevantInformation).block()
 
         secondObject = testDataProvider.getValidMedicalQuery()
