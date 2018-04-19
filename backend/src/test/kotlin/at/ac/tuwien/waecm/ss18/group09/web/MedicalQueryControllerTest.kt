@@ -1,16 +1,14 @@
 package at.ac.tuwien.waecm.ss18.group09.web
 
-import at.ac.tuwien.waecm.ss18.group09.BackendTestApplication
+import at.ac.tuwien.waecm.ss18.group09.AbstractTest
 import at.ac.tuwien.waecm.ss18.group09.TestDataProvider
-import at.ac.tuwien.waecm.ss18.group09.dto.*
+import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
+import at.ac.tuwien.waecm.ss18.group09.dto.MedicalQuery
 import at.ac.tuwien.waecm.ss18.group09.service.IMedicalQueryService
 import at.ac.tuwien.waecm.ss18.group09.service.IUserService
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
@@ -20,9 +18,12 @@ import reactor.test.StepVerifier
 
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(value = ["application.yml"], classes = [BackendTestApplication::class])
-@AutoConfigureWebTestClient(timeout = "15000")
-internal class MedicalQueryControllerTest {
+internal class MedicalQueryControllerTest : AbstractTest() {
+
+    override fun init() {
+
+        user = userService.create(testDataProvider.getDummyUser()).block()!!
+    }
 
     val testDataProvider = TestDataProvider()
 
@@ -42,16 +43,6 @@ internal class MedicalQueryControllerTest {
     private lateinit var firstObject: MedicalQuery
     private lateinit var secondObject: MedicalQuery
 
-    @Before
-    fun setUp() {
-        mongoTemplate.dropCollection(AbstractUser::class.java)
-        mongoTemplate.dropCollection(User::class.java)
-        mongoTemplate.dropCollection(ResearchFacility::class.java)
-        mongoTemplate.dropCollection(MedicalInformation::class.java)
-
-        user = userService.create(testDataProvider.getDummyUser()).block()!!
-    }
-
     private fun getMedicalQueryWithResearchReference(): MedicalQuery {
         val researchFacility = userService.create(testDataProvider.getDummyResearcher()).block()!!
         val medicalQuery = testDataProvider.getValidMedicalQuery()
@@ -60,7 +51,7 @@ internal class MedicalQueryControllerTest {
     }
 
     @Test
-    fun create_validCreate_shouldReturn(){
+    fun create_validCreate_shouldReturn() {
         val medicalQuery = getMedicalQueryWithResearchReference()
 
         client.post().uri("/user/${user.id}/medicalQuery")

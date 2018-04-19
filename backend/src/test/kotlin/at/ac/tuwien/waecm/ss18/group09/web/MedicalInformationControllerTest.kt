@@ -1,20 +1,14 @@
 package at.ac.tuwien.waecm.ss18.group09.web
 
-import at.ac.tuwien.waecm.ss18.group09.BackendTestApplication
+import at.ac.tuwien.waecm.ss18.group09.AbstractTest
 import at.ac.tuwien.waecm.ss18.group09.TestDataProvider
 import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalInformation
-import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
-import at.ac.tuwien.waecm.ss18.group09.dto.User
 import at.ac.tuwien.waecm.ss18.group09.service.IMedicalInformationService
 import at.ac.tuwien.waecm.ss18.group09.service.IUserService
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.TEXT_EVENT_STREAM
 import org.springframework.test.context.junit4.SpringRunner
@@ -23,9 +17,11 @@ import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(value = ["application.yml"], classes = [BackendTestApplication::class])
-@AutoConfigureWebTestClient(timeout = "15000")
-class MedicalInformationControllerTest {
+class MedicalInformationControllerTest : AbstractTest() {
+
+    override fun init() {
+        user = userService.create(testDataProvider.getDummyUser()).block()!!
+    }
 
     private val testDataProvider = TestDataProvider()
 
@@ -38,22 +34,9 @@ class MedicalInformationControllerTest {
     @Autowired
     lateinit var medicalInformationService: IMedicalInformationService
 
-    @Autowired
-    private lateinit var mongoTemplate: MongoTemplate
-
     private lateinit var user: AbstractUser
     private lateinit var firstObject: MedicalInformation
     private lateinit var secondObject: MedicalInformation
-
-    @Before
-    fun setUp() {
-        mongoTemplate.dropCollection(AbstractUser::class.java)
-        mongoTemplate.dropCollection(User::class.java)
-        mongoTemplate.dropCollection(ResearchFacility::class.java)
-        mongoTemplate.dropCollection(MedicalInformation::class.java)
-
-        user = userService.create(testDataProvider.getDummyUser()).block()!!
-    }
 
     private fun getMedicalInformationWithUserReference(): MedicalInformation {
         val medicalInformation = testDataProvider.getValidMedicalInformation()

@@ -8,6 +8,6 @@ import reactor.core.publisher.Flux
 @Repository
 interface SharingPermissionRepository : ReactiveMongoRepository<SharingPermission, String> {
 
-    fun findByQuery(query: String): Flux<SharingPermission>
+    fun findByQueryId(queryId: String): Flux<SharingPermission>
 }
 

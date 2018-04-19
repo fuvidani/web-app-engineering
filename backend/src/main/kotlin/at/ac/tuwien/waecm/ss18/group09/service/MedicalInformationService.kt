@@ -13,7 +13,7 @@ interface IMedicalInformationService {
 
     fun findById(id: String): Mono<MedicalInformation>
 
-    fun findByUser(user: String): Flux<MedicalInformation>
+    fun findByUserId(userId: String): Flux<MedicalInformation>
 }
 
 @Component("medicalInformationService")
@@ -29,8 +29,8 @@ class MedicalInformationService(private val repository: MedicalInformationReposi
         return repository.findById(id)
     }
 
-    override fun findByUser(user: String): Flux<MedicalInformation> {
-        return repository.findByUser(user)
+    override fun findByUserId(userId: String): Flux<MedicalInformation> {
+        return repository.findByUserId(userId)
     }
 
     @Throws(ValidationException::class)

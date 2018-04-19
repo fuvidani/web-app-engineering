@@ -18,7 +18,7 @@ interface IMedicalQueryService {
     @Throws(ValidationException::class)
     fun create(medicalQuery: MedicalQuery): Mono<MedicalQuery>
 
-    fun findByResearchFacility(id: String): Flux<MedicalQuery>
+    fun findByResearchFacilityId(id: String): Flux<MedicalQuery>
 
     fun findAll(): Flux<MedicalQuery>
 
@@ -30,7 +30,7 @@ interface IMedicalQueryService {
 
     fun findAllSharedInformation(researchId: String): Flux<AnonymizedUserInformation>
 
-    fun findSharedInformationForQuery(id: String): Flux<AnonymizedUserInformation>
+    fun findSharedInformationForQuery(queryId: String): Flux<AnonymizedUserInformation>
 }
 
 @Component("medicalQueryService")
@@ -45,8 +45,8 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
         return repository.save(medicalQuery)
     }
 
-    override fun findByResearchFacility(id: String): Flux<MedicalQuery> {
-        return repository.findByResearchFacility(id)
+    override fun findByResearchFacilityId(id: String): Flux<MedicalQuery> {
+        return repository.findByResearchFacilityId(id)
     }
 
     override fun findAll(): Flux<MedicalQuery> {
@@ -54,8 +54,10 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
     }
 
     override fun findMatchingQueries(userId: String): Flux<MedicalQuery> {
+
+
         val user = userService.findById(userId).block() as User
-        val infos = medicalInformationService.findByUser(user = userId)
+        val infos = medicalInformationService.findByUserId(userId = userId)
         val tags = infos.map { i -> i.tags }.flatMap { list -> Flux.fromArray(list) }.distinct().collectList().block()
         val queries = repository.findByGenderAndMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(user.gender, calcAge(user.birthday), calcAge(user.birthday))
 
@@ -73,12 +75,12 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
     }
 
     override fun findAllSharedInformation(researchId: String): Flux<AnonymizedUserInformation> {
-        val queries = findByResearchFacility(researchId)
+        val queries = findByResearchFacilityId(researchId)
         return queries.map { q -> findSharedInformationForQuery(q.id!!) }.flatMap { it }
     }
 
-    override fun findSharedInformationForQuery(id: String): Flux<AnonymizedUserInformation> {
-        val permissions = sharingPermissionRepository.findByQuery(id)
+    override fun findSharedInformationForQuery(queryId: String): Flux<AnonymizedUserInformation> {
+        val permissions = sharingPermissionRepository.findByQueryId(queryId)
 
         return permissions
                 .flatMap { p -> medicalInformationService.findById(p.information) }

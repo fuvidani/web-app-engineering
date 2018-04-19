@@ -1,11 +1,9 @@
 package at.ac.tuwien.waecm.ss18.group09.web
 
-import at.ac.tuwien.waecm.ss18.group09.BackendTestApplication
+import at.ac.tuwien.waecm.ss18.group09.AbstractTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -20,9 +18,10 @@ import org.springframework.test.web.reactive.server.WebTestClient
  * @since 1.0.0
  */
 @RunWith(SpringRunner::class)
-@SpringBootTest(value = ["application.yml"], classes = [BackendTestApplication::class])
-@AutoConfigureWebTestClient(timeout = "15000")
-class BackendControllerTest {
+class BackendControllerTest : AbstractTest() {
+
+    override fun init() {
+    }
 
     @Autowired
     private lateinit var client: WebTestClient
@@ -30,10 +29,10 @@ class BackendControllerTest {
     @Test
     fun testApiDocumentationEndpointShouldReturnValidJson() {
         client.get().uri("/swagger")
-            .accept(MediaType.APPLICATION_JSON_UTF8)
-            .exchange()
-            .expectStatus().isOk
-            .expectBody()
-            .jsonPath("$.paths").isNotEmpty
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .jsonPath("$.paths").isNotEmpty
     }
 }

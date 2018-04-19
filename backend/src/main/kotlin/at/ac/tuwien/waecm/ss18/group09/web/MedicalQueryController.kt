@@ -25,7 +25,7 @@ class MedicalQueryController(private val medicalQueryService: MedicalQueryServic
 
     @GetMapping(produces = ["text/event-stream"])
     fun getAllMedicalInformationForUser(@PathVariable("id") id: String): Flux<MedicalQuery> {
-        return medicalQueryService.findByResearchFacility(id)
+        return medicalQueryService.findByResearchFacilityId(id)
     }
 
 

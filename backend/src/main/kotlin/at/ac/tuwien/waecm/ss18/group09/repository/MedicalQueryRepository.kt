@@ -9,7 +9,7 @@ import reactor.core.publisher.Flux
 @Repository
 interface MedicalQueryRepository : ReactiveMongoRepository<MedicalQuery, String> {
 
-    fun findByResearchFacility(id: String): Flux<MedicalQuery>
+    fun findByResearchFacilityId(researchFacilityId: String): Flux<MedicalQuery>
 
     fun findByGenderAndMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(gender: Gender, minAge: Int, maxAge: Int): Flux<MedicalQuery>
 }
