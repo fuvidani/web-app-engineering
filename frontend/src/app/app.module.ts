@@ -25,6 +25,7 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import { QueriesComponent } from './healthdata/queries/queries.component';
 import { MedicalqueryComponent } from './medicalquery/medicalquery.component';
 import {MedicalqueryService} from "./service/medicalquery.service";
+import { SharedHealthdataComponent } from './medicalquery/shared-healthdata/shared-healthdata.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -42,7 +43,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     LoginComponent,
     HealthdataComponent,
     QueriesComponent,
-    MedicalqueryComponent
+    MedicalqueryComponent,
+    SharedHealthdataComponent
   ],
   imports: [
     BrowserModule,
