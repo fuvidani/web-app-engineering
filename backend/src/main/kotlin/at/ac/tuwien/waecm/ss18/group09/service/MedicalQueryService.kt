@@ -82,11 +82,11 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
 
         return permissions
                 .flatMap { p -> medicalInformationService.findById(p.information) }
-                .sort { medicalInformation, medicalInformation2 ->
-                    Integer.compare(
-                            medicalInformation.user.hashCode(),
-                            medicalInformation2.user.hashCode())
-                }
+//                .sort { medicalInformation, medicalInformation2 ->
+//                    Integer.compare(
+//                            medicalInformation.user.hashCode(),
+//                            medicalInformation2.user.hashCode())
+//                }
                 .groupBy { info -> info.user }
                 .flatMap { groupedFlux ->
                     groupedFlux
@@ -108,15 +108,14 @@ class MedicalQueryService(private val repository: MedicalQueryRepository,
                             }
                 }
                 .map { an ->
-                    userService.findById(an.userId)
-                            .map { user ->
-                                user as User
-                                println(user)
-                                an.birthday = user.birthday
-                                an.gender = user.gender
-                                an.id = UUID.randomUUID().toString()
-                                an.userId = UUID.randomUUID().toString()
-                            }
+                    println(an)
+                    val user = userService.findById(an.userId).block()
+                    user as User
+                    println(user)
+                    an.birthday = user.birthday
+                    an.gender = user.gender
+                    an.id = UUID.randomUUID().toString()
+                    an.userId = UUID.randomUUID().toString()
                     an
                 }
     }
