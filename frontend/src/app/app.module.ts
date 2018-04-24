@@ -23,6 +23,9 @@ import { HealthdataComponent } from './healthdata/healthdata.component';
 import {HealthdataService} from './service/healthdata.service';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { QueriesComponent } from './healthdata/queries/queries.component';
+import { MedicalqueryComponent } from './medicalquery/medicalquery.component';
+import {MedicalqueryService} from "./service/medicalquery.service";
+import { SharedHealthdataComponent } from './medicalquery/shared-healthdata/shared-healthdata.component';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -39,7 +42,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     RegisterComponent,
     LoginComponent,
     HealthdataComponent,
-    QueriesComponent
+    QueriesComponent,
+    MedicalqueryComponent,
+    SharedHealthdataComponent
   ],
   imports: [
     BrowserModule,
@@ -69,6 +74,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AuthService,
     RegisterService,
     HealthdataService,
+    MedicalqueryService,
     AuthGuard,
     UserGuard,
     ResearchfacilityGuard

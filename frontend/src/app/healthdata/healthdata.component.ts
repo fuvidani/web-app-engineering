@@ -18,7 +18,7 @@ export class HealthdataComponent implements OnInit {
   ngOnInit() {
     this.healthdataService.healthData.subscribe(res => this.healthData = res);
     this.healthdataService.changeHealthData(this.healthData);
-    this.email = this.authService.getPrincipal();
+    this.email = this.authService.getPrincipal().email;
   }
 
   addHealthData() {

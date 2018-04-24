@@ -39,7 +39,7 @@ export class AuthService {
     const access_token: string = localStorage.getItem("access_token");
     const decodedToken: DecodedAccessToken = this.jwtHelper.decodeToken(access_token);
 
-    return decodedToken.sub;
+    return decodedToken;
   }
 
   hasRole(role: string) {

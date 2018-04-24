@@ -1,5 +1,6 @@
 package at.ac.tuwien.waecm.ss18.group09.auth
 
+import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
@@ -25,6 +26,7 @@ import kotlin.collections.set
 class JwtService : IJwtService {
 
     private val roles = "roles"
+    private val email = "email"
 
     @Value("\${spring.security.token.secret}")
     private val tokenSecret: String? = null
@@ -33,7 +35,7 @@ class JwtService : IJwtService {
     private val tokenExpiration: Long = 0
 
     @Throws(JwtServiceException::class)
-    override fun generateJwt(user: User): String {
+    override fun generateJwt(user: AbstractUser): String {
 
         val nowMillis = System.currentTimeMillis()
         val nowDate = Date(nowMillis)
@@ -45,7 +47,7 @@ class JwtService : IJwtService {
 
         val jwtBuilder = Jwts.builder()
             .setClaims(generatePrivateClaims(user))
-            .setSubject(user.username)
+            .setSubject(user.id)
             .setIssuedAt(nowDate)
             .setExpiration(expirationDate)
             .signWith(signatureAlgorithm, tokenKey)
@@ -58,7 +60,7 @@ class JwtService : IJwtService {
      * @param user the details which are used to created the private claims
      * @return the private claims with the user information
      */
-    private fun generatePrivateClaims(user: User): Map<String, Any> {
+    private fun generatePrivateClaims(user: AbstractUser): Map<String, Any> {
 
         val claims = HashMap<String, Any>()
 
@@ -72,6 +74,7 @@ class JwtService : IJwtService {
         }
 
         claims[roles] = stringBuilder.toString()
+        claims[email] = user.email
         return claims
     }
 

@@ -17,7 +17,7 @@ import javax.validation.constraints.NotBlank
  */
 data class AuthRequest(val email: String, val password: String)
 
-data class AuthResponse(val token: String, val user: String)
+data class AuthResponse(val token: String)
 
 enum class Gender {
     MALE, FEMALE
