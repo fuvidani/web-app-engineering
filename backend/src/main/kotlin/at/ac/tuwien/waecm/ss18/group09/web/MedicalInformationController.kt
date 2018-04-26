@@ -24,14 +24,13 @@ class MedicalInformationController(private val medicalInformationService: IMedic
 
         if (medicalInformation.userId != id) return Mono.just(ResponseEntity(HttpStatus.FORBIDDEN))
 
-        try {
-
-            return medicalInformationService.create(medicalInformation)
+        return try {
+            medicalInformationService.create(medicalInformation)
                     .map { i -> ResponseEntity<MedicalInformation>(i, HttpStatus.OK) }
                     .defaultIfEmpty(ResponseEntity(HttpStatus.BAD_REQUEST))
 
         } catch (e: ValidationException) {
-            return Mono.just(ResponseEntity(HttpStatus.BAD_REQUEST))
+            Mono.just(ResponseEntity(HttpStatus.BAD_REQUEST))
         }
     }
 
