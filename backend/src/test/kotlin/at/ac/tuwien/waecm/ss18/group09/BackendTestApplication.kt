@@ -26,9 +26,9 @@ class BackendTestApplication {
     @Bean
     fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         http
-            .authorizeExchange()
-            .anyExchange().permitAll()
-            .and().csrf().disable()
+                .authorizeExchange()
+                .anyExchange().permitAll()
+                .and().csrf().disable()
         return http.build()
     }
 }

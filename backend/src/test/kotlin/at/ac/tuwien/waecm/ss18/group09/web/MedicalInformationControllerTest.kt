@@ -1,20 +1,14 @@
 package at.ac.tuwien.waecm.ss18.group09.web
 
-import at.ac.tuwien.waecm.ss18.group09.BackendTestApplication
+import at.ac.tuwien.waecm.ss18.group09.AbstractTest
 import at.ac.tuwien.waecm.ss18.group09.TestDataProvider
 import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalInformation
-import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
-import at.ac.tuwien.waecm.ss18.group09.dto.User
 import at.ac.tuwien.waecm.ss18.group09.service.IMedicalInformationService
 import at.ac.tuwien.waecm.ss18.group09.service.IUserService
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.TEXT_EVENT_STREAM
 import org.springframework.test.context.junit4.SpringRunner
@@ -23,9 +17,11 @@ import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(value = ["application.yml"], classes = [BackendTestApplication::class])
-@AutoConfigureWebTestClient(timeout = "15000")
-class MedicalInformationControllerTest {
+class MedicalInformationControllerTest : AbstractTest() {
+
+    override fun init() {
+        user = userService.create(testDataProvider.getDummyUser()).block()!!
+    }
 
     private val testDataProvider = TestDataProvider()
 
@@ -38,26 +34,13 @@ class MedicalInformationControllerTest {
     @Autowired
     lateinit var medicalInformationService: IMedicalInformationService
 
-    @Autowired
-    private lateinit var mongoTemplate: MongoTemplate
-
     private lateinit var user: AbstractUser
     private lateinit var firstObject: MedicalInformation
     private lateinit var secondObject: MedicalInformation
 
-    @Before
-    fun setUp() {
-        mongoTemplate.dropCollection(AbstractUser::class.java)
-        mongoTemplate.dropCollection(User::class.java)
-        mongoTemplate.dropCollection(ResearchFacility::class.java)
-        mongoTemplate.dropCollection(MedicalInformation::class.java)
-
-        user = userService.create(testDataProvider.getDummyUser()).block()
-    }
-
     private fun getMedicalInformationWithUserReference(): MedicalInformation {
         val medicalInformation = testDataProvider.getValidMedicalInformation()
-        medicalInformation.user = user.id
+        medicalInformation.userId = user.id
         return medicalInformation
     }
 
@@ -74,6 +57,109 @@ class MedicalInformationControllerTest {
                 .expectStatus().isOk
                 .expectBody()
                 .jsonPath("$.id").isNotEmpty
+    }
+
+    @Test
+    fun create_invalidCreate_wrongUser_shouldFail() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.userId = "99999"
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isForbidden
+    }
+
+    @Test
+    fun create_invalidCreate_noUser_shouldFail() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.userId = ""
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isForbidden
+    }
+
+    @Test
+    fun create_invalidCreate_noTitle_shouldFail() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.title = ""
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun create_validCreate_noDescr_shouldReturn() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.description = ""
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty
+    }
+
+    @Test
+    fun create_validCreate_noImg_shouldReturn() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.image = ""
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty
+    }
+
+    @Test
+    fun create_invalidCreate_noImgAndNoDescr_shouldFail() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.image = ""
+        medicalInformation.description = ""
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun create_invalidCreate_noTags_shouldFail() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.tags = emptyArray()
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isBadRequest
     }
 
     @Test
@@ -101,17 +187,17 @@ class MedicalInformationControllerTest {
         userService.create(secondUser).block()
 
         firstObject = testDataProvider.getValidMedicalInformation()
-        firstObject.user = user.id
+        firstObject.userId = user.id
         medicalInformationService.create(firstObject).block()
 
         val unrelevantInformation = testDataProvider.getValidMedicalInformation()
-        unrelevantInformation.user = secondUser.id
+        unrelevantInformation.userId = secondUser.id
         medicalInformationService.create(unrelevantInformation).block()
 
         secondObject = testDataProvider.getValidMedicalInformation()
         secondObject.title = "other title"
         secondObject.description = "my rash"
-        secondObject.user = user.id
+        secondObject.userId = user.id
 
         medicalInformationService.create(firstObject).block()
         medicalInformationService.create(secondObject).block()
