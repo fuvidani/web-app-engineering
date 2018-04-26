@@ -60,6 +60,109 @@ class MedicalInformationControllerTest : AbstractTest() {
     }
 
     @Test
+    fun create_invalidCreate_wrongUser_shouldFail() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.userId = "99999"
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isForbidden
+    }
+
+    @Test
+    fun create_invalidCreate_noUser_shouldFail() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.userId = ""
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isForbidden
+    }
+
+    @Test
+    fun create_invalidCreate_noTitle_shouldFail() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.title = ""
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun create_validCreate_noDescr_shouldReturn() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.description = ""
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty
+    }
+
+    @Test
+    fun create_validCreate_noImg_shouldReturn() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.image = ""
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty
+    }
+
+    @Test
+    fun create_invalidCreate_noImgAndNoDescr_shouldFail() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.image = ""
+        medicalInformation.description = ""
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isBadRequest
+    }
+
+    @Test
+    fun create_invalidCreate_noTags_shouldFail() {
+
+        val medicalInformation = getMedicalInformationWithUserReference()
+        medicalInformation.tags = emptyArray()
+
+        client.post().uri("/user/${user.id}/medicalInformation")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+                .exchange()
+                .expectStatus().isBadRequest
+    }
+
+    @Test
     fun findAll_getRequestToRetrieveAllMedicalInformationForTheUser_shouldReturnAllInfos() {
 
         createTestDummyData()

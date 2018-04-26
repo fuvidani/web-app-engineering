@@ -5,6 +5,7 @@ import at.ac.tuwien.waecm.ss18.group09.dto.AnonymizedUserInformation
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalInformation
 import at.ac.tuwien.waecm.ss18.group09.service.IMedicalInformationService
 import at.ac.tuwien.waecm.ss18.group09.service.MedicalQueryService
+import at.ac.tuwien.waecm.ss18.group09.service.ValidationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -19,10 +20,19 @@ class MedicalInformationController(private val medicalInformationService: IMedic
                                    private val medicalQueryService: MedicalQueryService) {
 
     @PostMapping
-    fun createMedicalInformation(@RequestBody medicalInformation: MedicalInformation): Mono<ResponseEntity<MedicalInformation>> {
-        return medicalInformationService.create(medicalInformation)
-                .map { i -> ResponseEntity<MedicalInformation>(i, HttpStatus.OK) }
-                .defaultIfEmpty(ResponseEntity(HttpStatus.BAD_REQUEST))
+    fun createMedicalInformation(@PathVariable("id") id: String, @RequestBody medicalInformation: MedicalInformation): Mono<ResponseEntity<MedicalInformation>> {
+
+        if (medicalInformation.userId != id) return Mono.just(ResponseEntity(HttpStatus.FORBIDDEN))
+
+        try {
+
+            return medicalInformationService.create(medicalInformation)
+                    .map { i -> ResponseEntity<MedicalInformation>(i, HttpStatus.OK) }
+                    .defaultIfEmpty(ResponseEntity(HttpStatus.BAD_REQUEST))
+
+        } catch (e: ValidationException) {
+            return Mono.just(ResponseEntity(HttpStatus.BAD_REQUEST))
+        }
     }
 
     @GetMapping(produces = ["text/event-stream"])
