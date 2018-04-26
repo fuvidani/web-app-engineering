@@ -28,10 +28,12 @@ class TestDataProvider {
     }
 
     fun getValidMedicalInformation(): MedicalInformation {
-        return MedicalInformation(title = "my disease",
-                description = "some description",
-                image = "image",
-                tags = arrayOf("disease"))
+        return MedicalInformation(
+            title = "my disease",
+            description = "some description",
+            image = "image",
+            tags = arrayOf("disease")
+        )
     }
 
     private fun getAdditionalResearcher(): ResearchFacility {
@@ -42,12 +44,14 @@ class TestDataProvider {
     }
 
     fun getValidMedicalQuery(): MedicalQuery {
-        return MedicalQuery(name = "my_query",
-                description = "some description",
-                financialOffering = 5.05,
-                minAge = 18,
-                maxAge = 35,
-                gender = Gender.MALE,
-                tags = arrayOf("disease"))
+        return MedicalQuery(
+            name = "my_query",
+            description = "some description",
+            financialOffering = 5.05,
+            minAge = 18,
+            maxAge = 35,
+            gender = Gender.MALE,
+            tags = arrayOf("disease")
+        )
     }
 }

@@ -35,8 +35,8 @@ class UserService(private val repository: UserRepository, private val passwordEn
     override fun create(user: AbstractUser): Mono<AbstractUser> {
         user.password = passwordEncoder.encode(user.password)
         return this.findByEMail(user.email)
-                .flatMap({ existingUser -> Mono.error<DuplicatedEmailException>(DuplicatedEmailException("the email ${existingUser.email} exists already")) })
-                .then(this.repository.save(user))
+            .flatMap({ existingUser -> Mono.error<DuplicatedEmailException>(DuplicatedEmailException("the email ${existingUser.email} exists already")) })
+            .then(this.repository.save(user))
     }
 
     override fun findById(id: String): Mono<AbstractUser> {

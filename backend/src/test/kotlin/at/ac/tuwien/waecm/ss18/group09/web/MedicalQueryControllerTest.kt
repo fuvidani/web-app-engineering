@@ -16,7 +16,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
-
 @RunWith(SpringRunner::class)
 internal class MedicalQueryControllerTest : AbstractTest() {
 
@@ -55,13 +54,13 @@ internal class MedicalQueryControllerTest : AbstractTest() {
         val medicalQuery = getMedicalQueryWithResearchReference()
 
         client.post().uri("/user/${user.id}/medicalQuery")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(medicalQuery), MedicalQuery::class.java)
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.id").isNotEmpty
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(medicalQuery), MedicalQuery::class.java)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.id").isNotEmpty
     }
 
     @Test
@@ -70,16 +69,16 @@ internal class MedicalQueryControllerTest : AbstractTest() {
         createTestDummyData()
 
         val result = client.get().uri("/user/${user.id}/medicalQuery")
-                .accept(MediaType.TEXT_EVENT_STREAM)
-                .exchange()
-                .expectStatus().isOk
-                .expectHeader().contentType(MediaType.TEXT_EVENT_STREAM)
-                .returnResult(MedicalQuery::class.java)
+            .accept(MediaType.TEXT_EVENT_STREAM)
+            .exchange()
+            .expectStatus().isOk
+            .expectHeader().contentType(MediaType.TEXT_EVENT_STREAM)
+            .returnResult(MedicalQuery::class.java)
 
         StepVerifier.create(result.responseBody)
-                .expectNextCount(2)
-                .expectNext(firstObject)
-                .expectNext(secondObject)
+            .expectNextCount(2)
+            .expectNext(firstObject)
+            .expectNext(secondObject)
     }
 
     private fun createTestDummyData() {

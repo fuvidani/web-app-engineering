@@ -16,21 +16,20 @@ import reactor.core.publisher.Mono
 @CrossOrigin
 @RestController
 @RequestMapping("/user/{id}/medicalInformation")
-class MedicalInformationController(private val medicalInformationService: IMedicalInformationService,
-                                   private val medicalQueryService: MedicalQueryService) {
+class MedicalInformationController(
+    private val medicalInformationService: IMedicalInformationService,
+    private val medicalQueryService: MedicalQueryService
+) {
 
     @PostMapping
-    fun createMedicalInformation(@PathVariable("id") id: String,
-                                 @RequestBody medicalInformation: MedicalInformation)
-            : Mono<ResponseEntity<MedicalInformation>> {
+    fun createMedicalInformation(@PathVariable("id") id: String, @RequestBody medicalInformation: MedicalInformation): Mono<ResponseEntity<MedicalInformation>> {
 
         if (medicalInformation.userId != id) return Mono.just(ResponseEntity(HttpStatus.FORBIDDEN))
 
         return try {
             medicalInformationService.create(medicalInformation)
-                    .map { i -> ResponseEntity<MedicalInformation>(i, HttpStatus.OK) }
-                    .defaultIfEmpty(ResponseEntity(HttpStatus.BAD_REQUEST))
-
+                .map { i -> ResponseEntity<MedicalInformation>(i, HttpStatus.OK) }
+                .defaultIfEmpty(ResponseEntity(HttpStatus.BAD_REQUEST))
         } catch (e: ValidationException) {
             Mono.just(ResponseEntity(HttpStatus.BAD_REQUEST))
         }
@@ -45,5 +44,4 @@ class MedicalInformationController(private val medicalInformationService: IMedic
     fun getAllSharedMedicalInformation(@PathVariable("id") id: String): Flux<AnonymizedUserInformation> {
         return medicalQueryService.findAllSharedInformationOfResearchFacility(id)
     }
-
 }

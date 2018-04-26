@@ -118,8 +118,8 @@ class MedicalInformationServiceTest {
         medicalInformationService.create(secondObject).block()
 
         StepVerifier.create(medicalInformationService.findByUserId(firstUser.id))
-                .expectNext(firstObject)
-                .expectNext(secondObject)
-                .verifyComplete()
+            .expectNext(firstObject)
+            .expectNext(secondObject)
+            .verifyComplete()
     }
 }

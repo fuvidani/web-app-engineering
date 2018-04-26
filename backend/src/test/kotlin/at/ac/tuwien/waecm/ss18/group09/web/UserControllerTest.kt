@@ -32,13 +32,13 @@ class UserControllerTest : AbstractTest() {
         val user = testDataProvider.getDummyUser()
 
         client.post().uri("/user/register")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(user), User::class.java)
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.id").isNotEmpty
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(user), User::class.java)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.id").isNotEmpty
     }
 
     @Test
@@ -46,10 +46,10 @@ class UserControllerTest : AbstractTest() {
         val user = testDataProvider.getDummyUser()
         user.password = ""
         client.post().uri("/user/register")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(user), User::class.java)
-                .exchange()
-                .expectStatus().is4xxClientError
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(user), User::class.java)
+            .exchange()
+            .expectStatus().is4xxClientError
     }
 }

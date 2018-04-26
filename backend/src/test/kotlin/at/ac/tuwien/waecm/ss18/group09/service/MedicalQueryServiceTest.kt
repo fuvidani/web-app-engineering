@@ -102,7 +102,8 @@ class MedicalQueryServiceTest {
         createPermission(info2.id, medicalQuery.id)
         createPermission(info3.id, medicalQuery.id)
 
-        val shared = medicalQueryService.findAllSharedInformationOfResearchFacility(medicalQuery.researchFacilityId).collectList().block()
+        val shared = medicalQueryService.findAllSharedInformationOfResearchFacility(medicalQuery.researchFacilityId)
+            .collectList().block()
 
         assertNotNull("the returned object must not be null", shared)
         assertEquals("List should have size of 1", 1, shared!!.size)
@@ -151,23 +152,62 @@ class MedicalQueryServiceTest {
         info.title = title
         info.userId = user.id
         return medicalInformationService.create(info).block()!!
-
     }
 
-    private fun assertAnonInfo(user: User, anonInfo: AnonymizedUserInformation, info: MedicalInformation, index: Int, expectedListSize: Int) {
+    private fun assertAnonInfo(
+        user: User,
+        anonInfo: AnonymizedUserInformation,
+        info: MedicalInformation,
+        index: Int,
+        expectedListSize: Int
+    ) {
 
-        assertEquals("The anonymized info should contain the inserted & shared info: gender", user.gender, anonInfo.gender)
-        assertEquals("The anonymized info should contain the inserted & shared info: birthday", user.birthday, anonInfo.birthday)
-        assertEquals("The anonymized info should contain the inserted & shared medical info", expectedListSize, anonInfo.medicalInformation.size)
-        assertEquals("The anonymized info should contain the inserted & shared info: title", info.title, anonInfo.medicalInformation[index].title)
-        assertEquals("The anonymized info should contain the inserted & shared info:description", info.description, anonInfo.medicalInformation[index].description)
-        assertTrue("The anonymized info should contain the inserted & shared info: tags", info.tags contentDeepEquals anonInfo.medicalInformation[index].tags)
+        assertEquals(
+            "The anonymized info should contain the inserted & shared info: gender",
+            user.gender,
+            anonInfo.gender
+        )
+        assertEquals(
+            "The anonymized info should contain the inserted & shared info: birthday",
+            user.birthday,
+            anonInfo.birthday
+        )
+        assertEquals(
+            "The anonymized info should contain the inserted & shared medical info",
+            expectedListSize,
+            anonInfo.medicalInformation.size
+        )
+        assertEquals(
+            "The anonymized info should contain the inserted & shared info: title",
+            info.title,
+            anonInfo.medicalInformation[index].title
+        )
+        assertEquals(
+            "The anonymized info should contain the inserted & shared info:description",
+            info.description,
+            anonInfo.medicalInformation[index].description
+        )
+        assertTrue(
+            "The anonymized info should contain the inserted & shared info: tags",
+            info.tags contentDeepEquals anonInfo.medicalInformation[index].tags
+        )
 
         //anonyimzed part
-        assertEquals("The anonymized info should have the same userid than the attached medical information userid", anonInfo.userId, anonInfo.medicalInformation[index].userId)
+        assertEquals(
+            "The anonymized info should have the same userid than the attached medical information userid",
+            anonInfo.userId,
+            anonInfo.medicalInformation[index].userId
+        )
 
-        assertNotSame("The anonymized info should have a different userid then the original user\"", user.id, anonInfo.medicalInformation[index].userId)
-        assertNotSame("The anonymized info should have a different userid then the original user", user.id, anonInfo.userId)
-
+        assertNotSame(
+            "The anonymized info should have a different userid then the original user\"",
+            user.id,
+            anonInfo.medicalInformation[index].userId
+        )
+        assertNotSame(
+            "The anonymized info should have a different userid then the original user",
+            user.id,
+            anonInfo.userId
+        )
     }
 }

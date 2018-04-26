@@ -11,5 +11,9 @@ interface MedicalQueryRepository : ReactiveMongoRepository<MedicalQuery, String>
 
     fun findByResearchFacilityId(researchFacilityId: String): Flux<MedicalQuery>
 
-    fun findByGenderAndMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(gender: Gender, minAge: Int, maxAge: Int): Flux<MedicalQuery>
+    fun findByGenderAndMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(
+        gender: Gender,
+        minAge: Int,
+        maxAge: Int
+    ): Flux<MedicalQuery>
 }

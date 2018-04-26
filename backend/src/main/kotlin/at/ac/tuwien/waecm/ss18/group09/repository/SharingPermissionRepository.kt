@@ -10,4 +10,3 @@ interface SharingPermissionRepository : ReactiveMongoRepository<SharingPermissio
 
     fun findByQueryId(queryId: String): Flux<SharingPermission>
 }
-

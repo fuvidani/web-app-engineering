@@ -19,6 +19,6 @@ class UserController(private val userService: IUserService) {
     fun registerUser(@Valid @RequestBody user: User): Mono<ResponseEntity<AbstractUser>> {
         return userService.create(user)
             .map { u -> ResponseEntity<AbstractUser>(u, HttpStatus.OK) }
-                .defaultIfEmpty(ResponseEntity(HttpStatus.BAD_REQUEST))
+            .defaultIfEmpty(ResponseEntity(HttpStatus.BAD_REQUEST))
     }
 }

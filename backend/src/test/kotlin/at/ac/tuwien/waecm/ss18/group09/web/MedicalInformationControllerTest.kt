@@ -50,13 +50,13 @@ class MedicalInformationControllerTest : AbstractTest() {
         val medicalInformation = getMedicalInformationWithUserReference()
 
         client.post().uri("/user/${user.id}/medicalInformation")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.id").isNotEmpty
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.id").isNotEmpty
     }
 
     @Test
@@ -66,11 +66,11 @@ class MedicalInformationControllerTest : AbstractTest() {
         medicalInformation.userId = "99999"
 
         client.post().uri("/user/${user.id}/medicalInformation")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
-                .exchange()
-                .expectStatus().isForbidden
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+            .exchange()
+            .expectStatus().isForbidden
     }
 
     @Test
@@ -80,11 +80,11 @@ class MedicalInformationControllerTest : AbstractTest() {
         medicalInformation.userId = ""
 
         client.post().uri("/user/${user.id}/medicalInformation")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
-                .exchange()
-                .expectStatus().isForbidden
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+            .exchange()
+            .expectStatus().isForbidden
     }
 
     @Test
@@ -94,11 +94,11 @@ class MedicalInformationControllerTest : AbstractTest() {
         medicalInformation.title = ""
 
         client.post().uri("/user/${user.id}/medicalInformation")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
-                .exchange()
-                .expectStatus().isBadRequest
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+            .exchange()
+            .expectStatus().isBadRequest
     }
 
     @Test
@@ -108,13 +108,13 @@ class MedicalInformationControllerTest : AbstractTest() {
         medicalInformation.description = ""
 
         client.post().uri("/user/${user.id}/medicalInformation")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.id").isNotEmpty
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.id").isNotEmpty
     }
 
     @Test
@@ -124,13 +124,13 @@ class MedicalInformationControllerTest : AbstractTest() {
         medicalInformation.image = ""
 
         client.post().uri("/user/${user.id}/medicalInformation")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.id").isNotEmpty
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.id").isNotEmpty
     }
 
     @Test
@@ -141,11 +141,11 @@ class MedicalInformationControllerTest : AbstractTest() {
         medicalInformation.description = ""
 
         client.post().uri("/user/${user.id}/medicalInformation")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
-                .exchange()
-                .expectStatus().isBadRequest
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+            .exchange()
+            .expectStatus().isBadRequest
     }
 
     @Test
@@ -155,11 +155,11 @@ class MedicalInformationControllerTest : AbstractTest() {
         medicalInformation.tags = emptyArray()
 
         client.post().uri("/user/${user.id}/medicalInformation")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(medicalInformation), MedicalInformation::class.java)
-                .exchange()
-                .expectStatus().isBadRequest
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(medicalInformation), MedicalInformation::class.java)
+            .exchange()
+            .expectStatus().isBadRequest
     }
 
     @Test
@@ -168,16 +168,16 @@ class MedicalInformationControllerTest : AbstractTest() {
         createTestDummyData()
 
         val result = client.get().uri("/user/${user.id}/medicalInformation")
-                .accept(TEXT_EVENT_STREAM)
-                .exchange()
-                .expectStatus().isOk
-                .expectHeader().contentType(TEXT_EVENT_STREAM)
-                .returnResult(MedicalInformation::class.java)
+            .accept(TEXT_EVENT_STREAM)
+            .exchange()
+            .expectStatus().isOk
+            .expectHeader().contentType(TEXT_EVENT_STREAM)
+            .returnResult(MedicalInformation::class.java)
 
         StepVerifier.create(result.responseBody)
-                .expectNextCount(2)
-                .expectNext(firstObject)
-                .expectNext(secondObject)
+            .expectNextCount(2)
+            .expectNext(firstObject)
+            .expectNext(secondObject)
     }
 
     private fun createTestDummyData() {

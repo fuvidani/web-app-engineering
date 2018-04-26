@@ -1,5 +1,6 @@
 package at.ac.tuwien.waecm.ss18.group09.web
 
+/* ktlint-disable no-wildcard-imports */
 import at.ac.tuwien.waecm.ss18.group09.dto.AnonymizedUserInformation
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalQuery
 import at.ac.tuwien.waecm.ss18.group09.dto.SharingPermission
@@ -19,8 +20,8 @@ class MedicalQueryController(private val medicalQueryService: MedicalQueryServic
     @PostMapping
     fun createMedicalQuery(@RequestBody medicalQuery: MedicalQuery): Mono<ResponseEntity<MedicalQuery>> {
         return medicalQueryService.create(medicalQuery)
-                .map { query -> ResponseEntity<MedicalQuery>(query, HttpStatus.OK) }
-                .defaultIfEmpty(ResponseEntity.badRequest().build())
+            .map { query -> ResponseEntity<MedicalQuery>(query, HttpStatus.OK) }
+            .defaultIfEmpty(ResponseEntity.badRequest().build())
     }
 
     @GetMapping(produces = ["text/event-stream"])
@@ -36,15 +37,15 @@ class MedicalQueryController(private val medicalQueryService: MedicalQueryServic
     @PostMapping(path = ["/permissions"])
     fun createSharingPermission(@RequestBody permissions: List<SharingPermission>): Mono<ResponseEntity<List<SharingPermission>>> {
         return medicalQueryService.createSharingPermission(permissions)
-                .map { list -> ResponseEntity<List<SharingPermission>>(list, HttpStatus.OK) }
-                .defaultIfEmpty(ResponseEntity.badRequest().build())
+            .map { list -> ResponseEntity<List<SharingPermission>>(list, HttpStatus.OK) }
+            .defaultIfEmpty(ResponseEntity.badRequest().build())
     }
 
     @PostMapping(path = ["/permission"])
     fun createSharingPermission(@RequestBody permission: SharingPermission): Mono<ResponseEntity<SharingPermission>> {
         return medicalQueryService.createSharingPermission(permission)
-                .map { list -> ResponseEntity<SharingPermission>(list, HttpStatus.OK) }
-                .defaultIfEmpty(ResponseEntity.badRequest().build())
+            .map { list -> ResponseEntity<SharingPermission>(list, HttpStatus.OK) }
+            .defaultIfEmpty(ResponseEntity.badRequest().build())
     }
 
     @PostMapping(path = ["{queryid}/shared"])

@@ -28,14 +28,14 @@ enum class Gender {
 
 @Document(collection = "medicalInformation")
 data class MedicalInformation(
-        @Id
-        var id: String? = null,
-        var userId: String = "",
-        @get: NotBlank
-        var title: String = "",
-        var description: String = "",
-        var image: String = "",
-        var tags: Array<String> = emptyArray()
+    @Id
+    var id: String? = null,
+    var userId: String = "",
+    @get: NotBlank
+    var title: String = "",
+    var description: String = "",
+    var image: String = "",
+    var tags: Array<String> = emptyArray()
 
 ) {
     override fun equals(other: Any?): Boolean {
@@ -67,20 +67,20 @@ data class MedicalInformation(
 
 @Document(collection = "medicalQuery")
 data class MedicalQuery(
-        @Id
-        var id: String? = null,
-        var researchFacilityId: String = "",
-        @get: NotBlank
-        var name: String = "",
-        @get: NotBlank
-        var description: String = "",
-        @get: NotNull
-        @get: Min(0)
-        var financialOffering: Double = 0.0,
-        var minAge: Int = 0,
-        var maxAge: Int = 0,
-        var gender: Gender?,
-        var tags: Array<String> = emptyArray()
+    @Id
+    var id: String? = null,
+    var researchFacilityId: String = "",
+    @get: NotBlank
+    var name: String = "",
+    @get: NotBlank
+    var description: String = "",
+    @get: NotNull
+    @get: Min(0)
+    var financialOffering: Double = 0.0,
+    var minAge: Int = 0,
+    var maxAge: Int = 0,
+    var gender: Gender?,
+    var tags: Array<String> = emptyArray()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -115,17 +115,18 @@ data class MedicalQuery(
 
 @Document(collection = "sharingPermission")
 data class SharingPermission(
-        @Id
-        var id: String? = null,
-        @get: NotBlank
-        var information: String,
-        @get: NotBlank
-        var queryId: String)
+    @Id
+    var id: String? = null,
+    @get: NotBlank
+    var information: String,
+    @get: NotBlank
+    var queryId: String
+)
 
 data class AnonymizedUserInformation(
-        var id: String,
-        var medicalInformation: MutableList<MedicalInformation>,
-        var userId: String,
-        var birthday: LocalDate?,
-        var gender: Gender?
+    var id: String,
+    var medicalInformation: MutableList<MedicalInformation>,
+    var userId: String,
+    var birthday: LocalDate?,
+    var gender: Gender?
 )
