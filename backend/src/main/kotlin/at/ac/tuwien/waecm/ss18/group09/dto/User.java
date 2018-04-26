@@ -12,8 +12,7 @@ public class User extends AbstractUser {
 
   @NotBlank private String name;
   @NotNull private Gender gender;
-  @NotBlank
-  private String birthday;
+  @NotBlank private String birthday;
 
   public String getName() {
     return name;

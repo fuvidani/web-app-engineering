@@ -30,10 +30,10 @@ class BackendControllerTest {
     @Test
     fun testApiDocumentationEndpointShouldReturnValidJson() {
         client.get().uri("/swagger")
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.paths").isNotEmpty
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.paths").isNotEmpty
     }
 }

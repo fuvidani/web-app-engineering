@@ -66,13 +66,13 @@ class AuthControllerTest {
 
     private fun makeValidAuthRequest(authRequest: AuthRequest, user: AbstractUser) {
         client.post().uri("/auth")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(authRequest), AuthRequest::class.java)
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.token").isNotEmpty
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(authRequest), AuthRequest::class.java)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.token").isNotEmpty
     }
 
     @Test
@@ -80,11 +80,11 @@ class AuthControllerTest {
         val user = testDataProvider.getDummyUser()
         val userAuthRequest = getAuthRequestForUser(user)
         client.post().uri("/auth")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(userAuthRequest), AuthRequest::class.java)
-                .exchange()
-                .expectStatus().is5xxServerError
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(userAuthRequest), AuthRequest::class.java)
+            .exchange()
+            .expectStatus().is5xxServerError
     }
 
     private fun getAuthRequestForUser(user: AbstractUser): AuthRequest {

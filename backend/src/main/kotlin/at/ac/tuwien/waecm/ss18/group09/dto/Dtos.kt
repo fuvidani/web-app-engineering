@@ -25,14 +25,14 @@ enum class Gender {
 
 @Document(collection = "medicalInformation")
 data class MedicalInformation(
-        @Id
-        var id: String? = null,
-        var user: String = "",
-        @get: NotBlank
-        var title: String = "",
-        var description: String = "",
-        var image: String = "",
-        var tags: Array<String> = emptyArray()
+    @Id
+    var id: String? = null,
+    var user: String = "",
+    @get: NotBlank
+    var title: String = "",
+    var description: String = "",
+    var image: String = "",
+    var tags: Array<String> = emptyArray()
 
 ) {
     override fun equals(other: Any?): Boolean {
