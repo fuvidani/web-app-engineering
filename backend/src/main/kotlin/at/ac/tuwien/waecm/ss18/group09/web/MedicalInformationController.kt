@@ -20,7 +20,9 @@ class MedicalInformationController(private val medicalInformationService: IMedic
                                    private val medicalQueryService: MedicalQueryService) {
 
     @PostMapping
-    fun createMedicalInformation(@PathVariable("id") id: String, @RequestBody medicalInformation: MedicalInformation): Mono<ResponseEntity<MedicalInformation>> {
+    fun createMedicalInformation(@PathVariable("id") id: String,
+                                 @RequestBody medicalInformation: MedicalInformation)
+            : Mono<ResponseEntity<MedicalInformation>> {
 
         if (medicalInformation.userId != id) return Mono.just(ResponseEntity(HttpStatus.FORBIDDEN))
 
