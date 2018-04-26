@@ -1,12 +1,6 @@
 package at.ac.tuwien.waecm.ss18.group09.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Objects;
 import javax.validation.constraints.NotBlank;
@@ -18,12 +12,8 @@ public class User extends AbstractUser {
 
   @NotBlank private String name;
   @NotNull private Gender gender;
-  //  @NotBlank
-  @JsonFormat
-      (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-  @JsonDeserialize(using = LocalDateDeserializer.class)
-  @JsonSerialize(using = LocalDateSerializer.class)
-  private LocalDate birthday;
+  @NotBlank
+  private String birthday;
 
   public String getName() {
     return name;
@@ -41,11 +31,11 @@ public class User extends AbstractUser {
     this.gender = gender;
   }
 
-  public LocalDate getBirthday() {
+  public String getBirthday() {
     return birthday;
   }
 
-  public void setBirthday(LocalDate birthday) {
+  public void setBirthday(String birthday) {
     this.birthday = birthday;
   }
 

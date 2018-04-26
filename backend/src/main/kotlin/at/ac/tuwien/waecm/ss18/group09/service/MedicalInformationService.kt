@@ -13,7 +13,7 @@ interface IMedicalInformationService {
 
     fun findById(id: String): Mono<MedicalInformation>
 
-    fun findByUserId(userId: String): Flux<MedicalInformation>
+    fun findByUser(user: String): Flux<MedicalInformation>
 }
 
 @Component("medicalInformationService")
@@ -29,14 +29,14 @@ class MedicalInformationService(private val repository: MedicalInformationReposi
         return repository.findById(id)
     }
 
-    override fun findByUserId(userId: String): Flux<MedicalInformation> {
-        return repository.findByUserId(userId)
+    override fun findByUser(user: String): Flux<MedicalInformation> {
+        return repository.findByUser(user)
     }
 
     @Throws(ValidationException::class)
     private fun validate(medicalInformation: MedicalInformation) {
 
-        if (medicalInformation.userId.trim().isEmpty())
+        if (medicalInformation.user.trim().isEmpty())
             throw ValidationException("no user reference was provided")
 
         if (medicalInformation.title.trim().isEmpty())

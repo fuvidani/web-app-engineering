@@ -8,5 +8,5 @@ import reactor.core.publisher.Flux
 @Repository
 interface MedicalInformationRepository : ReactiveMongoRepository<MedicalInformation, String> {
 
-    fun findByUserId(userId: String): Flux<MedicalInformation>
+    fun findByUser(user: String): Flux<MedicalInformation>
 }

@@ -73,7 +73,6 @@ class AuthControllerTest {
                 .expectStatus().isOk
                 .expectBody()
                 .jsonPath("$.token").isNotEmpty
-                .jsonPath("$.user").isEqualTo(getUserAsJson(user))
     }
 
     @Test

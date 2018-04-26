@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.ReactiveUserDetailsService
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 interface IUserService : ReactiveUserDetailsService {
@@ -19,8 +18,6 @@ interface IUserService : ReactiveUserDetailsService {
     fun checkIfEMailExists(email: String): Mono<Boolean>
 
     fun findByEMail(email: String): Mono<AbstractUser>
-
-    fun findAll(): Flux<AbstractUser>
 }
 
 @Component("userService")
@@ -49,9 +46,5 @@ class UserService(private val repository: UserRepository, private val passwordEn
 
     override fun findByEMail(email: String): Mono<AbstractUser> {
         return repository.findByEmailIgnoringCase(email)
-    }
-
-    override fun findAll(): Flux<AbstractUser> {
-        return repository.findAll()
     }
 }
