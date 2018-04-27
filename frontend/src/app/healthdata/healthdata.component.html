@@ -3,7 +3,8 @@
     <span>Health Data ({{email}})</span>
     <span class="toolbar-spacer"></span>
     <button mat-icon-button (click)="navigateToQueries()">
-      <mat-icon>notifications_none</mat-icon>
+      <mat-icon *ngIf="queries.length === 0">notifications_none</mat-icon>
+      <mat-icon *ngIf="queries.length > 0">notifications</mat-icon>
     </button>
     <button mat-icon-button (click)="logOut()">
       <mat-icon>keyboard_tab</mat-icon>
@@ -60,15 +61,14 @@
             <td>
               <mat-form-field class="full-width">
                 <mat-chip-list #chipList>
-                  <mat-chip *ngFor="let tag of tags" [selectable]="selectable"
-                            [removable]="removable" (remove)="remove(tag)">
+                  <mat-chip *ngFor="let tag of tags" (remove)="remove(tag)">
                     {{tag.name}}
-                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                    <mat-icon matChipRemove>cancel</mat-icon>
                   </mat-chip>
-                  <input placeholder="Tags"
+                  <input placeholder="Tags *"
                          [matChipInputFor]="chipList"
                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                         [matChipInputAddOnBlur]="addOnBlur"
+                         [matChipInputAddOnBlur]="true"
                          (matChipInputTokenEnd)="add($event)"/>
                 </mat-chip-list>
               </mat-form-field>

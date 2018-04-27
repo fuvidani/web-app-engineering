@@ -14,6 +14,7 @@ import {MatChipInputEvent} from '@angular/material';
 })
 export class HealthdataComponent implements OnInit {
   healthData = [];
+  queries = [];
   email = '';
 
   error = false;
@@ -24,12 +25,6 @@ export class HealthdataComponent implements OnInit {
   description: FormControl;
   imageBase64: '';
 
-  visible: true;
-  selectable = true;
-  removable = true;
-  addOnBlur = true;
-
-  // Enter, comma
   separatorKeysCodes = [ENTER];
 
   tags = [];
@@ -40,6 +35,7 @@ export class HealthdataComponent implements OnInit {
 
   ngOnInit() {
     this.healthdataService.healthData.subscribe(res => this.healthData = res);
+    this.healthdataService.healthDataQueries.subscribe(res => this.queries = res);
     this.healthdataService.changeHealthData(this.healthData);
     this.email = this.authService.getPrincipal();
 
@@ -132,12 +128,10 @@ export class HealthdataComponent implements OnInit {
     const input = event.input;
     const value = event.value;
 
-    // Add our fruit
     if ((value || '').trim()) {
       this.tags.push({name: value.trim()});
     }
 
-    // Reset the input value
     if (input) {
       input.value = '';
     }
