@@ -3,6 +3,10 @@ import {HealthdataService} from '../service/healthdata.service';
 import {HealthData} from '../model/healthdata';
 import {AuthService} from '../service/auth.service';
 import {Router} from '@angular/router';
+import {User} from '../model/user';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {ENTER} from '@angular/cdk/keycodes';
+import {MatChipInputEvent} from '@angular/material';
 
 @Component({
   selector: 'app-healthdata',
@@ -13,16 +17,62 @@ export class HealthdataComponent implements OnInit {
   healthData = [];
   email = '';
 
+  error = false;
+  errorText = '';
+
+  uploadForm: FormGroup;
+  title: FormControl;
+  description: FormControl;
+  imageBase64: '';
+  // tags: FormControl;
+
+  visible: true;
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
+
+  // Enter, comma
+  separatorKeysCodes = [ENTER];
+
+  tags = [];
+  fileToUpload: File = null;
+
   constructor(private healthdataService: HealthdataService, private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
     this.healthdataService.healthData.subscribe(res => this.healthData = res);
     this.healthdataService.changeHealthData(this.healthData);
     this.email = this.authService.getPrincipal();
+
+    this.title = new FormControl(
+      '',
+      [Validators.required]
+    );
+
+    this.description = new FormControl(
+      '',
+      []
+    );
+
+    // this.tags = new FormControl(
+    //   '',
+    //   [Validators.required]
+    // );
+
+    this.uploadForm = new FormGroup({
+      title: this.title,
+      description: this.description,
+      // image: this.image,
+      // tags: this.tags
+    });
   }
 
   addHealthData() {
-    //this.healthData.push(new HealthData());
+    const tagArray = [];
+    this.tags.forEach(tag => tagArray.push(tag.name));
+    const data = new HealthData(this.title.value, this.description.value, this.imageBase64, tagArray);
+
+    this.healthData.push(data);
     this.healthdataService.changeHealthData(this.healthData);
   }
 
@@ -37,5 +87,84 @@ export class HealthdataComponent implements OnInit {
 
   scroll(element) {
     element.scrollIntoView({behavior: 'smooth'});
+  }
+
+  onSubmit() {
+    if (this.title.value === '') {
+      this.error = true;
+      this.errorText = 'Title has to be present';
+/*      let user: User = this.registerForm.value;
+      this.http.post<User>("http://localhost:8080/user/register", user).subscribe(
+        registeredUser => {
+          this.handleSuccessFullRegistration();
+        },
+        err => {
+          this.handleFailedRegistration(err);
+        },
+        () => {
+          this.handleFinishedRegistration();
+        }
+      );*/
+    } else if (this.tags.length < 1) {
+      this.error = true;
+      this.errorText = 'At least one tag has to be present';
+    } else if (this.fileToUpload === null && this.description.value === '') {
+      this.error = true;
+      this.errorText = 'Description or image has to be present';
+    } else {
+      this.error = false;
+      if (this.fileToUpload !== null) {
+        this.convertToBase64(this.fileToUpload);
+      } else {
+        this.addHealthData();
+        this.uploadForm.reset();
+      }
+    }
+  }
+
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+  }
+
+  convertToBase64(file: File): void {
+    const myReader: FileReader = new FileReader();
+
+    myReader.onloadend = (e) => {
+      this.imageBase64 = myReader.result;
+      this.addHealthData();
+      this.uploadForm.reset();
+      this.tags = [];
+      this.fileToUpload = null;
+      this.imageBase64 = '';
+    };
+
+    myReader.readAsDataURL(file);
+  }
+
+  openInput() {
+    document.getElementById('fileInput').click();
+  }
+
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    // Add our fruit
+    if ((value || '').trim()) {
+      this.tags.push({ name: value.trim() });
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  remove(tag: any): void {
+    const index = this.tags.indexOf(tag);
+
+    if (index >= 0) {
+      this.tags.splice(index, 1);
+    }
   }
 }

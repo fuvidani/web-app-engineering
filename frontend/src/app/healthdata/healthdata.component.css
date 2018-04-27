@@ -14,3 +14,28 @@
   left: auto;
   position: fixed;
 }
+
+.full-width {
+  width: 100%;
+}
+
+.alert {
+  color: red;
+}
+
+.error {
+  margin-top: 10px;
+  color: red;
+}
+
+.example-icon {
+  padding: 0 14px;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.hide-it {
+  display: none;
+}
