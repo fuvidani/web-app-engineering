@@ -23,7 +23,7 @@ export class QueriesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.email = this.authService.getPrincipal().email;
+    this.email = this.authService.getPrincipal().sub;
     this.healthdataService.healthDataQueries.subscribe(res => this.queries = res);
     this.displayedColumns = ['select', 'id', 'name'];
     this.dataSource = new MatTableDataSource<HealthDataQuery>(this.queries);
