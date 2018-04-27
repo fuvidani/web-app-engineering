@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.ReactiveUserDetailsService
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 interface IUserService : ReactiveUserDetailsService {
@@ -18,6 +19,8 @@ interface IUserService : ReactiveUserDetailsService {
     fun checkIfEMailExists(email: String): Mono<Boolean>
 
     fun findByEMail(email: String): Mono<AbstractUser>
+
+    fun findAll(): Flux<AbstractUser>
 }
 
 @Component("userService")
@@ -32,8 +35,8 @@ class UserService(private val repository: UserRepository, private val passwordEn
     override fun create(user: AbstractUser): Mono<AbstractUser> {
         user.password = passwordEncoder.encode(user.password)
         return this.findByEMail(user.email)
-                .flatMap({ existingUser -> Mono.error<DuplicatedEmailException>(DuplicatedEmailException("the email ${existingUser.email} exists already")) })
-                .then(this.repository.save(user))
+            .flatMap({ existingUser -> Mono.error<DuplicatedEmailException>(DuplicatedEmailException("the email ${existingUser.email} exists already")) })
+            .then(this.repository.save(user))
     }
 
     override fun findById(id: String): Mono<AbstractUser> {
@@ -46,5 +49,9 @@ class UserService(private val repository: UserRepository, private val passwordEn
 
     override fun findByEMail(email: String): Mono<AbstractUser> {
         return repository.findByEmailIgnoringCase(email)
+    }
+
+    override fun findAll(): Flux<AbstractUser> {
+        return repository.findAll()
     }
 }

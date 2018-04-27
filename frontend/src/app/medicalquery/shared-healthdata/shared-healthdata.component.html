@@ -1,0 +1,34 @@
+<div>
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <span>Shared Health Data ({{email}})</span>
+      <span class="toolbar-spacer"></span>
+      <button mat-icon-button>
+        <mat-icon>notifications_none</mat-icon>
+      </button>
+      <button mat-icon-button (click)="logOut()">
+        <mat-icon>keyboard_tab</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <mat-card class="healthdata-card">
+    <mat-card-header>
+      <mat-card-title>{{data.title}}</mat-card-title>
+      <mat-card-subtitle>
+          <span *ngFor="let tag of data.tags">
+            {{'#' + tag + " "}}
+          </span>
+      </mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image src={{data.image}} *ngIf="data.image">
+    <mat-card-content *ngIf="data.description">
+      <p>
+        {{data.description}}
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+

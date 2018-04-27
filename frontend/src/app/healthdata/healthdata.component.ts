@@ -37,7 +37,7 @@ export class HealthdataComponent implements OnInit {
     this.healthdataService.healthData.subscribe(res => this.healthData = res);
     this.healthdataService.healthDataQueries.subscribe(res => this.queries = res);
     this.healthdataService.changeHealthData(this.healthData);
-    this.email = this.authService.getPrincipal();
+    this.email = this.authService.getPrincipal().email;
 
     this.title = new FormControl(
       '',

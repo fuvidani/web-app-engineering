@@ -1,17 +1,14 @@
 package at.ac.tuwien.waecm.ss18.group09.web
 
+import at.ac.tuwien.waecm.ss18.group09.AbstractTest
 import at.ac.tuwien.waecm.ss18.group09.BackendTestApplication
 import at.ac.tuwien.waecm.ss18.group09.TestDataProvider
-import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
-import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
 import at.ac.tuwien.waecm.ss18.group09.dto.User
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -20,22 +17,15 @@ import reactor.core.publisher.Mono
 @RunWith(SpringRunner::class)
 @SpringBootTest(value = ["application.yml"], classes = [BackendTestApplication::class])
 @AutoConfigureWebTestClient(timeout = "15000")
-class UserControllerTest {
+class UserControllerTest : AbstractTest() {
+
+    override fun init() {
+    }
 
     private val testDataProvider = TestDataProvider()
 
     @Autowired
     private lateinit var client: WebTestClient
-
-    @Autowired
-    private lateinit var mongoTemplate: MongoTemplate
-
-    @Before
-    fun setUp() {
-        mongoTemplate.dropCollection(AbstractUser::class.java)
-        mongoTemplate.dropCollection(User::class.java)
-        mongoTemplate.dropCollection(ResearchFacility::class.java)
-    }
 
     @Test
     fun register_registerWithValidUser_shouldReturnPersistedUser() {
