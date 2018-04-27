@@ -1,0 +1,22 @@
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-column-select {
+  overflow: visible;
+}
+
+.query-card {
+  width: 40%;
+  margin: 2% auto;
+}
+
+.no-content-card {
+  margin-left: auto;
+  margin-right: auto;
+}
