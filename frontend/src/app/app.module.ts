@@ -24,6 +24,7 @@ import {HealthdataService} from './service/healthdata.service';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { QueriesComponent } from './healthdata/queries/queries.component';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatTableModule, MatInputModule, MatCommonModule, MatCheckboxModule} from '@angular/material';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -51,6 +52,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     HttpClientModule,
     MatChipsModule,
+    MatInputModule,
+    MatCommonModule,
+    MatCheckboxModule,
+    MatTableModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

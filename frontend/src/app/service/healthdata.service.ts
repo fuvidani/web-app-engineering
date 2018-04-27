@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {HealthData} from '../model/healthdata';
+import {HealthDataQuery} from '../model/healthdataquery';
+import {HealthDataShare} from '../model/healthdatashare';
 
 @Injectable()
 export class HealthdataService {
@@ -13,9 +15,24 @@ export class HealthdataService {
   private healthDataPlaceholder = new BehaviorSubject<any>([this.data1, this.data2, this.data3, this.data4]);
   healthData = this.healthDataPlaceholder.asObservable();
 
-  constructor() { }
+  private sharedata1 = new HealthDataShare('1', 'Meine Zähne');
+  private sharedata2 = new HealthDataShare('2', 'Mein Körper');
+  private sharedata3 = new HealthDataShare('3', 'Beine');
+  private sharedata4 = new HealthDataShare('4', 'Bla bla');
+  private sharedata5 = new HealthDataShare('5', 'Penis');
+  private query1 = new HealthDataQuery('1', 'query1', 'description of query 1', 'institute1', 10, [this.sharedata1, this.sharedata2, this.sharedata3]);
+  private query2 = new HealthDataQuery('2', 'query2', 'description of query 2', 'institute2', 20, [this.sharedata4, this.sharedata5]);
+  private healthDataQueriesPlaceholder = new BehaviorSubject<any>([this.query1, this.query2]);
+  healthDataQueries = this.healthDataQueriesPlaceholder.asObservable();
+
+  constructor() {
+  }
 
   changeHealthData(healthData) {
     this.healthDataPlaceholder.next(healthData);
+  }
+
+  shareHealthData(sharedData) {
+    console.log(sharedData);
   }
 }

@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {HealthdataService} from '../service/healthdata.service';
 import {HealthData} from '../model/healthdata';
 import {AuthService} from '../service/auth.service';
 import {Router} from '@angular/router';
-import {User} from '../model/user';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ENTER} from '@angular/cdk/keycodes';
 import {MatChipInputEvent} from '@angular/material';
@@ -24,7 +23,6 @@ export class HealthdataComponent implements OnInit {
   title: FormControl;
   description: FormControl;
   imageBase64: '';
-  // tags: FormControl;
 
   visible: true;
   selectable = true;
@@ -37,7 +35,8 @@ export class HealthdataComponent implements OnInit {
   tags = [];
   fileToUpload: File = null;
 
-  constructor(private healthdataService: HealthdataService, private authService: AuthService, private router: Router) { }
+  constructor(private healthdataService: HealthdataService, private authService: AuthService, private router: Router) {
+  }
 
   ngOnInit() {
     this.healthdataService.healthData.subscribe(res => this.healthData = res);
@@ -53,11 +52,6 @@ export class HealthdataComponent implements OnInit {
       '',
       []
     );
-
-    // this.tags = new FormControl(
-    //   '',
-    //   [Validators.required]
-    // );
 
     this.uploadForm = new FormGroup({
       title: this.title,
@@ -93,18 +87,6 @@ export class HealthdataComponent implements OnInit {
     if (this.title.value === '') {
       this.error = true;
       this.errorText = 'Title has to be present';
-/*      let user: User = this.registerForm.value;
-      this.http.post<User>("http://localhost:8080/user/register", user).subscribe(
-        registeredUser => {
-          this.handleSuccessFullRegistration();
-        },
-        err => {
-          this.handleFailedRegistration(err);
-        },
-        () => {
-          this.handleFinishedRegistration();
-        }
-      );*/
     } else if (this.tags.length < 1) {
       this.error = true;
       this.errorText = 'At least one tag has to be present';
@@ -118,6 +100,7 @@ export class HealthdataComponent implements OnInit {
       } else {
         this.addHealthData();
         this.uploadForm.reset();
+        this.tags = [];
       }
     }
   }
@@ -151,7 +134,7 @@ export class HealthdataComponent implements OnInit {
 
     // Add our fruit
     if ((value || '').trim()) {
-      this.tags.push({ name: value.trim() });
+      this.tags.push({name: value.trim()});
     }
 
     // Reset the input value
