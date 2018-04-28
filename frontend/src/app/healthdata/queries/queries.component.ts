@@ -59,6 +59,9 @@ export class QueriesComponent implements OnInit {
   }
 
   share(data) {
-    this.healthdataService.shareHealthData(this.selections.find(selection => selection.id === data.id));
+    this.healthdataService.shareHealthData(this.selections.find(selection => selection.id === data.id)).subscribe(
+      res => console.log(res),
+      err => console.log(err)
+    );
   }
 }

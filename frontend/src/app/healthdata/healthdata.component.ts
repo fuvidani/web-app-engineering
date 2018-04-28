@@ -13,7 +13,7 @@ import {MatChipInputEvent} from '@angular/material';
   styleUrls: ['./healthdata.component.css']
 })
 export class HealthdataComponent implements OnInit {
-  healthData = new Array<HealthData>();
+  healthData = [];
   queries = [];
   email = '';
 
@@ -39,7 +39,6 @@ export class HealthdataComponent implements OnInit {
         const responseObject = JSON.parse(response);
         // TODO parse dynamically
         const data = new HealthData(responseObject.id, responseObject.title, responseObject.description, responseObject.image, responseObject.tags, responseObject.userId);
-        console.log(data);
 
         this.healthData.push(data);
         // dirty hack to update view
@@ -81,11 +80,11 @@ export class HealthdataComponent implements OnInit {
 
   logOut() {
     this.authService.clearAccessToken();
-    this.router.navigate(['/']);
+    const promise = this.router.navigate(['/']);
   }
 
   navigateToQueries() {
-    this.router.navigate(['/userqueries']);
+    const promise = this.router.navigate(['/userqueries']);
   }
 
   scroll(element) {

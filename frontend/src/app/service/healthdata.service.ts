@@ -7,10 +7,12 @@ import {AuthService} from './auth.service';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import * as EventSource from 'eventsource';
+import {SharingPermission} from '../model/sharingpermission';
 
 @Injectable()
 export class HealthdataService {
 
+  // TODO change this placeholder to real server request
   private sharedata1 = new HealthDataShare('1', 'Meine Zähne');
   private sharedata2 = new HealthDataShare('2', 'Mein Körper');
   private sharedata3 = new HealthDataShare('3', 'Beine');
@@ -43,11 +45,15 @@ export class HealthdataService {
   }
 
   uploadHealthData(data) {
+    // append userId into object
     data.userId = this.authService.getPrincipal().sub;
     return this.http.post<HealthData>('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalInformation', data);
   }
 
   shareHealthData(sharedData) {
-    console.log(sharedData);
+    const permissions = [];
+    sharedData.selection.selected.forEach(healthData => permissions.push(new SharingPermission('', healthData.id, sharedData.id)));
+
+    return this.http.post<Array<SharingPermission>>('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalQuery/permissions', permissions);
   }
 }
