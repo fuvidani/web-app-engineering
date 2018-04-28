@@ -44,6 +44,24 @@ export class HealthdataService {
     });
   }
 
+  fetchHelthDataQueries() {
+    return Observable.create(observer => {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('access_token')
+        }
+      };
+
+      const eventSource = new EventSource('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalInformation/matching', options);
+      eventSource.onmessage = x => observer.next(x.data);
+      eventSource.onerror = x => observer.error(x);
+
+      return () => {
+        eventSource.close();
+      };
+    });
+  }
+
   uploadHealthData(data) {
     // append userId into object
     data.userId = this.authService.getPrincipal().sub;

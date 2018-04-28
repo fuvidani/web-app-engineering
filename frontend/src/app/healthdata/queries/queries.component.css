@@ -20,3 +20,7 @@
   margin-left: auto;
   margin-right: auto;
 }
+
+.trick-button {
+  visibility: hidden;
+}

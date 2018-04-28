@@ -47,6 +47,9 @@ export class HealthdataComponent implements OnInit {
       err => console.error(err),
       () => console.log('done loading health data')
     );
+
+    // TODO load queries to set right notification icon
+
     this.email = this.authService.getPrincipal().email;
 
     this.title = new FormControl(
