@@ -52,7 +52,7 @@ export class HealthdataService {
         }
       };
 
-      const eventSource = new EventSource('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalInformation/matching', options);
+      const eventSource = new EventSource('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalQuery/matching', options);
       eventSource.onmessage = x => observer.next(x.data);
       eventSource.onerror = x => observer.error(x);
 
