@@ -125,7 +125,7 @@ data class SharingPermission(
 
 data class AnonymizedUserInformation(
     var id: String,
-    var medicalInformation: MutableList<MedicalInformation>,
+    var medicalInformation: MedicalInformation,
     var userId: String,
     var birthday: LocalDate?,
     var gender: Gender?
