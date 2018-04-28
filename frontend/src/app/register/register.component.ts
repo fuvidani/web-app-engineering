@@ -6,6 +6,7 @@ import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {DateAdapter} from '@angular/material';
 import {Gender} from '../model/gender';
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-register',
@@ -27,6 +28,8 @@ export class RegisterComponent implements OnInit {
   gender: FormControl;
   birthday: FormControl;
 
+  datePipe: DatePipe;
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -37,6 +40,7 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.configureLanguage();
+    this.datePipe = new DatePipe('en');
     this.email = new FormControl(
       '',
       [Validators.required, Validators.email]
@@ -69,7 +73,7 @@ export class RegisterComponent implements OnInit {
   configureLanguage() {
     const lang = window.navigator.language;
     console.log('Detected browser language(' + lang + ')');
-    if (lang === 'de') {
+    if (lang === 'de' || lang === 'de-DE') {
       this.translate.setDefaultLang('de');
       this.adapter.setLocale('de');
       console.log('Set language to german');
@@ -82,6 +86,7 @@ export class RegisterComponent implements OnInit {
   onSubmit() {
     if (this.registerForm.valid) {
       let user: User = this.registerForm.value;
+      user.birthday = this.datePipe.transform(user.birthday, 'dd-MM-yyyy');
       this.http.post<User>('http://localhost:8080/user/register', user).subscribe(
         registeredUser => {
           this.handleSuccessFullRegistration();
@@ -98,7 +103,7 @@ export class RegisterComponent implements OnInit {
 
   handleSuccessFullRegistration() {
     console.log('Successfully registered user.');
-    this.router.navigate(['/healthdata']);
+    this.router.navigate(['/login']);
   }
 
   handleFailedRegistration(errorResponse: HttpErrorResponse) {
