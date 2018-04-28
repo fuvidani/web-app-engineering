@@ -1,6 +1,7 @@
 package at.ac.tuwien.waecm.ss18.group09.service
 
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalInformation
+import at.ac.tuwien.waecm.ss18.group09.dto.MedicalQuery
 import at.ac.tuwien.waecm.ss18.group09.repository.MedicalInformationRepository
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
@@ -14,6 +15,8 @@ interface IMedicalInformationService {
     fun findById(id: String): Mono<MedicalInformation>
 
     fun findByUserId(userId: String): Flux<MedicalInformation>
+
+    fun findInfoForQuery(query: MedicalQuery, userId: String): Flux<MedicalInformation>
 }
 
 @Component("medicalInformationService")
@@ -31,6 +34,11 @@ class MedicalInformationService(private val repository: MedicalInformationReposi
 
     override fun findByUserId(userId: String): Flux<MedicalInformation> {
         return repository.findByUserId(userId)
+    }
+
+    override fun findInfoForQuery(query: MedicalQuery, userId: String): Flux<MedicalInformation> {
+        return findByUserId(userId)
+            .filter { info -> info.tags.any { iTag -> query.tags.contains(iTag) } }
     }
 
     @Throws(ValidationException::class)

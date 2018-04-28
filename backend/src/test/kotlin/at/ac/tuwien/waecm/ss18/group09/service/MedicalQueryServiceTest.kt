@@ -1,21 +1,24 @@
 package at.ac.tuwien.waecm.ss18.group09.service
 
 /* ktlint-disable no-wildcard-imports */
+import at.ac.tuwien.waecm.ss18.group09.AbstractTest
 import at.ac.tuwien.waecm.ss18.group09.BackendTestApplication
 import at.ac.tuwien.waecm.ss18.group09.TestDataProvider
 import at.ac.tuwien.waecm.ss18.group09.dto.*
 import junit.framework.TestCase.*
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.test.context.junit4.SpringRunner
+import reactor.test.StepVerifier
+import java.time.Duration
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(value = ["application.yml"], classes = [BackendTestApplication::class])
-class MedicalQueryServiceTest {
+class MedicalQueryServiceTest : AbstractTest() {
+
+    override fun init() {}
 
     val testDataProvider = TestDataProvider()
 
@@ -27,19 +30,6 @@ class MedicalQueryServiceTest {
 
     @Autowired
     lateinit var medicalInformationService: MedicalInformationService
-
-    @Autowired
-    lateinit var mongoTemplate: MongoTemplate
-
-    @Before
-    fun setUp() {
-        mongoTemplate.dropCollection(MedicalQuery::class.java)
-        mongoTemplate.dropCollection(MedicalInformation::class.java)
-        mongoTemplate.dropCollection(SharingPermission::class.java)
-        mongoTemplate.dropCollection(AbstractUser::class.java)
-        mongoTemplate.dropCollection(User::class.java)
-        mongoTemplate.dropCollection(ResearchFacility::class.java)
-    }
 
     private fun getMedicalQueryWithResearchReference(): MedicalQuery {
         val researchFacility = userService.create(testDataProvider.getDummyResearcher()).block()!!
@@ -79,44 +69,70 @@ class MedicalQueryServiceTest {
         val medicalQuery = getMedicalQueryWithResearchReference()
         medicalQueryService.create(medicalQuery).block()
 
-        val list = medicalQueryService.findMatchingQueries(userId = user.id).collectList().block()!!
+        val list = medicalQueryService.findMatchingQueries(userId = user.id)
 
-        assertNotNull("the returned object must not be null", list)
-        assertEquals("List should have size of 1", 1, list.size)
-        assertEquals("The list should contain the inserted info", medicalQuery, list[0])
+        val relevantQueryData = RelevantQueryData(
+            medicalQuery.id!!,
+            medicalQuery.name,
+            medicalQuery.description,
+            testDataProvider.getDummyResearcher().username,
+            medicalQuery.financialOffering,
+            listOf(Pair(info.id!!, info.title))
+        )
+
+        StepVerifier.create(list)
+            .expectNext(relevantQueryData)
+            .expectComplete()
+            .verify(Duration.ofSeconds(10))
     }
 
-    //    @Test
+    @Test
     fun findAllSharedInformation_shouldReturn() {
+
+        println("create user")
+
         val user = testDataProvider.getDummyUser()
         userService.create(user).block()
+
+        println("create infos")
 
         val info1 = createInfo("info 1", user)
         val info2 = createInfo("info 2", user)
         val info3 = createInfo("info 3", user)
 
+        println("create query")
+
         var medicalQuery = getMedicalQueryWithResearchReference()
         medicalQuery = medicalQueryService.create(medicalQuery).block()!!
+
+        println("create permissions")
 
         createPermission(info1.id, medicalQuery.id)
         createPermission(info2.id, medicalQuery.id)
         createPermission(info3.id, medicalQuery.id)
 
-        val shared = medicalQueryService.findAllSharedInformationOfResearchFacility(medicalQuery.researchFacilityId)
-            .collectList().block()
+        println("findAllSharedInformationOfResearchFacility")
 
-        assertNotNull("the returned object must not be null", shared)
-        assertEquals("List should have size of 1", 1, shared!!.size)
+        val shared = medicalQueryService
+            .findAllSharedInformationOfResearchFacility(medicalQuery.researchFacilityId).collectList().block()!!
 
-        assertAnonInfo(user, shared[0], info1, 0, 3)
-        assertAnonInfo(user, shared[0], info2, 1, 3)
-        assertAnonInfo(user, shared[0], info3, 2, 3)
+        for ((index, info) in shared[0].medicalInformation.withIndex()) {
+            when (info.title) {
+                info1.title -> assertAnonInfo(user, shared[0], info1, index, 3)
+                info2.title -> assertAnonInfo(user, shared[0], info2, index, 3)
+                info3.title -> assertAnonInfo(user, shared[0], info3, index, 3)
+            }
+        }
     }
 
-    //    @Test
+    @Test
     fun findSharedInformationForQuery_shouldReturn() {
-        val user = testDataProvider.getDummyUser()
-        userService.create(user).block()
+
+        println("create user")
+
+        val user = userService.create(testDataProvider.getDummyUser()).block()!! as User
+
+        println(user)
 
         val info1 = createInfo("info 1", user)
         val info2 = createInfo("info 2", user)
@@ -129,17 +145,16 @@ class MedicalQueryServiceTest {
         createPermission(info2.id, medicalQuery.id)
         createPermission(info3.id, medicalQuery.id)
 
-        val shared = medicalQueryService.findSharedInformationForQuery(medicalQuery.id!!).collectList().block()!!
+        val shared = medicalQueryService
+            .findSharedInformationForQuery(medicalQuery.id!!).collectList().block()!!
 
-        assertNotNull("the returned object must not be null", shared)
-        assertEquals("List should have size of 1 (only 1 user)", 1, shared.size)
-        assertEquals("the AnonymizedInfo should have 3 MedicalInfos", 3, shared[0].medicalInformation.size)
-
-        println(shared[0])
-
-        assertAnonInfo(user, shared[0], info1, 0, 3)
-        assertAnonInfo(user, shared[0], info2, 1, 3)
-//        assertAnonInfo(user, shared[0], info3,2,3)
+        for ((index, info) in shared[0].medicalInformation.withIndex()) {
+            when (info.title) {
+                info1.title -> assertAnonInfo(user, shared[0], info1, index, 3)
+                info2.title -> assertAnonInfo(user, shared[0], info2, index, 3)
+                info3.title -> assertAnonInfo(user, shared[0], info3, index, 3)
+            }
+        }
     }
 
     private fun createPermission(infoId: String?, queryId: String?): SharingPermission {

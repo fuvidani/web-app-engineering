@@ -20,7 +20,6 @@ import reactor.test.StepVerifier
 internal class MedicalQueryControllerTest : AbstractTest() {
 
     override fun init() {
-
         user = userService.create(testDataProvider.getDummyUser()).block()!!
     }
 
@@ -79,6 +78,26 @@ internal class MedicalQueryControllerTest : AbstractTest() {
             .expectNextCount(2)
             .expectNext(firstObject)
             .expectNext(secondObject)
+    }
+
+    @Test
+    fun getAllMatchingQueries_shouldReturn() {
+        //TODO
+    }
+
+    @Test
+    fun createSharingPermission_valid_shouldReturn() {
+        //TODO
+    }
+
+    @Test
+    fun createSharingPermissionList_valid__shouldReturn() {
+        //TODO
+    }
+
+    @Test
+    fun getSharedInformationForQuery_valid__shouldReturn() {
+        //TODO
     }
 
     private fun createTestDummyData() {
