@@ -67,7 +67,7 @@ class MedicalQueryService(
                 )
                     .filter { query -> query.tags.any { qTag -> tuple.t1.tags.contains(qTag) } }
                     .map { q ->
-                        medicalInformationService
+                        val data = medicalInformationService
                             .findInfoForQuery(q, userId)
                             .map { info -> Pair(info.id!!, info.title) }
                             .collectList()
@@ -76,6 +76,12 @@ class MedicalQueryService(
                                     q.id!!, q.name, q.description, q.researchFacilityId, q.financialOffering,
                                     info
                                 )
+                            }
+                        userService.findById(q.researchFacilityId)
+                            .zipWith(data)
+                            .map { tuple ->
+                                tuple.t2.queryInstituteName = tuple.t1.username
+                                tuple.t2
                             }
                     }.flatMap { it }
             }.flatMap { it }

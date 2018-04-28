@@ -78,11 +78,9 @@ class MedicalQueryServiceTest : AbstractTest() {
             testDataProvider.getDummyResearcher().username,
             medicalQuery.financialOffering,
             listOf(Pair(info.id!!, info.title))
-
         )
 
         StepVerifier.create(list)
-            .expectNextCount(1)
             .expectNext(relevantQueryData)
             .expectComplete()
             .verify(Duration.ofSeconds(10))
@@ -119,7 +117,6 @@ class MedicalQueryServiceTest : AbstractTest() {
             .findAllSharedInformationOfResearchFacility(medicalQuery.researchFacilityId)
 
         StepVerifier.create(shared)
-            .expectNextCount(3)
             .assertNext { anon -> assertAnonInfo(user, anon, info1) }
             .assertNext { anon -> assertAnonInfo(user, anon, info2) }
             .assertNext { anon -> assertAnonInfo(user, anon, info3) }
@@ -160,7 +157,6 @@ class MedicalQueryServiceTest : AbstractTest() {
         println("start comparing")
 
         StepVerifier.create(shared)
-            .expectNextCount(3)
             .assertNext { anon -> assertAnonInfo(user, anon, info1) }
             .assertNext { anon -> assertAnonInfo(user, anon, info2) }
             .assertNext { anon -> assertAnonInfo(user, anon, info3) }
