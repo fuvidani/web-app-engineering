@@ -1,3 +1,65 @@
-<p>
-  queries works!
-</p>
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span>Share Medical Queries ({{email}})</span>
+    <span class="toolbar-spacer"></span>
+    <button mat-icon-button (click)="home()">
+      <mat-icon>home</mat-icon>
+    </button>
+    <button mat-icon-button (click)="logOut()">
+      <mat-icon>keyboard_tab</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-card class="query-card" *ngIf="dataSource.data.length === 0">
+  <mat-card-header>
+    <div class="no-content-card">No queries to show</div>
+  </mat-card-header>
+</mat-card>
+
+<mat-card class="query-card" *ngFor="let query of dataSource.data">
+  <mat-card-header>
+    <mat-card-title><h3>{{query.name}} by {{query.institute}}</h3></mat-card-title>
+    <mat-card-subtitle>{{query.description}} - {{query.price}}€ / health data</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="table-container mat-elevation-z5">
+      <mat-table #table [dataSource]="query.healthData">
+
+        <ng-container matColumnDef="select">
+          <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? masterToggle(query) : null"
+                          [checked]="getSelection(query).hasValue() && isAllSelected(query)"
+                          [indeterminate]="getSelection(query).hasValue() && !isAllSelected(query)">
+            </mat-checkbox>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? getSelection(query).toggle(row) : null"
+                          [checked]="getSelection(query).isSelected(row)">
+            </mat-checkbox>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef> Id</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.id}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef> Titel</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.title}}</mat-cell>
+        </ng-container>
+
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"
+                 (click)="getSelection(query).toggle(row)">
+        </mat-row>
+      </mat-table>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button color="primary" (click)="share(query)">Share</button>
+  </mat-card-actions>
+</mat-card>

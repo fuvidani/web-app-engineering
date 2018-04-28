@@ -45,9 +45,9 @@ class UserServiceTest {
         assertNotNull("the created user must be persisted and returned", user)
         assertNotNull("the id of the user must be set by the database", user.id)
         assertNotEquals(
-                "the clear text input password must be hashed after creation",
-                plainTextPassword,
-                user.password
+            "the clear text input password must be hashed after creation",
+            plainTextPassword,
+            user.password
         )
     }
 
@@ -60,9 +60,9 @@ class UserServiceTest {
         assertNotNull("the created user must be persisted and returned", researchFacility)
         assertNotNull("the id of the user must be set by the database", researchFacility.id)
         assertNotEquals(
-                "the clear text input password must be hashed after creation",
-                plainTextPassword,
-                researchFacility.password
+            "the clear text input password must be hashed after creation",
+            plainTextPassword,
+            researchFacility.password
         )
         assertEquals("research@who.com", researchFacility.username)
         assertTrue(researchFacility.isAccountNonExpired)
@@ -108,14 +108,14 @@ class UserServiceTest {
         val email = toCreate.email
         val foundEmailBeforeCreation = userService.checkIfEMailExists(email).block()
         assertFalse(
-                "the email address must not be found in the empty database",
-                foundEmailBeforeCreation!!
+            "the email address must not be found in the empty database",
+            foundEmailBeforeCreation!!
         )
         userService.create(toCreate).block()
         val foundEmailAfterCreation = userService.checkIfEMailExists(email).block()
         assertTrue(
-                "the email address must be found after a user has been created with it",
-                foundEmailAfterCreation!!
+            "the email address must be found after a user has been created with it",
+            foundEmailAfterCreation!!
         )
     }
 
@@ -126,8 +126,8 @@ class UserServiceTest {
         researchFacility.email = user.email
         userService.create(user).block()
         StepVerifier.create(userService.create(researchFacility))
-                .expectError(DuplicatedEmailException::class.java)
-                .verify()
+            .expectError(DuplicatedEmailException::class.java)
+            .verify()
     }
 
     @Test
@@ -142,9 +142,9 @@ class UserServiceTest {
 
         assertEquals("the found user must be equal to the created one", user, foundUser)
         assertEquals(
-                "the found researcher must be equal to the created one",
-                researchFacility,
-                foundResearcher
+            "the found researcher must be equal to the created one",
+            researchFacility,
+            foundResearcher
         )
     }
 }

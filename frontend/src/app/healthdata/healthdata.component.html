@@ -1,50 +1,112 @@
-<div>
-  <mat-toolbar color="primary">
-    <mat-toolbar-row>
-      <span>Health Data ({{email}})</span>
-      <span class="toolbar-spacer"></span>
-      <button mat-icon-button>
-        <mat-icon>notifications_none</mat-icon>
-      </button>
-      <button mat-icon-button (click)="logOut()">
-        <mat-icon>keyboard_tab</mat-icon>
-      </button>
-    </mat-toolbar-row>
-  </mat-toolbar>
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span>Health Data ({{email}})</span>
+    <span class="toolbar-spacer"></span>
+    <button mat-icon-button (click)="navigateToQueries()">
+      <mat-icon *ngIf="queries.length === 0">notifications_none</mat-icon>
+      <mat-icon *ngIf="queries.length > 0">notifications</mat-icon>
+    </button>
+    <button mat-icon-button (click)="logOut()">
+      <mat-icon>keyboard_tab</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
 
-  <mat-card class="healthdata-card" *ngFor="let data of healthData">
-    <mat-card-header>
-      <mat-card-title>{{data.title}}</mat-card-title>
-      <mat-card-subtitle>
+<mat-card class="healthdata-card" *ngIf="healthData.length === 0">
+  <mat-card-header>
+    <div class="no-content-card">No queries to show</div>
+  </mat-card-header>
+</mat-card>
+
+<mat-card class="healthdata-card" *ngFor="let data of healthData">
+  <mat-card-header>
+    <mat-card-title><h3>{{data.title}}</h3></mat-card-title>
+    <mat-card-subtitle>
           <span *ngFor="let tag of data.tags">
             {{'#' + tag + " "}}
           </span>
-      </mat-card-subtitle>
+    </mat-card-subtitle>
+  </mat-card-header>
+  <img mat-card-image src={{data.image}} *ngIf="data.image">
+  <mat-card-content *ngIf="data.description">
+    <p>
+      {{data.description}}
+    </p>
+  </mat-card-content>
+</mat-card>
+
+<div #newItem>
+  <mat-card class="healthdata-card">
+    <mat-card-header>
+      <mat-card-title><h3>Upload new health data</h3></mat-card-title>
     </mat-card-header>
-    <img mat-card-image src={{data.image}} *ngIf="data.image">
-    <mat-card-content *ngIf="data.description">
-      <p>
-        {{data.description}}
-      </p>
+    <mat-card-content>
+      <form (submit)="onSubmit()" [formGroup]="uploadForm">
+        <table class="full-width">
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <input matInput placeholder="Title" formControlName="title" required>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <textarea matInput placeholder="Description" formControlName="description"></textarea>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <mat-chip-list #chipList>
+                  <mat-chip *ngFor="let tag of tags" (remove)="remove(tag)">
+                    {{tag.name}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                  <input placeholder="Tags *"
+                         [matChipInputFor]="chipList"
+                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                         [matChipInputAddOnBlur]="true"
+                         (matChipInputTokenEnd)="add($event)"/>
+                </mat-chip-list>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="form-group">
+                <button mat-icon-button (click)="openInput()" type="button" color="primary">
+                  <mat-icon aria-label="Example icon-button with a heart icon">add_a_photo</mat-icon>
+                </button>
+                <span *ngIf="fileToUpload">{{fileToUpload.name}}</span>
+                <input type="file"
+                       accept="image/*"
+                       id="fileInput"
+                       class="hide-it"
+                       (change)="handleFileInput($event.target.files)">
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button mat-raised-button color="primary" type="submit">
+                Upload health data
+              </button>
+              <div *ngIf="error" class="error">
+                {{ errorText }}
+              </div>
+            </td>
+          </tr>
+        </table>
+      </form>
     </mat-card-content>
   </mat-card>
-
-  <div #newItem>
-    <mat-card class="healthdata-card">
-      <mat-card-header>
-        <mat-card-title>Title</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p>
-          Description
-        </p>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <button mat-fab color="primary" class="mat-fab-custom" (click)="scroll(newItem)">
-    <mat-icon>add</mat-icon>
-  </button>
 </div>
+
+<button mat-fab color="primary" class="mat-fab-custom" (click)="scroll(newItem)">
+  <mat-icon>add</mat-icon>
+</button>
 
 

@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import {MedicalQuery} from "../model/medicalquery";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Observable} from "rxjs/Observable";
-import {HttpClient} from "@angular/common/http";
+import {Injectable} from '@angular/core';
+import {MedicalQuery} from '../model/medicalquery';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Observable} from 'rxjs/Observable';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable()
 export class MedicalqueryService {
@@ -16,8 +16,8 @@ export class MedicalqueryService {
 
   constructor(private http: HttpClient) {
     this.loadInitialData();
-    this.dummyQuery1 = new MedicalQuery(1, "StarLabs", "Abfrage 1", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 5, 18, 25, "MALE", ["cancer", "brain"]);
-    this.dummyQuery2 = new MedicalQuery(2, "TU Vienna", "Abfrage 1", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 10, 50, 60, "FEMALE", ["cancer", "skin"]);
+    this.dummyQuery1 = new MedicalQuery(1, 'StarLabs', 'Abfrage 1', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 5, 18, 25, 'MALE', ['cancer', 'brain']);
+    this.dummyQuery2 = new MedicalQuery(2, 'TU Vienna', 'Abfrage 1', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 10, 50, 60, 'FEMALE', ['cancer', 'skin']);
     this.medicalQueryStore = [this.dummyQuery1, this.dummyQuery2];
     this._medicalQueries = new BehaviorSubject<MedicalQuery[]>(this.medicalQueryStore);
     this.medicalQueries = this._medicalQueries.asObservable();
@@ -25,7 +25,7 @@ export class MedicalqueryService {
   }
 
   loadInitialData() {
-    console.log("Loading initial medical queries from backend.");
+    console.log('Loading initial medical queries from backend.');
     //TODO: load data from backend
   }
 

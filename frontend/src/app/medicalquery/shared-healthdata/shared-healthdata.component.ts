@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import {HealthData} from "../../model/healthdata";
-import {AuthService} from "../../service/auth.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {HealthData} from '../../model/healthdata';
+import {AuthService} from '../../service/auth.service';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-shared-healthdata',
@@ -18,11 +18,12 @@ export class SharedHealthdataComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.email = this.authService.getPrincipal().email;
-    this.route.params.subscribe( params => this.qid = params['qid']);
+    this.route.params.subscribe(params => this.qid = params['qid']);
   }
 
   logOut() {

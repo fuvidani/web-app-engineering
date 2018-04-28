@@ -1,9 +1,8 @@
 package at.ac.tuwien.waecm.ss18.group09
 
-import at.ac.tuwien.waecm.ss18.group09.dto.Gender
-import at.ac.tuwien.waecm.ss18.group09.dto.MedicalInformation
-import at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility
-import at.ac.tuwien.waecm.ss18.group09.dto.User
+/* ktlint-disable no-wildcard-imports */
+import at.ac.tuwien.waecm.ss18.group09.dto.*
+import java.time.LocalDate
 
 class TestDataProvider {
 
@@ -12,7 +11,7 @@ class TestDataProvider {
         user.email = "kalu@gmx.at"
         user.password = "abc"
         user.name = "lk"
-        user.birthday = "02.02"
+        user.birthday = LocalDate.of(1994, 6, 6)
         user.gender = Gender.MALE
         return user
     }
@@ -29,7 +28,12 @@ class TestDataProvider {
     }
 
     fun getValidMedicalInformation(): MedicalInformation {
-        return MedicalInformation(title = "my disease", description = "some description", image = "image", tags = arrayOf("disease"))
+        return MedicalInformation(
+            title = "my disease",
+            description = "some description",
+            image = "image",
+            tags = arrayOf("disease")
+        )
     }
 
     private fun getAdditionalResearcher(): ResearchFacility {
@@ -37,5 +41,17 @@ class TestDataProvider {
         researcher.email = "research@bayer.com"
         researcher.password = "password"
         return researcher
+    }
+
+    fun getValidMedicalQuery(): MedicalQuery {
+        return MedicalQuery(
+            name = "my_query",
+            description = "some description",
+            financialOffering = 5.05,
+            minAge = 18,
+            maxAge = 35,
+            gender = Gender.MALE,
+            tags = arrayOf("disease")
+        )
     }
 }
