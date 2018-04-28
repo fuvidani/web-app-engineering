@@ -1,10 +1,7 @@
 package at.ac.tuwien.waecm.ss18.group09.service
 
 /* ktlint-disable no-wildcard-imports */
-import at.ac.tuwien.waecm.ss18.group09.dto.AnonymizedUserInformation
-import at.ac.tuwien.waecm.ss18.group09.dto.MedicalQuery
-import at.ac.tuwien.waecm.ss18.group09.dto.SharingPermission
-import at.ac.tuwien.waecm.ss18.group09.dto.User
+import at.ac.tuwien.waecm.ss18.group09.dto.*
 import at.ac.tuwien.waecm.ss18.group09.repository.MedicalQueryRepository
 import at.ac.tuwien.waecm.ss18.group09.repository.SharingPermissionRepository
 import org.springframework.stereotype.Component
@@ -23,7 +20,7 @@ interface IMedicalQueryService {
 
     fun findAll(): Flux<MedicalQuery>
 
-    fun findMatchingQueries(userId: String): Flux<MedicalQuery>
+    fun findMatchingQueries(userId: String): Flux<RelevantQueryData>
 
     fun createSharingPermission(sharingPermission: SharingPermission): Mono<SharingPermission>
 
@@ -36,7 +33,7 @@ interface IMedicalQueryService {
 
 @Component("medicalQueryService")
 class MedicalQueryService(
-    private val repository: MedicalQueryRepository,
+    private val queryRepository: MedicalQueryRepository,
     private val sharingPermissionRepository: SharingPermissionRepository,
     private val medicalInformationService: IMedicalInformationService,
     private val userService: UserService
@@ -45,29 +42,48 @@ class MedicalQueryService(
     @Throws(ValidationException::class)
     override fun create(medicalQuery: MedicalQuery): Mono<MedicalQuery> {
         validate(medicalQuery)
-        return repository.save(medicalQuery)
+        return queryRepository.save(medicalQuery)
     }
 
     override fun findByResearchFacilityId(id: String): Flux<MedicalQuery> {
-        return repository.findByResearchFacilityId(id)
+        return queryRepository.findByResearchFacilityId(id)
     }
 
     override fun findAll(): Flux<MedicalQuery> {
-        return repository.findAll()
+        return queryRepository.findAll()
     }
 
-    override fun findMatchingQueries(userId: String): Flux<MedicalQuery> {
+    override fun findMatchingQueries(userId: String): Flux<RelevantQueryData> {
 
         val infos = medicalInformationService.findByUserId(userId)
         val user = userService.findById(userId).cast(User::class.java)
 
         return infos.zipWith(user)
             .map { tuple ->
-                repository.findByGenderAndMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(
+                queryRepository.findByGenderAndMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(
                     tuple.t2.gender,
                     calcAge(tuple.t2.birthday),
                     calcAge(tuple.t2.birthday)
-                ).filter { query -> query.tags.any { qTag -> tuple.t1.tags.contains(qTag) } }
+                )
+                    .filter { query -> query.tags.any { qTag -> tuple.t1.tags.contains(qTag) } }
+                    .map { q ->
+                        val data = medicalInformationService
+                            .findInfoForQuery(q, userId)
+                            .map { info -> Pair(info.id!!, info.title) }
+                            .collectList()
+                            .map { info ->
+                                RelevantQueryData(
+                                    q.id!!, q.name, q.description, q.researchFacilityId, q.financialOffering,
+                                    info
+                                )
+                            }
+                        userService.findById(q.researchFacilityId)
+                            .zipWith(data)
+                            .map { tuple ->
+                                tuple.t2.queryInstituteName = tuple.t1.username
+                                tuple.t2
+                            }
+                    }.flatMap { it }
             }.flatMap { it }
     }
 
@@ -90,11 +106,6 @@ class MedicalQueryService(
 
         return permissions
             .flatMap { p -> medicalInformationService.findById(p.information) }
-//                .sort { medicalInformation, medicalInformation2 ->
-//                    Integer.compare(
-//                            medicalInformation.user.hashCode(),
-//                            medicalInformation2.user.hashCode())
-//                }
             .groupBy { info -> info.userId }
             .flatMap { groupedFlux ->
                 groupedFlux
@@ -116,18 +127,22 @@ class MedicalQueryService(
                             null
                         )
                     }
+                    .log()
             }
             .map { an ->
-                val user = userService.findById(an.userId).block()
-                user as User
-                println(user)
-                an.birthday = user.birthday
-                an.gender = user.gender
-                an.id = UUID.randomUUID().toString()
-                an.userId = UUID.randomUUID().toString()
-                an.medicalInformation.forEach { info -> info.userId = an.userId }
-                an
-            }
+                println(an.userId)
+                userService.findById(an.userId)
+                    .cast(User::class.java)
+                    .map { user ->
+                        println(user)
+                        an.birthday = user.birthday
+                        an.gender = user.gender
+                        an.id = UUID.randomUUID().toString()
+                        an.userId = UUID.randomUUID().toString()
+                        an.medicalInformation.forEach { info -> info.userId = an.userId }
+                        an
+                    }
+            }.flatMap { it }
     }
 
     @Throws(ValidationException::class)
