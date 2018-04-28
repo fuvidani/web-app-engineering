@@ -113,6 +113,15 @@ data class MedicalQuery(
     }
 }
 
+data class RelevantQueryData(
+    var queryId: String,
+    var queryName: String,
+    var queryDescription: String,
+    var queryInstituteName: String,
+    var queryPrice: Double,
+    var medicalInfo: List<Pair<String, String>>
+)
+
 @Document(collection = "sharingPermission")
 data class SharingPermission(
     @Id
