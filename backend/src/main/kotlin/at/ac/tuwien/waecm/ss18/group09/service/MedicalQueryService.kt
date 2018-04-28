@@ -118,7 +118,6 @@ class MedicalQueryService(
                             null
                         )
                     }
-                    .log()
                     .reduce { a1: AnonymizedUserInformation, a2: AnonymizedUserInformation ->
                         AnonymizedUserInformation(
                             "",
@@ -130,31 +129,20 @@ class MedicalQueryService(
                     }
                     .log()
             }
-            .log("before user mapping")
             .map { an ->
                 println(an.userId)
                 userService.findById(an.userId)
-                    .log("from user service 1")
                     .cast(User::class.java)
-                    .log("from user service 1")
                     .map { user ->
                         println(user)
                         an.birthday = user.birthday
                         an.gender = user.gender
                         an.id = UUID.randomUUID().toString()
                         an.userId = UUID.randomUUID().toString()
+                        an.medicalInformation.forEach { info -> info.userId = an.userId }
+                        an
                     }
-                    .log("end of user service")
-                an
-            }.log("end of user service 2")
-
-//        val permissions = sharingPermissionRepository.findByQueryId(queryId)
-//        val anonymizer = PseduoAnonymizer(userService)
-//
-//        return permissions
-//            .flatMap { p -> medicalInformationService.findById(p.information) }
-//            .
-//            .map { q -> anonymizer.anonymize(q) }
+            }.flatMap { it }
     }
 
     @Throws(ValidationException::class)

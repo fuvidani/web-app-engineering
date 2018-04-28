@@ -114,14 +114,15 @@ class MedicalQueryServiceTest : AbstractTest() {
         println("findAllSharedInformationOfResearchFacility")
 
         val shared = medicalQueryService
-            .findAllSharedInformationOfResearchFacility(medicalQuery.researchFacilityId)
+            .findAllSharedInformationOfResearchFacility(medicalQuery.researchFacilityId).collectList().block()!!
 
-        StepVerifier.create(shared)
-            .assertNext { anon -> assertAnonInfo(user, anon, info1, 0, 3) }
-            .assertNext { anon -> assertAnonInfo(user, anon, info2, 1, 3) }
-            .assertNext { anon -> assertAnonInfo(user, anon, info3, 2, 3) }
-            .expectComplete()
-            .verify(Duration.ofSeconds(10))
+        for ((index, info) in shared[0].medicalInformation.withIndex()) {
+            when (info.title) {
+                info1.title -> assertAnonInfo(user, shared[0], info1, index, 3)
+                info2.title -> assertAnonInfo(user, shared[0], info2, index, 3)
+                info3.title -> assertAnonInfo(user, shared[0], info3, index, 3)
+            }
+        }
     }
 
     @Test
@@ -129,39 +130,31 @@ class MedicalQueryServiceTest : AbstractTest() {
 
         println("create user")
 
-        val user = userService.create(testDataProvider.getDummyUser()).block() as User
+        val user = userService.create(testDataProvider.getDummyUser()).block()!! as User
 
         println(user)
-        println("create infos")
 
         val info1 = createInfo("info 1", user)
         val info2 = createInfo("info 2", user)
         val info3 = createInfo("info 3", user)
 
-        println("create query")
-
         var medicalQuery = getMedicalQueryWithResearchReference()
         medicalQuery = medicalQueryService.create(medicalQuery).block()!!
-
-        println("create permissions")
 
         createPermission(info1.id, medicalQuery.id)
         createPermission(info2.id, medicalQuery.id)
         createPermission(info3.id, medicalQuery.id)
 
-        println("findSharedInformationForQuery")
-
         val shared = medicalQueryService
-            .findSharedInformationForQuery(medicalQuery.id!!)
+            .findSharedInformationForQuery(medicalQuery.id!!).collectList().block()!!
 
-        println("start comparing")
-
-        StepVerifier.create(shared)
-            .assertNext { anon -> assertAnonInfo(user, anon, info1, 0, 3) }
-            .assertNext { anon -> assertAnonInfo(user, anon, info2, 1, 3) }
-            .assertNext { anon -> assertAnonInfo(user, anon, info3, 2, 3) }
-            .expectComplete()
-            .verify(Duration.ofSeconds(10))
+        for ((index, info) in shared[0].medicalInformation.withIndex()) {
+            when (info.title) {
+                info1.title -> assertAnonInfo(user, shared[0], info1, index, 3)
+                info2.title -> assertAnonInfo(user, shared[0], info2, index, 3)
+                info3.title -> assertAnonInfo(user, shared[0], info3, index, 3)
+            }
+        }
     }
 
     private fun createPermission(infoId: String?, queryId: String?): SharingPermission {
