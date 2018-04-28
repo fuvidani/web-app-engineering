@@ -38,6 +38,88 @@
       </button>
     </mat-card-content>
   </mat-card>
+
+
+  <mat-card class="medicalquery-card">
+    <mat-card-header>
+      <mat-card-title>
+        <h2>Create a new medical query</h2>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form (submit)="onSubmit()" [formGroup]="medicalQueryForm">
+        <table class="full-width">
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <input matInput formControlName="name" placeholder="Name" required>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <textarea matInput formControlName="description" placeholder="Description" required>
+                </textarea>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <input matInput type="number" min="0" formControlName="financialOffering" placeholder="Financial-Offering" required>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <mat-chip-list #chipList>
+                  <mat-chip *ngFor="let tag of tagList" (remove)="removeTag(tag)">
+                    {{tag.name}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                  <input placeholder="Tags *"
+                         [matChipInputFor]="chipList"
+                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                         [matChipInputAddOnBlur]="true"
+                         (matChipInputTokenEnd)="addTag($event)"/>
+                </mat-chip-list>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <mat-select formControlName="gender" required>
+                  <mat-option *ngFor="let gender of genders" [value]="gender.value">
+                    {{ gender.i18n }}
+                  </mat-option>
+                </mat-select>
+                <mat-placeholder>
+                  Gender
+                </mat-placeholder>
+              </mat-form-field>
+            </td>
+          </tr>
+
+
+
+
+        </table>
+        <button mat-raised-button color="primary" type="submit">
+          Create
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+
+
+
+
+
+
   <button mat-fab color="primary" class="mat-fab-custom" (click)="scroll()">
     <mat-icon>add</mat-icon>
   </button>
