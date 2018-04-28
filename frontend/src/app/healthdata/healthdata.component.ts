@@ -31,29 +31,23 @@ export class HealthdataComponent implements OnInit {
   fileToUpload: File = null;
 
 
-
   constructor(private healthdataService: HealthdataService, private authService: AuthService, private router: Router) {
   }
 
   ngOnInit() {
-    /*this.healthdataService.fetchHeathData().subscribe(response => {
-      const responseObject = JSON.parse(response);
+    this.healthdataService.fetchHeathData().subscribe(response => {
+        const responseObject = JSON.parse(response);
         // TODO parse dynamically
         const data = new HealthData(responseObject.id, responseObject.title, responseObject.description, responseObject.image, responseObject.tags, responseObject.userId);
         console.log(data);
 
         this.healthData.push(data);
-
+        // dirty hack to update view
+        document.getElementById('trickButton').click();
       },
       err => console.error(err),
       () => console.log('done loading health data')
-    );*/
-    this.healthdataService.healthDataList$.subscribe((res: HealthData[]) => {
-      console.log(res);
-      this.healthData = res;
-    });
-    this.healthdataService.getHealthDataList();
-    // this.healthdataService.healthDataQueries.subscribe(res => this.queries = res);
+    );
     this.email = this.authService.getPrincipal().email;
 
     this.title = new FormControl(

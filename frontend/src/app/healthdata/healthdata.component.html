@@ -1,17 +1,18 @@
-<mat-toolbar color="primary">
-  <mat-toolbar-row>
-    <span>Health Data ({{email}})</span>
-    <span class="toolbar-spacer"></span>
-    <button mat-icon-button (click)="navigateToQueries()">
-      <mat-icon *ngIf="queries.length === 0">notifications_none</mat-icon>
-      <mat-icon *ngIf="queries.length > 0">notifications</mat-icon>
-    </button>
-    <button mat-icon-button (click)="logOut()">
-      <mat-icon>keyboard_tab</mat-icon>
-    </button>
-  </mat-toolbar-row>
-</mat-toolbar>
-
+<div #header>
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <span>Health Data ({{email}})</span>
+      <span class="toolbar-spacer"></span>
+      <button mat-icon-button (click)="navigateToQueries()">
+        <mat-icon *ngIf="queries.length === 0">notifications_none</mat-icon>
+        <mat-icon *ngIf="queries.length > 0">notifications</mat-icon>
+      </button>
+      <button mat-icon-button (click)="logOut()">
+        <mat-icon>keyboard_tab</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>
 <mat-card class="healthdata-card" *ngIf="healthData.length === 0">
   <mat-card-header>
     <div class="no-content-card">No health data to show</div>
@@ -108,5 +109,7 @@
 <button mat-fab color="primary" class="mat-fab-custom" (click)="scroll(newItem)">
   <mat-icon>add</mat-icon>
 </button>
+
+<button class="trick-button" (click)="scroll(header)" id="trickButton"></button>
 
 

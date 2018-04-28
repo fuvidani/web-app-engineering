@@ -7,7 +7,6 @@ import {AuthService} from './auth.service';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import * as EventSource from 'eventsource';
-import {Subject} from 'rxjs/Subject';
 
 @Injectable()
 export class HealthdataService {
@@ -22,45 +21,7 @@ export class HealthdataService {
   private healthDataQueriesPlaceholder = new BehaviorSubject<any>([this.query1, this.query2]);
   healthDataQueries = this.healthDataQueriesPlaceholder.asObservable();
 
-  healthData = new Array<HealthData>();
-  healthDataSubject = new Subject();
-  healthDataList$ = this.healthDataSubject.asObservable();
-
   constructor(private authService: AuthService, private http: HttpClient) {
-    this.notify();
-  }
-
-  // insertNew():void {
-  //   // Here we are updating the API
-  //   this.http.post(this.root + "/users", {
-  //     name: "This is my new one"
-  //   }).subscribe((res) => {
-  //     // The API returns our newly created item, so append it to data, and
-  //     // call notify again to update the observable
-  //     this.data.push(res);
-  //     this.notify();
-  //   })
-
-  // }
-
-  private notify() {
-    // Call next on the subject with the latest data
-    this.healthDataSubject.next(this.healthData);
-  }
-
-  getHealthDataList() {
-    this.fetchHeathData().subscribe(response => {
-        const responseObject = JSON.parse(response);
-        // TODO parse dynamically
-        const data = new HealthData(responseObject.id, responseObject.title, responseObject.description, responseObject.image, responseObject.tags, responseObject.userId);
-        // console.log(data);
-
-        this.healthData.push(data);
-        this.notify();
-      },
-      err => console.error(err),
-      () => console.log('done loading health data')
-    );
   }
 
   fetchHeathData() {
