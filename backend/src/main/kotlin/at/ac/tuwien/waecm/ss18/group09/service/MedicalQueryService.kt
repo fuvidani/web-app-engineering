@@ -4,12 +4,12 @@ package at.ac.tuwien.waecm.ss18.group09.service
 import at.ac.tuwien.waecm.ss18.group09.dto.*
 import at.ac.tuwien.waecm.ss18.group09.repository.MedicalQueryRepository
 import at.ac.tuwien.waecm.ss18.group09.repository.SharingPermissionRepository
-import at.ac.tuwien.waecm.ss18.group09.util.PseduoAnonymizer
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.time.Period
+import java.util.*
 
 interface IMedicalQueryService {
 
@@ -102,55 +102,59 @@ class MedicalQueryService(
     }
 
     override fun findSharedInformationForQuery(queryId: String): Flux<AnonymizedUserInformation> {
-//        val permissions = sharingPermissionRepository.findByQueryId(queryId)
-//
-//        return permissions
-//            .flatMap { p -> medicalInformationService.findById(p.information) }
-////                .sort { medicalInformation, medicalInformation2 ->
-////                    Integer.compare(
-////                            medicalInformation.user.hashCode(),
-////                            medicalInformation2.user.hashCode())
-////                }
-//            .groupBy { info -> info.userId }
-//            .flatMap { groupedFlux ->
-//                groupedFlux
-//                    .map { medicalInformation ->
-//                        AnonymizedUserInformation(
-//                            "",
-//                            mutableListOf(medicalInformation),
-//                            groupedFlux.key()!!,
-//                            null,
-//                            null
-//                        )
-//                    }
-//                    .reduce { a1: AnonymizedUserInformation, a2: AnonymizedUserInformation ->
-//                        AnonymizedUserInformation(
-//                            "",
-//                            a1.medicalInformation.union(a2.medicalInformation).toMutableList(),
-//                            a1.userId,
-//                            null,
-//                            null
-//                        )
-//                    }
-//            }
-//            .map { an ->
-//                val user = userService.findById(an.userId).block()
-//                user as User
-//                println(user)
-//                an.birthday = user.birthday
-//                an.gender = user.gender
-//                an.id = UUID.randomUUID().toString()
-//                an.userId = UUID.randomUUID().toString()
-//                an.medicalInformation.forEach { info -> info.userId = an.userId }
-//                an
-//            }
-
         val permissions = sharingPermissionRepository.findByQueryId(queryId)
-        val anonymizer = PseduoAnonymizer(userService)
 
         return permissions
             .flatMap { p -> medicalInformationService.findById(p.information) }
-            .map { q -> anonymizer.anonymize(q) }
+            .groupBy { info -> info.userId }
+            .flatMap { groupedFlux ->
+                groupedFlux
+                    .map { medicalInformation ->
+                        AnonymizedUserInformation(
+                            "",
+                            mutableListOf(medicalInformation),
+                            groupedFlux.key()!!,
+                            null,
+                            null
+                        )
+                    }
+                    .log()
+                    .reduce { a1: AnonymizedUserInformation, a2: AnonymizedUserInformation ->
+                        AnonymizedUserInformation(
+                            "",
+                            a1.medicalInformation.union(a2.medicalInformation).toMutableList(),
+                            a1.userId,
+                            null,
+                            null
+                        )
+                    }
+                    .log()
+            }
+            .log("before user mapping")
+            .map { an ->
+                println(an.userId)
+                userService.findById(an.userId)
+                    .log("from user service 1")
+                    .cast(User::class.java)
+                    .log("from user service 1")
+                    .map { user ->
+                        println(user)
+                        an.birthday = user.birthday
+                        an.gender = user.gender
+                        an.id = UUID.randomUUID().toString()
+                        an.userId = UUID.randomUUID().toString()
+                    }
+                    .log("end of user service")
+                an
+            }.log("end of user service 2")
+
+//        val permissions = sharingPermissionRepository.findByQueryId(queryId)
+//        val anonymizer = PseduoAnonymizer(userService)
+//
+//        return permissions
+//            .flatMap { p -> medicalInformationService.findById(p.information) }
+//            .
+//            .map { q -> anonymizer.anonymize(q) }
     }
 
     @Throws(ValidationException::class)

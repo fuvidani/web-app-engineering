@@ -86,7 +86,7 @@ class MedicalQueryServiceTest : AbstractTest() {
             .verify(Duration.ofSeconds(10))
     }
 
-    //    @Test
+    @Test
     fun findAllSharedInformation_shouldReturn() {
 
         println("create user")
@@ -117,21 +117,21 @@ class MedicalQueryServiceTest : AbstractTest() {
             .findAllSharedInformationOfResearchFacility(medicalQuery.researchFacilityId)
 
         StepVerifier.create(shared)
-            .assertNext { anon -> assertAnonInfo(user, anon, info1) }
-            .assertNext { anon -> assertAnonInfo(user, anon, info2) }
-            .assertNext { anon -> assertAnonInfo(user, anon, info3) }
+            .assertNext { anon -> assertAnonInfo(user, anon, info1, 0, 3) }
+            .assertNext { anon -> assertAnonInfo(user, anon, info2, 1, 3) }
+            .assertNext { anon -> assertAnonInfo(user, anon, info3, 2, 3) }
             .expectComplete()
             .verify(Duration.ofSeconds(10))
     }
 
-    //    @Test
+    @Test
     fun findSharedInformationForQuery_shouldReturn() {
 
         println("create user")
 
-        val user = testDataProvider.getDummyUser()
-        userService.create(user).block()
+        val user = userService.create(testDataProvider.getDummyUser()).block() as User
 
+        println(user)
         println("create infos")
 
         val info1 = createInfo("info 1", user)
@@ -157,9 +157,9 @@ class MedicalQueryServiceTest : AbstractTest() {
         println("start comparing")
 
         StepVerifier.create(shared)
-            .assertNext { anon -> assertAnonInfo(user, anon, info1) }
-            .assertNext { anon -> assertAnonInfo(user, anon, info2) }
-            .assertNext { anon -> assertAnonInfo(user, anon, info3) }
+            .assertNext { anon -> assertAnonInfo(user, anon, info1, 0, 3) }
+            .assertNext { anon -> assertAnonInfo(user, anon, info2, 1, 3) }
+            .assertNext { anon -> assertAnonInfo(user, anon, info3, 2, 3) }
             .expectComplete()
             .verify(Duration.ofSeconds(10))
     }
@@ -179,7 +179,9 @@ class MedicalQueryServiceTest : AbstractTest() {
     private fun assertAnonInfo(
         user: User,
         anonInfo: AnonymizedUserInformation,
-        info: MedicalInformation
+        info: MedicalInformation,
+        index: Int,
+        expectedListSize: Int
     ) {
 
         assertEquals(
@@ -193,31 +195,36 @@ class MedicalQueryServiceTest : AbstractTest() {
             anonInfo.birthday
         )
         assertEquals(
+            "The anonymized info should contain the inserted & shared medical info",
+            expectedListSize,
+            anonInfo.medicalInformation.size
+        )
+        assertEquals(
             "The anonymized info should contain the inserted & shared info: title",
             info.title,
-            anonInfo.medicalInformation.title
+            anonInfo.medicalInformation[index].title
         )
         assertEquals(
             "The anonymized info should contain the inserted & shared info:description",
             info.description,
-            anonInfo.medicalInformation.description
+            anonInfo.medicalInformation[index].description
         )
         assertTrue(
             "The anonymized info should contain the inserted & shared info: tags",
-            info.tags contentDeepEquals anonInfo.medicalInformation.tags
+            info.tags contentDeepEquals anonInfo.medicalInformation[index].tags
         )
 
         //anonyimzed part
         assertEquals(
             "The anonymized info should have the same userid than the attached medical information userid",
             anonInfo.userId,
-            anonInfo.medicalInformation.userId
+            anonInfo.medicalInformation[index].userId
         )
 
         assertNotSame(
             "The anonymized info should have a different userid then the original user\"",
             user.id,
-            anonInfo.medicalInformation.userId
+            anonInfo.medicalInformation[index].userId
         )
         assertNotSame(
             "The anonymized info should have a different userid then the original user",
