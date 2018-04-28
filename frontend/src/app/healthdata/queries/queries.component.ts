@@ -23,7 +23,25 @@ export class QueriesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.email = this.authService.getPrincipal().sub;
+    // this.healthdataService.fetchHelthDataQueries().subscribe(response => {
+    //     const responseObject = JSON.parse(response);
+    //     // TODO parse dynamically
+    //     const data = new HealthDataQuery(responseObject.queryId, responseObject.queryName, responseObject.queryDescription, responseObject.queryInstituteName, responseObject.queryPrice, responseObject.medicalInfo);
+    //
+    //     this.queries.push(data);
+    //     this.dataSource = new MatTableDataSource<HealthDataQuery>(this.queries);
+    //     this.dataSource.data.forEach(source => this.selections.push({
+    //       'id': source.id,
+    //       selection: new SelectionModel<HealthDataShare>(true, [])
+    //     }));
+    //     // dirty hack to update view
+    //     document.getElementById('trickButton').click();
+    //   },
+    //   err => console.error(err),
+    //   () => console.log('done loading health data')
+    // );
+
+    this.email = this.authService.getPrincipal().email;
     this.healthdataService.healthDataQueries.subscribe(res => this.queries = res);
     this.displayedColumns = ['select', 'id', 'name'];
     this.dataSource = new MatTableDataSource<HealthDataQuery>(this.queries);
@@ -59,6 +77,25 @@ export class QueriesComponent implements OnInit {
   }
 
   share(data) {
-    this.healthdataService.shareHealthData(this.selections.find(selection => selection.id === data.id));
+    this.healthdataService.shareHealthData(this.selections.find(selection => selection.id === data.id)).subscribe(
+      res => {
+        console.log(res);
+
+        // remove query from list
+        this.queries = this.queries.filter(function (query) {
+          return query.id !== data.id;
+        });
+        this.dataSource = new MatTableDataSource<HealthDataQuery>(this.queries);
+        this.dataSource.data.forEach(source => this.selections.push({
+          'id': source.id,
+          selection: new SelectionModel<HealthDataShare>(true, [])
+        }));
+      },
+      err => console.error(err)
+    );
+  }
+
+  scroll(element) {
+    element.scrollIntoView({behavior: 'smooth'});
   }
 }

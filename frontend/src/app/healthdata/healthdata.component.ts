@@ -30,14 +30,27 @@ export class HealthdataComponent implements OnInit {
   tags = [];
   fileToUpload: File = null;
 
+
   constructor(private healthdataService: HealthdataService, private authService: AuthService, private router: Router) {
   }
 
   ngOnInit() {
-    this.healthdataService.healthData.subscribe(res => this.healthData = res);
-    this.healthdataService.healthDataQueries.subscribe(res => this.queries = res);
-    this.healthdataService.changeHealthData(this.healthData);
-    this.email = this.authService.getPrincipal().sub;
+    this.healthdataService.fetchHeathData().subscribe(response => {
+        const responseObject = JSON.parse(response);
+        // TODO parse dynamically
+        const data = new HealthData(responseObject.id, responseObject.title, responseObject.description, responseObject.image, responseObject.tags, responseObject.userId);
+
+        this.healthData.push(data);
+        // dirty hack to update view
+        document.getElementById('trickButton').click();
+      },
+      err => console.error(err),
+      () => console.log('done loading health data')
+    );
+
+    // TODO load queries to set right notification icon
+
+    this.email = this.authService.getPrincipal().email;
 
     this.title = new FormControl(
       '',
@@ -52,27 +65,29 @@ export class HealthdataComponent implements OnInit {
     this.uploadForm = new FormGroup({
       title: this.title,
       description: this.description,
-      // image: this.image,
-      // tags: this.tags
     });
   }
 
   addHealthData() {
     const tagArray = [];
     this.tags.forEach(tag => tagArray.push(tag.name));
-    const data = new HealthData(this.title.value, this.description.value, this.imageBase64, tagArray);
+    const data = new HealthData(null, this.title.value, this.description.value, this.imageBase64, tagArray, null);
 
-    this.healthData.push(data);
-    this.healthdataService.changeHealthData(this.healthData);
+    this.healthdataService.uploadHealthData(data).subscribe(response => {
+        this.healthData.push(response);
+      },
+      err => console.error(err),
+      () => console.log('post new health data ended')
+    );
   }
 
   logOut() {
     this.authService.clearAccessToken();
-    this.router.navigate(['/']);
+    const promise = this.router.navigate(['/']);
   }
 
   navigateToQueries() {
-    this.router.navigate(['/userqueries']);
+    const promise = this.router.navigate(['/userqueries']);
   }
 
   scroll(element) {

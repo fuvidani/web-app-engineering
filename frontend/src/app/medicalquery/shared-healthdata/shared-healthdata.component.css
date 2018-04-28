@@ -1,6 +1,11 @@
+.userinfo-card {
+  margin: 2% auto 0% auto;
+  width: 40%;
+}
+
 .healthdata-card {
-  margin: 2% auto;
-  width: 35%;
+  margin: 1% auto;
+  width: 40%;
 }
 
 .full-width {
@@ -9,4 +14,13 @@
 
 .toolbar-spacer {
   flex: 1 1 auto;
+}
+
+.trick-button {
+  visibility: hidden;
+}
+
+.no-content-card {
+  margin-left: auto;
+  margin-right: auto;
 }

@@ -3,18 +3,16 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {HealthData} from '../model/healthdata';
 import {HealthDataQuery} from '../model/healthdataquery';
 import {HealthDataShare} from '../model/healthdatashare';
+import {AuthService} from './auth.service';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
+import * as EventSource from 'eventsource';
+import {SharingPermission} from '../model/sharingpermission';
 
 @Injectable()
 export class HealthdataService {
 
-  // TODO change this to backend call
-  private data1 = new HealthData('Meine Zähne', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Tired_teeth.jpg/220px-Tired_teeth.jpg', ['tooth', 'shit']);
-  private data2 = new HealthData('Brust', 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.', 'http://st1.thehealthsite.com/wp-content/uploads/2017/04/Worst-things-that-can-happen-to-your-breasts.jpg', ['breast', 'titties', 'bh']);
-  private data3 = new HealthData('Brust', '', 'http://st1.thehealthsite.com/wp-content/uploads/2017/04/Worst-things-that-can-happen-to-your-breasts.jpg', ['breast', 'titties', 'bh']);
-  private data4 = new HealthData('Brust', 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.', '', ['breast', 'titties', 'bh']);
-  private healthDataPlaceholder = new BehaviorSubject<any>([this.data1, this.data2, this.data3, this.data4]);
-  healthData = this.healthDataPlaceholder.asObservable();
-
+  // TODO change this placeholder to real server request
   private sharedata1 = new HealthDataShare('1', 'Meine Zähne');
   private sharedata2 = new HealthDataShare('2', 'Mein Körper');
   private sharedata3 = new HealthDataShare('3', 'Beine');
@@ -25,14 +23,55 @@ export class HealthdataService {
   private healthDataQueriesPlaceholder = new BehaviorSubject<any>([this.query1, this.query2]);
   healthDataQueries = this.healthDataQueriesPlaceholder.asObservable();
 
-  constructor() {
+  constructor(private authService: AuthService, private http: HttpClient) {
   }
 
-  changeHealthData(healthData) {
-    this.healthDataPlaceholder.next(healthData);
+  fetchHeathData() {
+    return Observable.create(observer => {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('access_token')
+        }
+      };
+
+      const eventSource = new EventSource('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalInformation', options);
+      eventSource.onmessage = x => observer.next(x.data);
+      eventSource.onerror = x => observer.error(x);
+
+      return () => {
+        eventSource.close();
+      };
+    });
+  }
+
+  fetchHelthDataQueries() {
+    return Observable.create(observer => {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('access_token')
+        }
+      };
+
+      const eventSource = new EventSource('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalQuery/matching', options);
+      eventSource.onmessage = x => observer.next(x.data);
+      eventSource.onerror = x => observer.error(x);
+
+      return () => {
+        eventSource.close();
+      };
+    });
+  }
+
+  uploadHealthData(data) {
+    // append userId into object
+    data.userId = this.authService.getPrincipal().sub;
+    return this.http.post<HealthData>('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalInformation', data);
   }
 
   shareHealthData(sharedData) {
-    console.log(sharedData);
+    const permissions = [];
+    sharedData.selection.selected.forEach(healthData => permissions.push(new SharingPermission('', healthData.id, sharedData.id)));
+
+    return this.http.post<Array<SharingPermission>>('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalQuery/permissions', permissions);
   }
 }

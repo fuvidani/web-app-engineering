@@ -51,7 +51,7 @@ class MedicalQueryController(private val medicalQueryService: MedicalQueryServic
             .defaultIfEmpty(ResponseEntity.badRequest().build())
     }
 
-    @PostMapping(path = ["{queryid}/shared"])
+    @GetMapping(path = ["{queryid}/shared"], produces = ["text/event-stream"])
     fun getSharedInformationForQuery(@PathVariable("queryid") qid: String): Flux<AnonymizedUserInformation> {
         return medicalQueryService.findSharedInformationForQuery(qid)
     }
