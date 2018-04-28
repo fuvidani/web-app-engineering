@@ -40,7 +40,7 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.configureLanguage();
-    this.datePipe = new DatePipe(this.translate.currentLang);
+    this.datePipe = new DatePipe('en');
     this.email = new FormControl(
       '',
       [Validators.required, Validators.email]
