@@ -86,60 +86,85 @@ class MedicalQueryServiceTest {
         assertEquals("The list should contain the inserted info", medicalQuery, list[0])
     }
 
-    //    @Test
+    @Test
     fun findAllSharedInformation_shouldReturn() {
+
+        println("create user")
+
         val user = testDataProvider.getDummyUser()
         userService.create(user).block()
+
+        println("create infos")
 
         val info1 = createInfo("info 1", user)
         val info2 = createInfo("info 2", user)
         val info3 = createInfo("info 3", user)
 
+        println("create query")
+
         var medicalQuery = getMedicalQueryWithResearchReference()
         medicalQuery = medicalQueryService.create(medicalQuery).block()!!
+
+        println("create permissions")
 
         createPermission(info1.id, medicalQuery.id)
         createPermission(info2.id, medicalQuery.id)
         createPermission(info3.id, medicalQuery.id)
+
+        println("findAllSharedInformationOfResearchFacility")
 
         val shared = medicalQueryService.findAllSharedInformationOfResearchFacility(medicalQuery.researchFacilityId)
             .collectList().block()
 
         assertNotNull("the returned object must not be null", shared)
-        assertEquals("List should have size of 1", 1, shared!!.size)
+        assertEquals("List should have size of 3", 3, shared!!.size)
 
-        assertAnonInfo(user, shared[0], info1, 0, 3)
-        assertAnonInfo(user, shared[0], info2, 1, 3)
-        assertAnonInfo(user, shared[0], info3, 2, 3)
+        println("start comparing")
+
+        assertAnonInfo(user, shared[0], info1)
+        assertAnonInfo(user, shared[1], info2)
+        assertAnonInfo(user, shared[2], info3)
     }
 
-    //    @Test
+    @Test
     fun findSharedInformationForQuery_shouldReturn() {
+
+        println("create user")
+
         val user = testDataProvider.getDummyUser()
         userService.create(user).block()
+
+        println("create infos")
 
         val info1 = createInfo("info 1", user)
         val info2 = createInfo("info 2", user)
         val info3 = createInfo("info 3", user)
 
+        println("create query")
+
         var medicalQuery = getMedicalQueryWithResearchReference()
         medicalQuery = medicalQueryService.create(medicalQuery).block()!!
+
+        println("create permissions")
 
         createPermission(info1.id, medicalQuery.id)
         createPermission(info2.id, medicalQuery.id)
         createPermission(info3.id, medicalQuery.id)
 
+        println("findSharedInformationForQuery")
+
         val shared = medicalQueryService.findSharedInformationForQuery(medicalQuery.id!!).collectList().block()!!
 
+        println("start comparing")
+
         assertNotNull("the returned object must not be null", shared)
-        assertEquals("List should have size of 1 (only 1 user)", 1, shared.size)
-        assertEquals("the AnonymizedInfo should have 3 MedicalInfos", 3, shared[0].medicalInformation.size)
+        assertEquals("List should have size of 3", 3, shared.size)
 
         println(shared[0])
 
-        assertAnonInfo(user, shared[0], info1, 0, 3)
-        assertAnonInfo(user, shared[0], info2, 1, 3)
-//        assertAnonInfo(user, shared[0], info3,2,3)
+        assertAnonInfo(user, shared[0], info1)
+        assertAnonInfo(user, shared[1], info2)
+        assertAnonInfo(user, shared[2], info3)
     }
 
     private fun createPermission(infoId: String?, queryId: String?): SharingPermission {
@@ -157,9 +182,7 @@ class MedicalQueryServiceTest {
     private fun assertAnonInfo(
         user: User,
         anonInfo: AnonymizedUserInformation,
-        info: MedicalInformation,
-        index: Int,
-        expectedListSize: Int
+        info: MedicalInformation
     ) {
 
         assertEquals(
@@ -173,36 +196,31 @@ class MedicalQueryServiceTest {
             anonInfo.birthday
         )
         assertEquals(
-            "The anonymized info should contain the inserted & shared medical info",
-            expectedListSize,
-            anonInfo.medicalInformation.size
-        )
-        assertEquals(
             "The anonymized info should contain the inserted & shared info: title",
             info.title,
-            anonInfo.medicalInformation[index].title
+            anonInfo.medicalInformation.title
         )
         assertEquals(
             "The anonymized info should contain the inserted & shared info:description",
             info.description,
-            anonInfo.medicalInformation[index].description
+            anonInfo.medicalInformation.description
         )
         assertTrue(
             "The anonymized info should contain the inserted & shared info: tags",
-            info.tags contentDeepEquals anonInfo.medicalInformation[index].tags
+            info.tags contentDeepEquals anonInfo.medicalInformation.tags
         )
 
         //anonyimzed part
         assertEquals(
             "The anonymized info should have the same userid than the attached medical information userid",
             anonInfo.userId,
-            anonInfo.medicalInformation[index].userId
+            anonInfo.medicalInformation.userId
         )
 
         assertNotSame(
             "The anonymized info should have a different userid then the original user\"",
             user.id,
-            anonInfo.medicalInformation[index].userId
+            anonInfo.medicalInformation.userId
         )
         assertNotSame(
             "The anonymized info should have a different userid then the original user",
