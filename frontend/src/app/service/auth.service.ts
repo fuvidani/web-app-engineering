@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import {Authentication} from "../model/authentication";
@@ -11,7 +10,7 @@ export class AuthService {
 
   jwtHelper = new JwtHelperService();
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient) { }
 
   isAuthenticated() {
     console.log("Checking if user is authenticated.");
@@ -32,6 +31,7 @@ export class AuthService {
   }
 
   getPrincipal(){
+    console.log("Fetching the currently authenticated subject.")
     if(!this.isAuthenticated()){
       return null;
     }
@@ -39,7 +39,7 @@ export class AuthService {
     const access_token: string = localStorage.getItem("access_token");
     const decodedToken: DecodedAccessToken = this.jwtHelper.decodeToken(access_token);
 
-    return decodedToken.sub;
+    return decodedToken;
   }
 
   hasRole(role: string) {
@@ -61,23 +61,19 @@ export class AuthService {
     return true;
   }
 
-  login(auth: Authentication) {
-    this.http.post<AccessToken>("http://localhost:8080/auth", auth).subscribe(
-      accessToken => {
-        localStorage.setItem("access_token", accessToken.token);
-        this.router.navigate(['/']);
-      },
-      err => {
-        console.error(err);
-      },
-      () => console.log("Successfully logged in.")
-    );
+  setAccessToken(accessToken: string) {
+    console.log("Saving access token in local storage.");
+    localStorage.setItem("access_token", accessToken);
   }
 
-  logout() {
-    console.log("Logout current user.");
+  clearAccessToken() {
+    console.log("Removing access token from local storage.");
     localStorage.removeItem("access_token");
-    this.router.navigate(['/']);
+  }
+
+  authenticate(auth: Authentication) {
+    console.log("Trying to authenticate(" + auth.email + ").")
+    return this.http.post<AccessToken>("http://localhost:8080/auth", auth);
   }
 
 }

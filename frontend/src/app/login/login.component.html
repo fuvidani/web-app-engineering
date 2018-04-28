@@ -23,7 +23,7 @@
             <tr>
               <td>
                 <mat-form-field class="full-width">
-                  <input matInput placeholder="example@domain.com" formControlName="email" required>
+                  <input matInput placeholder="E-mail address" formControlName="email" required>
                 </mat-form-field>
               </td>
             </tr>
@@ -35,7 +35,10 @@
               </td>
             </tr>
           </table>
-          <button mat-raised-button color="primary" type="submit">Login!</button>
+          <button mat-raised-button color="primary" type="submit">Login</button>
+          <div *ngIf="error" class="error">
+              Wrong username or password.
+          </div>
         </form>
       </mat-card-content>
     </mat-card>

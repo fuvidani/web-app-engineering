@@ -1,0 +1,19 @@
+spring:
+  security:
+    user:
+      name: user
+      password: password
+    token:
+      secret: FZrYPOqwVDVGQ9FtiHsa
+      expiration: 86400000
+  application:
+    name: Web Application Engineering Backend
+  data:
+    mongodb:
+      port: 27017
+      database: waecmDatabase
+      host: localhost
+      username: user
+      password: devPassword
+  profiles:
+    active: dev

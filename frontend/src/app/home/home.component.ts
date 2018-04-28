@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {AuthService} from '../service/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,21 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  answer: string = '';
-  answerDisplay: string = '';
-  showSpinner: boolean = false;
-
-  constructor() { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
-  }
-
-  showAnswer() {
-    this.showSpinner = true;
-    setTimeout(() => {
-      this.answerDisplay = this.answer;
-      this.showSpinner = false;
-    }, 2000)
+    if (this.authService.hasRole('ROLE_END_USER')) {
+      this.router.navigate(['/healthdata']);
+    } else if (this.authService.hasRole('ROLE_RESEARCH')) {
+      this.router.navigate(['/medicalquery']);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
 }
