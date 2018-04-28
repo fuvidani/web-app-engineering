@@ -1,5 +1,6 @@
 package at.ac.tuwien.waecm.ss18.group09
 
+/* ktlint-disable no-wildcard-imports */
 import at.ac.tuwien.waecm.ss18.group09.dto.*
 import org.junit.Before
 import org.springframework.beans.factory.annotation.Autowired
