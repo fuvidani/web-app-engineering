@@ -13,6 +13,7 @@
     </mat-toolbar-row>
   </mat-toolbar>
 </div>
+
 <mat-card class="healthdata-card" *ngIf="healthData.length === 0">
   <mat-card-header>
     <div class="no-content-card">No health data to show</div>
@@ -42,7 +43,7 @@
       <mat-card-title><h3>Upload new health data</h3></mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form (submit)="onSubmit()" [formGroup]="uploadForm">
+      <form (submit)="onSubmit()" [formGroup]="uploadForm" #f="ngForm">
         <table class="full-width">
           <tr>
             <td>

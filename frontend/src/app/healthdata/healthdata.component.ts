@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {HealthdataService} from '../service/healthdata.service';
 import {HealthData} from '../model/healthdata';
 import {AuthService} from '../service/auth.service';
@@ -19,6 +19,9 @@ export class HealthdataComponent implements OnInit {
 
   error = false;
   errorText = '';
+
+  // workaround for known bug (form validation not cleared after form reset)
+  @ViewChild('f') myForm;
 
   uploadForm: FormGroup;
   title: FormControl;
@@ -110,7 +113,7 @@ export class HealthdataComponent implements OnInit {
         this.convertToBase64(this.fileToUpload);
       } else {
         this.addHealthData();
-        this.uploadForm.reset();
+        this.myForm.resetForm();
         this.tags = [];
       }
     }
@@ -126,7 +129,7 @@ export class HealthdataComponent implements OnInit {
     myReader.onloadend = (e) => {
       this.imageBase64 = myReader.result;
       this.addHealthData();
-      this.uploadForm.reset();
+      this.myForm.resetForm();
       this.tags = [];
       this.fileToUpload = null;
       this.imageBase64 = '';
