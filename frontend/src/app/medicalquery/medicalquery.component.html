@@ -38,8 +38,6 @@
       </button>
     </mat-card-content>
   </mat-card>
-
-
   <mat-card class="medicalquery-card">
     <mat-card-header>
       <mat-card-title>
@@ -73,18 +71,11 @@
           </tr>
           <tr>
             <td>
-              <mat-form-field class="full-width">
-                <mat-chip-list #chipList>
-                  <mat-chip *ngFor="let tag of tagList" (remove)="removeTag(tag)">
-                    {{tag.name}}
-                    <mat-icon matChipRemove>cancel</mat-icon>
-                  </mat-chip>
-                  <input placeholder="Tags *"
-                         [matChipInputFor]="chipList"
-                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                         [matChipInputAddOnBlur]="true"
-                         (matChipInputTokenEnd)="addTag($event)"/>
-                </mat-chip-list>
+              <mat-form-field class="half-width left">
+                <input matInput type="number" min="0" formControlName="minAge" placeholder="Min. age" required>
+              </mat-form-field>
+              <mat-form-field class="half-width right">
+                <input matInput type="number" min="0" formControlName="maxAge" placeholder="Max. age" required>
               </mat-form-field>
             </td>
           </tr>
@@ -102,10 +93,23 @@
               </mat-form-field>
             </td>
           </tr>
-
-
-
-
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <mat-chip-list #chipList>
+                  <mat-chip *ngFor="let tag of tagList" (remove)="removeTag(tag)">
+                    {{tag.name}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                  <input placeholder="Tags *"
+                         [matChipInputFor]="chipList"
+                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                         [matChipInputAddOnBlur]="true"
+                         (matChipInputTokenEnd)="addTag($event)"/>
+                </mat-chip-list>
+              </mat-form-field>
+            </td>
+          </tr>
         </table>
         <button mat-raised-button color="primary" type="submit">
           Create
@@ -113,13 +117,6 @@
       </form>
     </mat-card-content>
   </mat-card>
-
-
-
-
-
-
-
   <button mat-fab color="primary" class="mat-fab-custom" (click)="scroll()">
     <mat-icon>add</mat-icon>
   </button>

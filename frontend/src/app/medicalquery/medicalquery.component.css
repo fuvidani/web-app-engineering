@@ -2,6 +2,18 @@
   width: 100%;
 }
 
+.half-width {
+  width: 45%;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
 .toolbar-spacer {
   flex: 1 1 auto;
 }

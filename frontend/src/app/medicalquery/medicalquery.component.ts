@@ -28,6 +28,8 @@ export class MedicalqueryComponent implements OnInit {
   description: FormControl;
   financialOffering: FormControl;
   gender: FormControl;
+  minAge: FormControl;
+  maxAge: FormControl;
   tags: FormControl;
 
   tagList;
@@ -52,6 +54,14 @@ export class MedicalqueryComponent implements OnInit {
       '',
       [Validators.required]
     );
+    this.minAge = new FormControl(
+      '',
+      [Validators.required]
+    );
+    this.maxAge = new FormControl(
+      '',
+      [Validators.required]
+    );
     /*this.tags = new FormControl(
       '',
       [Validators.required]);*/
@@ -60,7 +70,9 @@ export class MedicalqueryComponent implements OnInit {
       description: this.description,
       financialOffering: this.financialOffering,
       //tags: this.tags,
-      gender: this.gender
+      gender: this.gender,
+      minAge: this.minAge,
+      maxAge: this.maxAge
     });
   }
 
@@ -85,9 +97,16 @@ export class MedicalqueryComponent implements OnInit {
 
   onSubmit() {
     if (this.medicalQueryForm.valid) {
-      console.log("Medicalquery form is valid. Can be submitted.")
-      console.log(this.medicalQueryForm.value);
+      let medicalQuery: MedicalQuery = this.medicalQueryForm.value;
+      medicalQuery.tags = this.parseTagList(this.tagList);
+      console.log(medicalQuery);
     }
+  }
+
+  parseTagList(tagList: any[]): string[] {
+    let tagArray = [];
+    this.tagList.forEach(tag => tagArray.push(tag.name));
+    return tagArray;
   }
 
   addTag(event: MatChipInputEvent): void {
