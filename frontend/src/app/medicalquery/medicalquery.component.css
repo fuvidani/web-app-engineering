@@ -30,3 +30,8 @@
   margin: 2% auto;
   width: 35%;
 }
+
+.error {
+  margin-top: 10px;
+  color: red;
+}

@@ -16,14 +16,13 @@ import {Gender} from "../model/gender";
 export class MedicalqueryComponent implements OnInit {
 
   email: string;
-  test = new MedicalQuery(2, 'TU Vienna', 'Abfrage 1', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 10, 50, 60, 'FEMALE', ['cancer', 'skin']);
   genders = [
     new Gender('1', 'Male', 'MALE'),
     new Gender('2', 'Female', 'FEMALE')
   ];
 
-
   medicalQueryForm: FormGroup;
+
   name: FormControl;
   description: FormControl;
   financialOffering: FormControl;
@@ -34,6 +33,9 @@ export class MedicalqueryComponent implements OnInit {
 
   tagList;
   separatorKeysCodes = [ENTER, COMMA];
+
+  error: boolean;
+  errorText: string;
 
   constructor(
     private authService: AuthService,
@@ -50,26 +52,13 @@ export class MedicalqueryComponent implements OnInit {
     this.financialOffering = new FormControl(
       '',
       [Validators.required, Validators.min(0)]);
-    this.gender = new FormControl(
-      '',
-      [Validators.required]
-    );
-    this.minAge = new FormControl(
-      '',
-      [Validators.required]
-    );
-    this.maxAge = new FormControl(
-      '',
-      [Validators.required]
-    );
-    /*this.tags = new FormControl(
-      '',
-      [Validators.required]);*/
+    this.gender = new FormControl('');
+    this.minAge = new FormControl('');
+    this.maxAge = new FormControl('');
     this.medicalQueryForm = new FormGroup({
       name: this.name,
       description: this.description,
       financialOffering: this.financialOffering,
-      //tags: this.tags,
       gender: this.gender,
       minAge: this.minAge,
       maxAge: this.maxAge
@@ -78,12 +67,14 @@ export class MedicalqueryComponent implements OnInit {
 
   ngOnInit() {
     this.email = this.authService.getPrincipal().email;
+    this.error = false;
+    this.errorText = '';
     this.tagList = [];
+    this.medicalQueryService.loadInitialData();
   }
 
   scroll() {
     //elememt.scrollIntoView({behavior:'smooth'});
-    this.medicalQueryService.addMedicalQuery(this.test);
   }
 
   logOut() {
@@ -98,9 +89,36 @@ export class MedicalqueryComponent implements OnInit {
   onSubmit() {
     if (this.medicalQueryForm.valid) {
       let medicalQuery: MedicalQuery = this.medicalQueryForm.value;
+      medicalQuery.researchFacility = this.authService.getPrincipal().sub;
       medicalQuery.tags = this.parseTagList(this.tagList);
-      console.log(medicalQuery);
+
+      if(this.atLeastOneCriteria(medicalQuery)){
+        this.error = true;
+        this.errorText = 'You must provide at least one criteria.';
+        return;
+      }
+
+      if(medicalQuery.gender == ''){
+        //Backend does not accept an empty String for an optional property
+        medicalQuery.gender = null;
+      }
+
+      if(medicalQuery.minAge > medicalQuery.maxAge) {
+        this.error = true;
+        this.errorText = 'Max. age must be greater or equal to min. age.';
+        return;
+      }
+
+      this.medicalQueryService.addMedicalQuery(medicalQuery);
+      this.error = false;
+      this.errorText = '';
     }
+  }
+
+  atLeastOneCriteria(medicalQuery: MedicalQuery): boolean {
+    return !(medicalQuery.tags.length > 0) &&
+      (!medicalQuery.minAge || !medicalQuery.maxAge) &&
+      (medicalQuery.gender == '');
   }
 
   parseTagList(tagList: any[]): string[] {

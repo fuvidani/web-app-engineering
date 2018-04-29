@@ -72,17 +72,17 @@
           <tr>
             <td>
               <mat-form-field class="half-width left">
-                <input matInput type="number" min="0" formControlName="minAge" placeholder="Min. age" required>
+                <input matInput type="number" min="0" formControlName="minAge" placeholder="Min. age">
               </mat-form-field>
               <mat-form-field class="half-width right">
-                <input matInput type="number" min="0" formControlName="maxAge" placeholder="Max. age" required>
+                <input matInput type="number" min="0" formControlName="maxAge" placeholder="Max. age">
               </mat-form-field>
             </td>
           </tr>
           <tr>
             <td>
               <mat-form-field class="full-width">
-                <mat-select formControlName="gender" required>
+                <mat-select formControlName="gender">
                   <mat-option *ngFor="let gender of genders" [value]="gender.value">
                     {{ gender.i18n }}
                   </mat-option>
@@ -114,6 +114,9 @@
         <button mat-raised-button color="primary" type="submit">
           Create
         </button>
+        <div *ngIf="error" class="error">
+          {{errorText}}
+        </div>
       </form>
     </mat-card-content>
   </mat-card>
