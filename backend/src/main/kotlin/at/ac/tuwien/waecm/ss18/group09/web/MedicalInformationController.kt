@@ -8,7 +8,6 @@ import at.ac.tuwien.waecm.ss18.group09.service.MedicalQueryService
 import at.ac.tuwien.waecm.ss18.group09.service.ValidationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux

@@ -11,6 +11,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.TEXT_EVENT_STREAM
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
@@ -45,6 +46,7 @@ class MedicalInformationControllerTest : AbstractTest() {
     }
 
     @Test
+    @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
     fun create_validCreate_shouldReturn() {
 
         val medicalInformation = getMedicalInformationWithUserReference()
@@ -60,6 +62,7 @@ class MedicalInformationControllerTest : AbstractTest() {
     }
 
     @Test
+    @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
     fun create_invalidCreate_wrongUser_shouldFail() {
 
         val medicalInformation = getMedicalInformationWithUserReference()
@@ -74,6 +77,7 @@ class MedicalInformationControllerTest : AbstractTest() {
     }
 
     @Test
+    @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
     fun create_invalidCreate_noUser_shouldFail() {
 
         val medicalInformation = getMedicalInformationWithUserReference()
@@ -88,6 +92,7 @@ class MedicalInformationControllerTest : AbstractTest() {
     }
 
     @Test
+    @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
     fun create_invalidCreate_noTitle_shouldFail() {
 
         val medicalInformation = getMedicalInformationWithUserReference()
@@ -102,6 +107,7 @@ class MedicalInformationControllerTest : AbstractTest() {
     }
 
     @Test
+    @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
     fun create_validCreate_noDescr_shouldReturn() {
 
         val medicalInformation = getMedicalInformationWithUserReference()
@@ -118,6 +124,7 @@ class MedicalInformationControllerTest : AbstractTest() {
     }
 
     @Test
+    @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
     fun create_validCreate_noImg_shouldReturn() {
 
         val medicalInformation = getMedicalInformationWithUserReference()
@@ -134,6 +141,7 @@ class MedicalInformationControllerTest : AbstractTest() {
     }
 
     @Test
+    @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
     fun create_invalidCreate_noImgAndNoDescr_shouldFail() {
 
         val medicalInformation = getMedicalInformationWithUserReference()
@@ -149,6 +157,7 @@ class MedicalInformationControllerTest : AbstractTest() {
     }
 
     @Test
+    @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
     fun create_invalidCreate_noTags_shouldFail() {
 
         val medicalInformation = getMedicalInformationWithUserReference()
@@ -163,6 +172,7 @@ class MedicalInformationControllerTest : AbstractTest() {
     }
 
     @Test
+    @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
     fun findAll_getRequestToRetrieveAllMedicalInformationForTheUser_shouldReturnAllInfos() {
 
         createTestDummyData()

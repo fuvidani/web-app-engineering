@@ -13,6 +13,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
@@ -54,6 +55,7 @@ internal class MedicalQueryControllerTest : AbstractTest() {
     }
 
     @Test
+    @WithMockUser(username = "research@who.com", roles = arrayOf("RESEARCH"))
     fun create_validCreate_shouldReturn() {
         val medicalQuery = getMedicalQueryWithResearchReference()
 
@@ -68,6 +70,7 @@ internal class MedicalQueryControllerTest : AbstractTest() {
     }
 
     @Test
+    @WithMockUser(username = "research@who.com", roles = arrayOf("RESEARCH"))
     fun findAll_getRequestToRetrieveAllMedicalQueryForTheUser_shouldReturnAllInfos() {
 
         createTestDummyData()
@@ -91,6 +94,7 @@ internal class MedicalQueryControllerTest : AbstractTest() {
     }
 
     @Test
+    @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
     fun createSharingPermission_valid_shouldReturn() {
         createTestDummyData()
         var info = testDataProvider.getValidMedicalInformation()
