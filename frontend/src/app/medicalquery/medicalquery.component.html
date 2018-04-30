@@ -22,13 +22,13 @@
     <mat-card-subtitle>{{query.description}} - {{query.financialOffering}}€ / health data</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <p>
+    <p *ngIf="query.minAge && query.maxAge">
       <b>Age:</b> {{query.minAge}} - {{query.maxAge}}
     </p>
-    <p>
+    <p *ngIf="query.gender">
       <b>Gender:</b> {{query.gender}}
     </p>
-    <p>
+    <p *ngIf="query.tags.length > 0">
       <b>Tags:</b>
       <span *ngFor="let tag of query.tags">{{'#' + tag + " "}}</span>
     </p>
