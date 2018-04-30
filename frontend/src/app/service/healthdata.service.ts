@@ -56,7 +56,7 @@ export class HealthdataService {
 
   shareHealthData(sharedData) {
     const permissions = [];
-    sharedData.selection.selected.forEach(healthData => permissions.push(new SharingPermission('', healthData.id, sharedData.id)));
+    sharedData.selection.selected.forEach(healthData => permissions.push(new SharingPermission(null, healthData.first, sharedData.id)));
 
     return this.http.post<Array<SharingPermission>>('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalQuery/permissions', permissions);
   }
