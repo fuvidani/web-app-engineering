@@ -28,10 +28,19 @@
 
 .medicalquery-card {
   margin: 2% auto;
-  width: 35%;
+  width: 40%;
 }
 
 .error {
   margin-top: 10px;
   color: red;
+}
+
+.no-content-card {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.trick-button {
+  visibility: hidden;
 }
