@@ -16,10 +16,10 @@ export class SharedHealthdataComponent implements OnInit {
   qid: string;
 
   // TODO make server call instead
-  data1 = new HealthData('1', 'Brust', 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.', 'http://st1.thehealthsite.com/wp-content/uploads/2017/04/Worst-things-that-can-happen-to-your-breasts.jpg', ['breast', 'titties', 'bh'], '');
-  data2 = new HealthData('2', 'asd', 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.', 'https://i.ytimg.com/vi/rhRAF91_7jI/maxresdefault.jpg', ['asd', 'fgdg fdg'], '');
-  sharedData = [new AnonymizedSharedData('1', 'userID1', '1993.01.02.', 'MALE', [this.data1, this.data2]), new AnonymizedSharedData('2', 'userID2', '1999.12.12.', 'FEMALE', [this.data2])];
-  // sharedData = [];
+  // data1 = new HealthData('1', 'Brust', 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.', 'http://st1.thehealthsite.com/wp-content/uploads/2017/04/Worst-things-that-can-happen-to-your-breasts.jpg', ['breast', 'titties', 'bh'], '');
+  // data2 = new HealthData('2', 'asd', 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.', 'https://i.ytimg.com/vi/rhRAF91_7jI/maxresdefault.jpg', ['asd', 'fgdg fdg'], '');
+  // sharedData = [new AnonymizedSharedData('1', 'userID1', '1993.01.02.', 'MALE', [this.data1, this.data2]), new AnonymizedSharedData('2', 'userID2', '1999.12.12.', 'FEMALE', [this.data2])];
+  sharedData = [];
 
   constructor(
     private authService: AuthService,
@@ -38,11 +38,10 @@ export class SharedHealthdataComponent implements OnInit {
         // TODO parse dynamically
         const data = new AnonymizedSharedData(responseObject.id, responseObject.userId, responseObject.birthday, responseObject.gender, responseObject.medicalInformation);
 
-        // TODO push data to array
-        // this.sharedData.push(data);
+        this.sharedData.push(data);
 
         // dirty hack to update view
-        // document.getElementById('trickButton').click();
+        document.getElementById('trickButton').click();
       },
       err => console.error(err),
       () => console.log('done loading health data')
@@ -60,5 +59,10 @@ export class SharedHealthdataComponent implements OnInit {
 
   scroll(element) {
     element.scrollIntoView({behavior: 'smooth'});
+  }
+
+  parseDate(dateString) {
+    const dateObject = new Date(dateString);
+    return dateObject.getDate() + '.' + (dateObject.getMonth() + 1) + '.' + dateObject.getFullYear() + '.';
   }
 }

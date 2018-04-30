@@ -4,11 +4,12 @@ import {JwtHelperService} from '@auth0/angular-jwt';
 import {Authentication} from '../model/authentication';
 import {AccessToken} from '../model/accesstoken';
 import {DecodedAccessToken} from '../model/decodedaccesstoken';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class AuthService {
-
   jwtHelper = new JwtHelperService();
+  baseUrl = environment.baseUrl;
 
   constructor(private http: HttpClient) {
   }
@@ -74,7 +75,7 @@ export class AuthService {
 
   authenticate(auth: Authentication) {
     console.log('Trying to authenticate(' + auth.email + ').');
-    return this.http.post<AccessToken>('http://localhost:8080/auth', auth);
+    return this.http.post<AccessToken>(this.baseUrl + '/auth', auth);
   }
 
 }

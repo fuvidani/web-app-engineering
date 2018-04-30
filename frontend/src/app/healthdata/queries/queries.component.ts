@@ -27,7 +27,6 @@ export class QueriesComponent implements OnInit {
         const responseObject = JSON.parse(response);
         // TODO parse dynamically
         const data = new HealthDataQuery(responseObject.queryId, responseObject.queryName, responseObject.queryDescription, responseObject.queryInstituteName, responseObject.queryPrice, responseObject.medicalInfo);
-        console.log(responseObject);
         this.queries.push(data);
         this.dataSource = new MatTableDataSource<HealthDataQuery>(this.queries);
         this.dataSource.data.forEach(source => this.selections.push({
@@ -38,7 +37,7 @@ export class QueriesComponent implements OnInit {
         document.getElementById('trickButton').click();
       },
       err => console.error(err),
-      () => console.log('done loading health data')
+      () => console.log('done loading queries')
     );
 
     this.email = this.authService.getPrincipal().email;
