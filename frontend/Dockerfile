@@ -27,7 +27,9 @@ RUN $(npm bin)/ng build --prod --build-optimizer
 FROM nginx:1.13.3-alpine
 
 ## Copy our default nginx config
-COPY nginx/default.conf /etc/nginx/conf.d/
+COPY nginx/default.conf /etc/nginx/conf.d
+COPY ssl/server.crt /etc/nginx/ssl/server.crt
+COPY ssl/server.key /etc/nginx/ssl/server.key
 
 ## Remove default nginx website
 RUN rm -rf /usr/share/nginx/html/*
