@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
 
-  baseUrl: 'http://PRODUCTION_URL:1234'
+  domain: 'PRODUCTION_URL:1234',
+  baseUrl: 'https://PRODUCTION_URL:1234'
 };

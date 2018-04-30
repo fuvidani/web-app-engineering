@@ -8,6 +8,7 @@ import at.ac.tuwien.waecm.ss18.group09.service.IUserService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
@@ -28,6 +29,7 @@ import java.security.SecureRandom
  * @version 1.0.0
  * @since 1.0.0
  */
+@EnableReactiveMethodSecurity
 @Configuration
 @EnableWebFluxSecurity
 class SecurityConfig {
