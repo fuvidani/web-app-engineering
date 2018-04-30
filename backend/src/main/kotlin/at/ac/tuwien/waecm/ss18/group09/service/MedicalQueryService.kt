@@ -89,7 +89,6 @@ class MedicalQueryService(
                     )
                 )
                 mongoTemplate.find(mongoQuery, MedicalQuery::class.java)
-                    .distinct()
                     .filter { query ->
                         query.tags.isEmpty()
                                 || query.tags.any { qTag -> tuple.t1.tags.contains(qTag) }
@@ -112,7 +111,7 @@ class MedicalQueryService(
                                 tuple.t2
                             }
                     }.flatMap { it }
-            }.flatMap { it }
+            }.flatMap { it }.distinct()
     }
 
     override fun createSharingPermission(sharingPermission: SharingPermission): Mono<SharingPermission> {

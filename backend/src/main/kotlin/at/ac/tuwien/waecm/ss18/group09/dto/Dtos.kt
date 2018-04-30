@@ -106,8 +106,8 @@ data class MedicalQuery(
         result = 31 * result + name.hashCode()
         result = 31 * result + description.hashCode()
         result = 31 * result + financialOffering.hashCode()
-        result = 31 * result + minAge!!.hashCode()
-        result = 31 * result + maxAge!!.hashCode()
+//        result = 31 * result + minAge!!.hashCode()
+//        result = 31 * result + maxAge!!.hashCode()
         result = 31 * result + Arrays.hashCode(tags)
         return result
     }
