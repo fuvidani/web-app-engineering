@@ -4,6 +4,9 @@ package at.ac.tuwien.waecm.ss18.group09.service
 import at.ac.tuwien.waecm.ss18.group09.dto.*
 import at.ac.tuwien.waecm.ss18.group09.repository.MedicalQueryRepository
 import at.ac.tuwien.waecm.ss18.group09.repository.SharingPermissionRepository
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate
+import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -36,7 +39,8 @@ class MedicalQueryService(
     private val queryRepository: MedicalQueryRepository,
     private val sharingPermissionRepository: SharingPermissionRepository,
     private val medicalInformationService: IMedicalInformationService,
-    private val userService: UserService
+    private val userService: UserService,
+    private val mongoTemplate: ReactiveMongoTemplate
 ) : IMedicalQueryService {
 
     @Throws(ValidationException::class)
@@ -61,12 +65,34 @@ class MedicalQueryService(
         return infos.zipWith(user)
             .map { tuple ->
                 // TODO check only not null criteria
-                queryRepository.findByGenderAndMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(
-                    tuple.t2.gender,
-                    calcAge(tuple.t2.birthday),
-                    calcAge(tuple.t2.birthday)
+
+                val age = calcAge(tuple.t2.birthday)
+                val mongoQuery = Query()
+                mongoQuery.addCriteria(
+                    Criteria().andOperator(
+                        Criteria().orOperator(
+                            Criteria.where("gender").`is`(null),
+                            Criteria.where("gender").`is`(tuple.t2.gender)
+                        ),
+                        Criteria().orOperator(
+                            Criteria.where("gender").`is`(null),
+                            Criteria.where("gender").`is`(tuple.t2.gender)
+                        ),
+                        Criteria().orOperator(
+                            Criteria.where("minAge").`is`(null),
+                            Criteria.where("minAge").lte(age)
+                        ),
+                        Criteria().orOperator(
+                            Criteria.where("maxAge").`is`(null),
+                            Criteria.where("maxAge").gte(age)
+                        )
+                    )
                 )
-                    .filter { query -> query.tags.any { qTag -> tuple.t1.tags.contains(qTag) } }
+                mongoTemplate.find(mongoQuery, MedicalQuery::class.java)
+                    .filter { query ->
+                        query.tags.isEmpty()
+                                || query.tags.any { qTag -> tuple.t1.tags.contains(qTag) }
+                    }
                     .map { q ->
                         val data = medicalInformationService
                             .findInfoForQuery(q, userId)
@@ -94,8 +120,8 @@ class MedicalQueryService(
 
     override fun createSharingPermission(sharingPermissions: List<SharingPermission>): Flux<SharingPermission> {
         return Flux.fromIterable(sharingPermissions)
-                .map { p -> createSharingPermission(p) }
-                .flatMap { it }
+            .map { p -> createSharingPermission(p) }
+            .flatMap { it }
     }
 
     override fun findAllSharedInformationOfResearchFacility(researchId: String): Flux<AnonymizedUserInformation> {
@@ -129,7 +155,6 @@ class MedicalQueryService(
                             null
                         )
                     }
-                    .log()
             }
             .map { an ->
                 println(an.userId)

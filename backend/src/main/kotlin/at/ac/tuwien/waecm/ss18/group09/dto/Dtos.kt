@@ -77,8 +77,8 @@ data class MedicalQuery(
     @get: NotNull
     @get: Min(0)
     var financialOffering: Double = 0.0,
-    var minAge: Int = 0,
-    var maxAge: Int = 0,
+    var minAge: Int?,
+    var maxAge: Int?,
     var gender: Gender?,
     var tags: Array<String> = emptyArray()
 ) {
@@ -106,8 +106,8 @@ data class MedicalQuery(
         result = 31 * result + name.hashCode()
         result = 31 * result + description.hashCode()
         result = 31 * result + financialOffering.hashCode()
-        result = 31 * result + minAge.hashCode()
-        result = 31 * result + maxAge.hashCode()
+        result = 31 * result + minAge!!.hashCode()
+        result = 31 * result + maxAge!!.hashCode()
         result = 31 * result + Arrays.hashCode(tags)
         return result
     }
