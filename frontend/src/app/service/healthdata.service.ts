@@ -5,9 +5,11 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import * as EventSource from 'eventsource';
 import {SharingPermission} from '../model/sharingpermission';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class HealthdataService {
+  baseUrl = environment.baseUrl;
 
   constructor(private authService: AuthService, private http: HttpClient) {
   }
@@ -20,7 +22,7 @@ export class HealthdataService {
         }
       };
 
-      const eventSource = new EventSource('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalInformation', options);
+      const eventSource = new EventSource(this.baseUrl + '/user/' + this.authService.getPrincipal().sub + '/medicalInformation', options);
       eventSource.onmessage = x => observer.next(x.data);
       eventSource.onerror = x => observer.error(x);
 
@@ -38,7 +40,7 @@ export class HealthdataService {
         }
       };
 
-      const eventSource = new EventSource('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalQuery/matching', options);
+      const eventSource = new EventSource(this.baseUrl + '/user/' + this.authService.getPrincipal().sub + '/medicalQuery/matching', options);
       eventSource.onmessage = x => observer.next(x.data);
       eventSource.onerror = x => observer.error(x);
 
@@ -51,13 +53,13 @@ export class HealthdataService {
   uploadHealthData(data) {
     // append userId into object
     data.userId = this.authService.getPrincipal().sub;
-    return this.http.post<HealthData>('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalInformation', data);
+    return this.http.post<HealthData>(this.baseUrl + '/user/' + this.authService.getPrincipal().sub + '/medicalInformation', data);
   }
 
   shareHealthData(sharedData) {
     const permissions = [];
     sharedData.selection.selected.forEach(healthData => permissions.push(new SharingPermission(null, healthData.first, sharedData.id)));
 
-    return this.http.post<Array<SharingPermission>>('http://localhost:8080/user/' + this.authService.getPrincipal().sub + '/medicalQuery/permissions', permissions);
+    return this.http.post<Array<SharingPermission>>(this.baseUrl + '/user/' + this.authService.getPrincipal().sub + '/medicalQuery/permissions', permissions);
   }
 }

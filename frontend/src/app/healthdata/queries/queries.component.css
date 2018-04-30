@@ -24,3 +24,7 @@
 .trick-button {
   visibility: hidden;
 }
+
+.select-cell {
+  flex: 0 0 10%;
+}

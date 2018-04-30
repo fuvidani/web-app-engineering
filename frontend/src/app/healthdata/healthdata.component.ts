@@ -5,7 +5,10 @@ import {AuthService} from '../service/auth.service';
 import {Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ENTER} from '@angular/cdk/keycodes';
-import {MatChipInputEvent} from '@angular/material';
+import {MatChipInputEvent, MatTableDataSource} from '@angular/material';
+import {HealthDataShare} from '../model/healthdatashare';
+import {SelectionModel} from '@angular/cdk/collections';
+import {HealthDataQuery} from '../model/healthdataquery';
 
 @Component({
   selector: 'app-healthdata',
@@ -51,7 +54,18 @@ export class HealthdataComponent implements OnInit {
       () => console.log('done loading health data')
     );
 
-    // TODO load queries to set right notification icon
+    this.healthdataService.fetchHelthDataQueries().subscribe(response => {
+        const responseObject = JSON.parse(response);
+        // TODO parse dynamically
+        const data = new HealthDataQuery(responseObject.queryId, responseObject.queryName, responseObject.queryDescription, responseObject.queryInstituteName, responseObject.queryPrice, responseObject.medicalInfo);
+        this.queries.push(data);
+
+        // dirty hack to update view
+        document.getElementById('trickButton').click();
+      },
+      err => console.error(err),
+      () => console.log('done loading queries')
+    );
 
     this.email = this.authService.getPrincipal().email;
 

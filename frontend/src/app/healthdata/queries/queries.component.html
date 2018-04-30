@@ -29,13 +29,13 @@
       <mat-table #table [dataSource]="query.healthData">
 
         <ng-container matColumnDef="select">
-          <mat-header-cell *matHeaderCellDef>
+          <mat-header-cell *matHeaderCellDef class="select-cell">
             <mat-checkbox (change)="$event ? masterToggle(query) : null"
                           [checked]="getSelection(query).hasValue() && isAllSelected(query)"
                           [indeterminate]="getSelection(query).hasValue() && !isAllSelected(query)">
             </mat-checkbox>
           </mat-header-cell>
-          <mat-cell *matCellDef="let row">
+          <mat-cell *matCellDef="let row" class="select-cell">
             <mat-checkbox (click)="$event.stopPropagation()"
                           (change)="$event ? getSelection(query).toggle(row) : null"
                           [checked]="getSelection(query).isSelected(row)">

@@ -7,6 +7,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {DateAdapter} from '@angular/material';
 import {Gender} from '../model/gender';
 import {DatePipe} from "@angular/common";
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-register',
@@ -14,6 +15,7 @@ import {DatePipe} from "@angular/common";
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+  baseUrl = environment.baseUrl;
 
   genders = [
     new Gender('1', 'register.gender-male', 'MALE'),
@@ -87,7 +89,7 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.valid) {
       let user: User = this.registerForm.value;
       user.birthday = this.datePipe.transform(user.birthday, 'dd-MM-yyyy');
-      this.http.post<User>('http://localhost:8080/user/register', user).subscribe(
+      this.http.post<User>(this.baseUrl + '/user/register', user).subscribe(
         registeredUser => {
           this.handleSuccessFullRegistration();
         },
