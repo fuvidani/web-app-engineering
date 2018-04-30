@@ -60,11 +60,7 @@ class MedicalQueryService(
 
         return infos.zipWith(user)
             .map { tuple ->
-                queryRepository.findByGenderAndMinAgeLessThanEqualAndMaxAgeGreaterThanEqual(
-                    tuple.t2.gender,
-                    calcAge(tuple.t2.birthday),
-                    calcAge(tuple.t2.birthday)
-                )
+                queryRepository.findMatchingQuery(tuple.t2.gender, calcAge(tuple.t2.birthday))
                     .filter { query -> query.tags.any { qTag -> tuple.t1.tags.contains(qTag) } }
                     .map { q ->
                         val data = medicalInformationService
