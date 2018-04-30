@@ -58,9 +58,9 @@ export class MedicalqueryComponent implements OnInit {
     this.financialOffering = new FormControl(
       '',
       [Validators.required, Validators.min(0)]);
-    this.gender = new FormControl('');
-    this.minAge = new FormControl('');
-    this.maxAge = new FormControl('');
+    this.gender = new FormControl(null);
+    this.minAge = new FormControl(null);
+    this.maxAge = new FormControl(null);
     this.medicalQueryForm = new FormGroup({
       name: this.name,
       description: this.description,
@@ -112,12 +112,15 @@ export class MedicalqueryComponent implements OnInit {
         return;
       }
 
-      if (medicalQuery.gender === '') {
-        // Backend does not accept an empty String for an optional property
-        medicalQuery.gender = null;
-      }
-
-      if (medicalQuery.minAge > medicalQuery.maxAge) {
+      if (medicalQuery.minAge === null && medicalQuery.maxAge !== null) {
+        this.error = true;
+        this.errorText = 'Please set minAge as well.';
+        return;
+      } else if ((medicalQuery.minAge !== null && medicalQuery.maxAge === null)) {
+        this.error = true;
+        this.errorText = 'Please set maxAge as well.';
+        return;
+      } else if (medicalQuery.minAge > medicalQuery.maxAge) {
         this.error = true;
         this.errorText = 'Max. age must be greater or equal to min. age.';
         return;
@@ -140,7 +143,7 @@ export class MedicalqueryComponent implements OnInit {
   atLeastOneCriteria(medicalQuery: MedicalQuery): boolean {
     return !(medicalQuery.tags.length > 0) &&
       (!medicalQuery.minAge || !medicalQuery.maxAge) &&
-      (medicalQuery.gender === '');
+      (medicalQuery.gender === null);
   }
 
   parseTagList(tagList: any[]): string[] {
