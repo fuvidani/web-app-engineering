@@ -89,6 +89,7 @@ class MedicalQueryService(
                     )
                 )
                 mongoTemplate.find(mongoQuery, MedicalQuery::class.java)
+                    .distinct()
                     .filter { query ->
                         query.tags.isEmpty()
                                 || query.tags.any { qTag -> tuple.t1.tags.contains(qTag) }
