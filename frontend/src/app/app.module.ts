@@ -28,6 +28,7 @@ import {MatTableModule, MatInputModule, MatCommonModule, MatCheckboxModule} from
 import {MedicalqueryComponent} from './medicalquery/medicalquery.component';
 import {MedicalqueryService} from './service/medicalquery.service';
 import {SharedHealthdataComponent} from './medicalquery/shared-healthdata/shared-healthdata.component';
+import {environment} from '../environments/environment';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -71,7 +72,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        whitelistedDomains: ['localhost:8080'],
+        whitelistedDomains: [environment.domain],
         blacklistedRoutes: ['localhost:8080/auth', 'localhost:8080/user/register']
       }
     }),
