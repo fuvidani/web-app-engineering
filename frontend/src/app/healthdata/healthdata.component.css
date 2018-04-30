@@ -1,16 +1,11 @@
 .healthdata-card {
   margin: 2% auto;
-  width: 35%;
-}
-
-.full-width {
-  width: 100%;
+  width: 40%;
 }
 
 .toolbar-spacer {
   flex: 1 1 auto;
 }
-
 
 .mat-fab-custom {
   top: auto;
@@ -18,4 +13,38 @@
   bottom: 20px;
   left: auto;
   position: fixed;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.alert {
+  color: red;
+}
+
+.error {
+  margin-top: 10px;
+  color: red;
+}
+
+.example-icon {
+  padding: 0 14px;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.hide-it {
+  display: none;
+}
+
+.no-content-card {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.trick-button {
+  visibility: hidden;
 }

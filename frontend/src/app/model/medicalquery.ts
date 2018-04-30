@@ -1,6 +1,6 @@
 export class MedicalQuery {
   id: string;
-  researchFacility: string;
+  researchFacilityId: string;
   name: string;
   description: string;
   financialOffering: number;
@@ -11,7 +11,7 @@ export class MedicalQuery {
 
   constructor(
     id,
-    researchFacility,
+    researchFacilityId,
     name,
     description,
     financialOffering,
@@ -21,7 +21,7 @@ export class MedicalQuery {
     tags
   ) {
     this.id = id;
-    this.researchFacility = researchFacility;
+    this.researchFacilityId = researchFacilityId;
     this.name = name;
     this.description = description;
     this.financialOffering = financialOffering;

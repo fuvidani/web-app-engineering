@@ -2,6 +2,18 @@
   width: 100%;
 }
 
+.half-width {
+  width: 45%;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
 .toolbar-spacer {
   flex: 1 1 auto;
 }
@@ -16,5 +28,19 @@
 
 .medicalquery-card {
   margin: 2% auto;
-  width: 35%;
+  width: 40%;
+}
+
+.error {
+  margin-top: 10px;
+  color: red;
+}
+
+.no-content-card {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.trick-button {
+  visibility: hidden;
 }

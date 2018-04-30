@@ -1,44 +1,132 @@
-<div>
+<div #header>
   <mat-toolbar color="primary">
     <mat-toolbar-row>
-      <span>Medical Query ({{email}})</span>
+      <span>Medical Queries ({{email}})</span>
       <span class="toolbar-spacer"></span>
-      <button mat-icon-button>
-        <mat-icon>notifications_none</mat-icon>
-      </button>
       <button mat-icon-button (click)="logOut()">
         <mat-icon>keyboard_tab</mat-icon>
       </button>
     </mat-toolbar-row>
   </mat-toolbar>
-  <mat-card class="medicalquery-card" *ngFor="let query of medicalQueryService.medicalQueries | async">
+</div>
+
+<mat-card class="medicalquery-card" *ngIf="queries.length === 0">
+  <mat-card-header>
+    <div class="no-content-card">No medical query to show</div>
+  </mat-card-header>
+</mat-card>
+
+<mat-card class="medicalquery-card" *ngFor="let query of queries">
+  <mat-card-header>
+    <mat-card-title><h3>Medical Query - {{query.name}}</h3></mat-card-title>
+    <mat-card-subtitle>{{query.description}} - {{query.financialOffering}}€ / health data</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      <b>Age:</b> {{query.minAge}} - {{query.maxAge}}
+    </p>
+    <p>
+      <b>Gender:</b> {{query.gender}}
+    </p>
+    <p>
+      <b>Tags:</b>
+      <span *ngFor="let tag of query.tags">{{'#' + tag + " "}}</span>
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button color="primary" (click)="navigateToSharedHealthdata(query.id)">Show shared health data</button>
+  </mat-card-actions>
+</mat-card>
+
+<div #newQuery>
+  <mat-card class="medicalquery-card">
     <mat-card-header>
-      <mat-card-title>Medical Query - {{query.name}}</mat-card-title>
-      <mat-card-subtitle>
-          <span *ngFor="let tag of query.tags">
-            {{'#' + tag + " "}}
-          </span>
-      </mat-card-subtitle>
+      <mat-card-title>
+        <h2>Create a new medical query</h2>
+      </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <p>
-        <b>Description:</b> {{query.description}}
-      </p>
-      <p>
-        <b>Financial Offering:</b> {{query.financialOffering}} €
-      </p>
-      <p>
-        <b>Age:</b> {{query.minAge}} - {{query.maxAge}}
-      </p>
-      <p>
-        <b>Gender:</b> {{query.gender}}
-      </p>
-      <button mat-icon-button color="primary" (click)="navigateToSharedHealthdata(query.id)">
-        <mat-icon>navigate_next</mat-icon>
-      </button>
+      <form (submit)="onSubmit()" [formGroup]="medicalQueryForm" #f="ngForm">
+        <table class="full-width">
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <input matInput formControlName="name" placeholder="Name" required>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <textarea matInput formControlName="description" placeholder="Description" required>
+                </textarea>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <input matInput type="number" min="0" formControlName="financialOffering"
+                       placeholder="Financial-Offering"
+                       required>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="half-width left">
+                <input matInput type="number" min="0" formControlName="minAge" placeholder="Min. age">
+              </mat-form-field>
+              <mat-form-field class="half-width right">
+                <input matInput type="number" min="0" formControlName="maxAge" placeholder="Max. age">
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <mat-select formControlName="gender">
+                  <mat-option *ngFor="let gender of genders" [value]="gender.value">
+                    {{ gender.i18n }}
+                  </mat-option>
+                </mat-select>
+                <mat-placeholder>
+                  Gender
+                </mat-placeholder>
+              </mat-form-field>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <mat-chip-list #chipList>
+                  <mat-chip *ngFor="let tag of tagList" (remove)="removeTag(tag)">
+                    {{tag.name}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                  <input placeholder="Tags"
+                         [matChipInputFor]="chipList"
+                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                         [matChipInputAddOnBlur]="true"
+                         (matChipInputTokenEnd)="addTag($event)"/>
+                </mat-chip-list>
+              </mat-form-field>
+            </td>
+          </tr>
+        </table>
+        <button mat-raised-button color="primary" type="submit">
+          Create
+        </button>
+        <div *ngIf="error" class="error">
+          {{errorText}}
+        </div>
+      </form>
     </mat-card-content>
   </mat-card>
-  <button mat-fab color="primary" class="mat-fab-custom" (click)="scroll()">
-    <mat-icon>add</mat-icon>
-  </button>
 </div>
+
+<button mat-fab color="primary" class="mat-fab-custom" (click)="scroll(newQuery)">
+  <mat-icon>add</mat-icon>
+</button>
+
+<button class="trick-button" (click)="scroll(header)" id="trickButton"></button>

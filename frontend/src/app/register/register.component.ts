@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import {User} from "../model/user";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {Router} from "@angular/router";
-import {TranslateService} from "@ngx-translate/core";
-import {DateAdapter} from "@angular/material";
-import {Gender} from "../model/gender";
+import {Component, OnInit} from '@angular/core';
+import {User} from '../model/user';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {DateAdapter} from '@angular/material';
+import {Gender} from '../model/gender';
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-register',
@@ -15,8 +16,8 @@ import {Gender} from "../model/gender";
 export class RegisterComponent implements OnInit {
 
   genders = [
-    new Gender("1", "register.gender-male", "MALE"),
-    new Gender("2", "register.gender-female", "FEMALE")
+    new Gender('1', 'register.gender-male', 'MALE'),
+    new Gender('2', 'register.gender-female', 'FEMALE')
   ];
   error: boolean = false;
 
@@ -27,33 +28,37 @@ export class RegisterComponent implements OnInit {
   gender: FormControl;
   birthday: FormControl;
 
+  datePipe: DatePipe;
+
   constructor(
     private http: HttpClient,
     private router: Router,
     private translate: TranslateService,
     private adapter: DateAdapter<any>
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.configureLanguage();
+    this.datePipe = new DatePipe('en');
     this.email = new FormControl(
-      "",
+      '',
       [Validators.required, Validators.email]
     );
     this.password = new FormControl(
-      "",
+      '',
       [Validators.required, Validators.minLength(8)]
     );
     this.name = new FormControl(
-      "",
+      '',
       [Validators.required, Validators.minLength(4)]
     );
     this.gender = new FormControl(
-      "",
+      '',
       [Validators.required]
     );
     this.birthday = new FormControl(
-      "",
+      '',
       [Validators.required]
     );
     this.registerForm = new FormGroup({
@@ -65,23 +70,24 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  configureLanguage(){
+  configureLanguage() {
     const lang = window.navigator.language;
-    console.log("Detected browser language(" + lang + ")");
-    if(lang === "de"){
-      this.translate.setDefaultLang("de");
-      this.adapter.setLocale("de");
-      console.log("Set language to german");
-    }else{
-      this.translate.setDefaultLang("en");
-      console.log("Set language to english");
+    console.log('Detected browser language(' + lang + ')');
+    if (lang === 'de' || lang === 'de-DE') {
+      this.translate.setDefaultLang('de');
+      this.adapter.setLocale('de');
+      console.log('Set language to german');
+    } else {
+      this.translate.setDefaultLang('en');
+      console.log('Set language to english');
     }
   }
 
   onSubmit() {
-    if(this.registerForm.valid){
+    if (this.registerForm.valid) {
       let user: User = this.registerForm.value;
-      this.http.post<User>("http://localhost:8080/user/register", user).subscribe(
+      user.birthday = this.datePipe.transform(user.birthday, 'dd-MM-yyyy');
+      this.http.post<User>('http://localhost:8080/user/register', user).subscribe(
         registeredUser => {
           this.handleSuccessFullRegistration();
         },
@@ -96,8 +102,8 @@ export class RegisterComponent implements OnInit {
   }
 
   handleSuccessFullRegistration() {
-    console.log("Successfully registered user.");
-    this.router.navigate(['/healthdata']);
+    console.log('Successfully registered user.');
+    this.router.navigate(['/login']);
   }
 
   handleFailedRegistration(errorResponse: HttpErrorResponse) {
@@ -106,7 +112,7 @@ export class RegisterComponent implements OnInit {
   }
 
   handleFinishedRegistration() {
-    console.log("Finished user registration");
+    console.log('Finished user registration');
   }
 
 }

@@ -19,7 +19,7 @@ logs/*
 .log
 archive/*
 images/*
-out/*
+*/out/*
 
 # Created by https://www.gitignore.io/api/windows,java,intellij,mercurial,maven,gradle,netbeans,eclipse
 

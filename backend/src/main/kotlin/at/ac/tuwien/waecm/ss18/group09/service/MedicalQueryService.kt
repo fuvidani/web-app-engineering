@@ -24,7 +24,7 @@ interface IMedicalQueryService {
 
     fun createSharingPermission(sharingPermission: SharingPermission): Mono<SharingPermission>
 
-    fun createSharingPermission(sharingPermissions: List<SharingPermission>): Mono<List<SharingPermission>>
+    fun createSharingPermission(sharingPermissions: List<SharingPermission>): Flux<SharingPermission>
 
     fun findAllSharedInformationOfResearchFacility(researchId: String): Flux<AnonymizedUserInformation>
 
@@ -56,10 +56,11 @@ class MedicalQueryService(
     override fun findMatchingQueries(userId: String): Flux<RelevantQueryData> {
 
         val infos = medicalInformationService.findByUserId(userId)
-        val user = userService.findById(userId).cast(User::class.java)
+        val user = userService.findById(userId).cast(User::class.java).repeat()
 
         return infos.zipWith(user)
             .map { tuple ->
+                // TODO check only not null criteria
                 queryRepository.findMatchingQuery(tuple.t2.gender, calcAge(tuple.t2.birthday))
                     .filter { query -> query.tags.any { qTag -> tuple.t1.tags.contains(qTag) } }
                     .map { q ->
@@ -87,9 +88,10 @@ class MedicalQueryService(
         return sharingPermissionRepository.save(sharingPermission)
     }
 
-    override fun createSharingPermission(sharingPermissions: List<SharingPermission>): Mono<List<SharingPermission>> {
-        sharingPermissions.forEach { p -> createSharingPermission(p) }
-        return Mono.just(sharingPermissions)
+    override fun createSharingPermission(sharingPermissions: List<SharingPermission>): Flux<SharingPermission> {
+        return Flux.fromIterable(sharingPermissions)
+                .map { p -> createSharingPermission(p) }
+                .flatMap { it }
     }
 
     override fun findAllSharedInformationOfResearchFacility(researchId: String): Flux<AnonymizedUserInformation> {
