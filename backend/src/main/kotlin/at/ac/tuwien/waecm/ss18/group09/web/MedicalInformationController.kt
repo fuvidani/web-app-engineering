@@ -9,12 +9,11 @@ import at.ac.tuwien.waecm.ss18.group09.service.ValidationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
-//TODO Authorize
-@Secured
 @CrossOrigin
 @RestController
 @RequestMapping("/user/{id}/medicalInformation")
@@ -23,6 +22,7 @@ class MedicalInformationController(
     private val medicalQueryService: MedicalQueryService
 ) {
 
+    @PreAuthorize("hasRole('ROLE_END_USER')")
     @PostMapping
     fun createMedicalInformation(@PathVariable("id") id: String, @RequestBody medicalInformation: MedicalInformation): Mono<ResponseEntity<MedicalInformation>> {
 
@@ -37,11 +37,13 @@ class MedicalInformationController(
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_END_USER')")
     @GetMapping(produces = ["text/event-stream"])
     fun getAllMedicalInformationForUser(@PathVariable("id") id: String): Flux<MedicalInformation> {
         return medicalInformationService.findByUserId(id)
     }
 
+    @PreAuthorize("hasRole('ROLE_RESEARCH')")
     @GetMapping(path = ["/shared"], produces = ["text/event-stream"])
     fun getAllSharedMedicalInformation(@PathVariable("id") id: String): Flux<AnonymizedUserInformation> {
         return medicalQueryService.findAllSharedInformationOfResearchFacility(id)
