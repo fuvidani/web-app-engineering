@@ -38,7 +38,7 @@ class MedicalInformationService(private val repository: MedicalInformationReposi
 
     override fun findInfoForQuery(query: MedicalQuery, userId: String): Flux<MedicalInformation> {
         return findByUserId(userId)
-            .filter { info -> info.tags.any { iTag -> query.tags.contains(iTag) } }
+            .filter { info -> query.tags.isEmpty() || info.tags.any { iTag -> query.tags.contains(iTag) } }
     }
 
     @Throws(ValidationException::class)
