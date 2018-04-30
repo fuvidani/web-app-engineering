@@ -8,6 +8,7 @@ import {DateAdapter} from '@angular/material';
 import {Gender} from '../model/gender';
 import {DatePipe} from "@angular/common";
 import {environment} from '../../environments/environment';
+import {AuthService} from '../service/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -36,11 +37,18 @@ export class RegisterComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private translate: TranslateService,
-    private adapter: DateAdapter<any>
+    private adapter: DateAdapter<any>,
+    private authService: AuthService
   ) {
   }
 
   ngOnInit() {
+    if (this.authService.hasRole('ROLE_END_USER')) {
+      this.router.navigate(['/healthdata']);
+    } else if (this.authService.hasRole('ROLE_RESEARCH')) {
+      this.router.navigate(['/medicalquery']);
+    }
+
     this.configureLanguage();
     this.datePipe = new DatePipe('en');
     this.email = new FormControl(

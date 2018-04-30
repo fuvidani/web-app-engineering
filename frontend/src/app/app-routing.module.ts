@@ -11,14 +11,14 @@ import {MedicalqueryComponent} from './medicalquery/medicalquery.component';
 import {SharedHealthdataComponent} from './medicalquery/shared-healthdata/shared-healthdata.component';
 
 const routes: Routes = [
-  {path: '', component: HomeComponent},
+  {path: '', redirectTo: '/login', pathMatch: 'full'},
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},
   {path: 'healthdata', component: HealthdataComponent, canActivate: [UserGuard]},
   {path: 'userqueries', component: QueriesComponent, canActivate: [UserGuard]},
   {path: 'medicalquery', component: MedicalqueryComponent, canActivate: [ResearchfacilityGuard]},
   {path: 'medicalquery/:qid/shared', component: SharedHealthdataComponent, canActivate: [ResearchfacilityGuard]},
-  {path: '**', component: HomeComponent}
+  {path: '**', component: LoginComponent}
 ];
 
 @NgModule({

@@ -24,6 +24,14 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.authService.hasRole('ROLE_END_USER')) {
+      this.router.navigate(['/healthdata']);
+    } else if (this.authService.hasRole('ROLE_RESEARCH')) {
+      this.router.navigate(['/medicalquery']);
+    } else {
+      this.router.navigate(['/']);
+    }
+
     this.authentication = new Authentication();
     this.email = new FormControl(this.authentication.email);
     this.password = new FormControl(this.authentication.password);
