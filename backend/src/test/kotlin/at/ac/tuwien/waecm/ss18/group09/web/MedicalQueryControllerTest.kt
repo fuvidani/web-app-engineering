@@ -4,6 +4,8 @@ import at.ac.tuwien.waecm.ss18.group09.AbstractTest
 import at.ac.tuwien.waecm.ss18.group09.TestDataProvider
 import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalQuery
+import at.ac.tuwien.waecm.ss18.group09.dto.SharingPermission
+import at.ac.tuwien.waecm.ss18.group09.service.IMedicalInformationService
 import at.ac.tuwien.waecm.ss18.group09.service.IMedicalQueryService
 import at.ac.tuwien.waecm.ss18.group09.service.IUserService
 import org.junit.Test
@@ -33,6 +35,9 @@ internal class MedicalQueryControllerTest : AbstractTest() {
 
     @Autowired
     lateinit var medicalQueryService: IMedicalQueryService
+
+    @Autowired
+    lateinit var medicalInformationService: IMedicalInformationService
 
     @Autowired
     lateinit var mongoTemplate: MongoTemplate
@@ -87,7 +92,19 @@ internal class MedicalQueryControllerTest : AbstractTest() {
 
     @Test
     fun createSharingPermission_valid_shouldReturn() {
-        //TODO
+        createTestDummyData()
+        var info = testDataProvider.getValidMedicalInformation()
+        info.userId = user.id
+        info = medicalInformationService.create(info).block()!!
+
+        val permission = SharingPermission(null, info.id!!, firstObject.id!!)
+        val result = client.post().uri("/user/${user.id}/medicalQuery/permission")
+            .contentType(MediaType.APPLICATION_JSON_UTF8)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .body(Mono.just(permission), SharingPermission::class.java)
+            .exchange().expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.id").isNotEmpty
     }
 
     @Test
