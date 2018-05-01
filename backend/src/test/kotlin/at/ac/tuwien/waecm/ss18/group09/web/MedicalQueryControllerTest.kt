@@ -88,7 +88,6 @@ internal class MedicalQueryControllerTest : AbstractTest() {
             .expectNext(secondObject)
     }
 
-
     @Test
     @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
     fun createSharingPermission_valid_shouldReturn() {
