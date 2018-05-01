@@ -88,10 +88,6 @@ internal class MedicalQueryControllerTest : AbstractTest() {
             .expectNext(secondObject)
     }
 
-    @Test
-    fun getAllMatchingQueries_shouldReturn() {
-        //TODO
-    }
 
     @Test
     @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
@@ -109,16 +105,6 @@ internal class MedicalQueryControllerTest : AbstractTest() {
             .exchange().expectStatus().isOk
             .expectBody()
             .jsonPath("$.id").isNotEmpty
-    }
-
-    @Test
-    fun createSharingPermissionList_valid__shouldReturn() {
-        //TODO
-    }
-
-    @Test
-    fun getSharedInformationForQuery_valid__shouldReturn() {
-        //TODO
     }
 
     private fun createTestDummyData() {

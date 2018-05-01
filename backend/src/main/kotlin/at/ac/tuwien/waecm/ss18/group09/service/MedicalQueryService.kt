@@ -64,8 +64,6 @@ class MedicalQueryService(
 
         return infos.zipWith(user)
             .map { tuple ->
-                // TODO check only not null criteria
-
                 val age = calcAge(tuple.t2.birthday)
                 val mongoQuery = Query()
                 mongoQuery.addCriteria(

@@ -42,9 +42,6 @@ class MedicalQueryController(private val medicalQueryService: MedicalQueryServic
     @PostMapping(path = ["/permissions"])
     fun createSharingPermission(@RequestBody permissions: List<SharingPermission>): Flux<SharingPermission> {
         return medicalQueryService.createSharingPermission(permissions)
-        // TODO fix me pls Lukas
-//                .map { list -> ResponseEntity<SharingPermission>(list, HttpStatus.OK) }
-//                .defaultIfEmpty(ResponseEntity.badRequest().build())
     }
 
     @PreAuthorize("hasRole('ROLE_END_USER')")
