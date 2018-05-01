@@ -20,7 +20,7 @@ spring:
 server:
   port: 8443
   ssl:
-    key-store: keystore.p12
+    key-store: classpath:keystore.p12
     key-alias: waecm
     key-store-type: PKCS12
     key-store-password: password

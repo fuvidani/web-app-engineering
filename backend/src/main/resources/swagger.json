@@ -2,13 +2,13 @@
   "openapi": "3.0.0",
   "servers": [
     {
-      "url": "http://localhost:8182/"
+      "url": "https://localhost:8443/"
     }
   ],
   "info": {
-    "description": "This is the API specification of the counter backend.",
-    "version": "1.0.0",
-    "title": "WAECM Counter Backend",
+    "description": "This is the API specification of the Healthbook backend.",
+    "version": "1.0-SNAPSHOT",
+    "title": "WAECM Healthbook",
     "contact": {
       "email": "daniel.fuevesi@tuwien.ac.at"
     },
@@ -19,18 +19,34 @@
   },
   "tags": [
     {
-      "name": "Backend",
-      "description": "Everything about the backend"
+      "name": "auth",
+      "description": "Authenticating a user"
+    },
+    {
+      "name": "user",
+      "description": "User operations"
+    },
+    {
+      "name": "medicalInformation",
+      "description": "Manage medical information"
+    },
+    {
+      "name": "medicalQuery",
+      "description": "Manage medical queries, permissions"
+    },
+    {
+      "name": "swagger",
+      "description": "obtain API documentation"
     }
   ],
   "paths": {
     "/auth": {
       "post": {
         "tags": [
-          "Backend"
+          "auth"
         ],
-        "summary": "Authorize and obtain a token",
-        "description": "Provide valid username and password. The response will contain a JWT token which you should provide on subsequent invocations.",
+        "summary": "Authenticate and obtain a token",
+        "description": "Provide valid e-mail address and password. The response will contain a JWT token which you should provide on subsequent invocations.",
         "operationId": "auth",
         "responses": {
           "200": {
@@ -58,46 +74,97 @@
               }
             }
           },
-          "description": "User object consisting of username and password",
+          "description": "User object consisting of an e-mail address and a password",
           "required": true
         }
       }
     },
-    "/counter": {
-      "get": {
+    "/user/register": {
+      "post": {
         "tags": [
-          "Backend"
+          "user"
         ],
-        "summary": "Get the current counter",
-        "description": "Returns the value of the counter stored in the database.",
-        "operationId": "counterGet",
+        "summary": "Register as a new user",
+        "description": "The new user will be registered in the backend if their e-mail address is not already in use. Use the response to log in (obtain token) and to execute further actions.",
+        "operationId": "register",
         "responses": {
           "200": {
-            "description": "Successful operation",
+            "description": "Successful registration",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "example": 1
-                }
-              },
-              "text/event-stream": {
-                "schema": {
-                  "type": "integer",
-                  "example": 1
-                }
-              },
-              "application/stream+json": {
-                "schema": {
-                  "type": "integer",
-                  "example": 1
+                  "$ref": "#/components/schemas/AbstractUser"
                 }
               }
             }
           },
-          "401": {
-            "description": "Unauthorized"
+          "400": {
+            "description": "User is invalid (empty password, ...)"
+          },
+          "500": {
+            "description": "User with given e-mail address exists already"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "description": "User object",
+          "required": true
+        }
+      }
+    },
+    "/user/{id}/medicalInformation": {
+      "post": {
+        "tags": [
+          "medicalInformation"
+        ],
+        "summary": "Create a new medical information",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID of the user who performs the operation"
+          }
+        ],
+        "description": "The new user will be registered in the backend if their e-mail address is not already in use. Use the response to log in (obtain token) and to execute further actions.\n* Title of the medical information is mandatory\n* A list of tags is mandatory\n* Either provide an image or a description (or both)\n\n\n\n**ONLY END USERS CAN CALL THIS ENDPOINT.**",
+        "operationId": "postMedicalInfo",
+        "responses": {
+          "200": {
+            "description": "Information successfully stored",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedicalInformation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "MedicalInformation is invalid &#58; title missing, tags missing, neither image nor description provided"
+          },
+          "403": {
+            "description": "Trying to access this endpoint with an invalid user (or with an invalid role)"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedicalInformation"
+              }
+            }
+          },
+          "description": "MedicalInformation object",
+          "required": true
         },
         "security": [
           {
@@ -105,19 +172,37 @@
           }
         ]
       },
-      "post": {
+      "get": {
         "tags": [
-          "Backend"
+          "medicalInformation"
         ],
-        "summary": "Increment the counter",
-        "description": "Increments the counter stored in the database.",
-        "operationId": "counterPost",
+        "summary": "Get all medical information of user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID of the user who performs the operation"
+          }
+        ],
+        "description": "Retrieves all the stored medical information of this user. **ONLY END USERS CAN CALL THIS ENDPOINT.**",
+        "operationId": "getMedicalInfo",
         "responses": {
           "200": {
-            "description": "Successful operation"
+            "description": "Information successfully retrieved",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedicalInformation"
+                }
+              }
+            }
           },
-          "401": {
-            "description": "Unauthorized"
+          "403": {
+            "description": "Trying to access this endpoint with an invalid user (or with an invalid role)"
           }
         },
         "security": [
@@ -127,20 +212,38 @@
         ]
       }
     },
-    "/reset": {
-      "post": {
+    "/user/{id}/medicalInformation/shared": {
+      "get": {
         "tags": [
-          "Backend"
+          "medicalInformation"
         ],
-        "summary": "Resets the counter",
-        "description": "Resets the counter to zero stored in the database.",
-        "operationId": "reset",
+        "summary": "Get all anonymized medical information shared with facility",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID of the research facility who performs the operation"
+          }
+        ],
+        "description": "Retrieves all the anonymized medical information which where shared with this research facility. **ONLY RESEARCH FACILITIES CAN CALL THIS ENDPOINT.**",
+        "operationId": "getSharedMedicalInfo",
         "responses": {
           "200": {
-            "description": "Successful operation"
+            "description": "Information successfully retrieved",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnonymizedUserInformation"
+                }
+              }
+            }
           },
-          "401": {
-            "description": "Unauthorized"
+          "403": {
+            "description": "Trying to access this endpoint with an invalid user (or with an invalid role)"
           }
         },
         "security": [
@@ -148,6 +251,316 @@
             "myAuth": []
           }
         ]
+      }
+    },
+    "/user/{id}/medicalQuery": {
+      "post": {
+        "tags": [
+          "medicalQuery"
+        ],
+        "summary": "Create a new medical query",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID of the research facility who performs the operation"
+          }
+        ],
+        "description": "Stores the provided medical query.\n\n\n\n**ONLY RESEARCH FACILITIES CAN CALL THIS ENDPOINT.**",
+        "operationId": "postMedicalQuery",
+        "responses": {
+          "200": {
+            "description": "Query successfully stored",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedicalQuery"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Trying to access this endpoint with an invalid user (or with an invalid role)"
+          },
+          "500": {
+            "description": "MedicalQuery is invalid &#58; all of the fields (minAge, maxAge, gender, tags) are empty"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedicalQuery"
+              }
+            }
+          },
+          "description": "MedicalQuery object",
+          "required": true
+        },
+        "security": [
+          {
+            "myAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "medicalQuery"
+        ],
+        "summary": "Get all created medical queries of the facility",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID of the research facility who performs the operation"
+          }
+        ],
+        "description": "Retrieves all the medical queries that where created by this facility up to this point. **ONLY RESEARCH FACILITIES CAN CALL THIS ENDPOINT.**",
+        "operationId": "getMedicalQueries",
+        "responses": {
+          "200": {
+            "description": "Queries successfully retrieved",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedicalQuery"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Trying to access this endpoint with an invalid user (or with an invalid role)"
+          }
+        },
+        "security": [
+          {
+            "myAuth": []
+          }
+        ]
+      }
+    },
+    "/user/{id}/medicalQuery/{queryId}/shared": {
+      "get": {
+        "tags": [
+          "medicalQuery"
+        ],
+        "summary": "Get anonymized user information for query",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID of the research facility who performs the operation"
+          },
+          {
+            "in": "path",
+            "name": "queryId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID of the medical query the information should be aggregated for"
+          }
+        ],
+        "description": "For a given query (specified through queryId), the endpoint returns all the anonymized user information that have been shared by users as a stream. **ONLY RESEARCH FACILITIES CAN CALL THIS ENDPOINT.**",
+        "operationId": "getSharedInformationForQuery",
+        "responses": {
+          "200": {
+            "description": "Information successfully retrieved",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnonymizedUserInformation"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Trying to access this endpoint with an invalid user (or with an invalid role)"
+          }
+        },
+        "security": [
+          {
+            "myAuth": []
+          }
+        ]
+      }
+    },
+    "/user/{id}/medicalQuery/matching": {
+      "get": {
+        "tags": [
+          "medicalQuery"
+        ],
+        "summary": "Get all queries matching user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID of the end user who performs the operation"
+          }
+        ],
+        "description": "Retrieves all the medical queries that may be relevant for this user based on their shared information. **ONLY END USERS CAN CALL THIS ENDPOINT.**",
+        "operationId": "getMatchingQueries",
+        "responses": {
+          "200": {
+            "description": "Queries successfully retrieved",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelevantQueryData"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Trying to access this endpoint with an invalid user (or with an invalid role)"
+          }
+        },
+        "security": [
+          {
+            "myAuth": []
+          }
+        ]
+      }
+    },
+    "/user/{id}/medicalQuery/permission": {
+      "post": {
+        "tags": [
+          "medicalQuery"
+        ],
+        "summary": "Create a sharing permission",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID of the end user who performs the operation"
+          }
+        ],
+        "description": "Creates a sharing permission, i.e. the user allows a particular medical query to obtain the (anonymized) medical information of this user.\n\n\n\n**ONLY END USERS CAN CALL THIS ENDPOINT.**",
+        "operationId": "postPermission",
+        "responses": {
+          "200": {
+            "description": "Sharing permission successfully stored",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SharingPermission"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Trying to access this endpoint with an invalid user (or with an invalid role)"
+          },
+          "500": {
+            "description": "SharingPermission is invalid"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SharingPermission"
+              }
+            }
+          },
+          "description": "SharingPermission object",
+          "required": true
+        },
+        "security": [
+          {
+            "myAuth": []
+          }
+        ]
+      }
+    },
+    "/user/{id}/medicalQuery/permissions": {
+      "post": {
+        "tags": [
+          "medicalQuery"
+        ],
+        "summary": "Create multiple sharing permissions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "ID of the end user who performs the operation"
+          }
+        ],
+        "description": "Creates a list of sharing permissions, i.e. the user allows a list of medical queries to obtain the (anonymized) medical information of this user.\n\n\n\n**ONLY END USERS CAN CALL THIS ENDPOINT.**",
+        "operationId": "postPermissions",
+        "responses": {
+          "200": {
+            "description": "Sharing permissions successfully stored",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListOfSharingPermission"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Trying to access this endpoint with an invalid user (or with an invalid role)"
+          },
+          "500": {
+            "description": "One or more SharingPermissions are invalid"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListOfSharingPermission"
+              }
+            }
+          },
+          "description": "List of SharingPermission objects",
+          "required": true
+        },
+        "security": [
+          {
+            "myAuth": []
+          }
+        ]
+      }
+    },
+    "/swagger": {
+      "get": {
+        "tags": [
+          "swagger"
+        ],
+        "summary": "Get this API documentation",
+        "description": "Returns this API documentation in Swagger JSON format.",
+        "operationId": "getDocumentation",
+        "responses": {
+          "200": {
+            "description": "Returns this documentation in Swagger JSON format"
+          }
+        }
       }
     }
   },
@@ -167,13 +580,13 @@
       "AuthRequest": {
         "type": "object",
         "required": [
-          "username",
+          "email",
           "password"
         ],
         "properties": {
-          "username": {
+          "email": {
             "type": "string",
-            "example": "username"
+            "example": "example@example.com"
           },
           "password": {
             "type": "string",
@@ -191,6 +604,273 @@
             "type": "string",
             "example": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE1MjE0ODExNTksImlhdCI6MTUyMTM5NDc1OX0.eDPMllIQoatJq657WEd6GMv-8I0UzsPY3CbRVVBJiOk"
           }
+        }
+      },
+      "AbstractUser": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": ""
+          },
+          "email": {
+            "type": "string",
+            "example": "example@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        }
+      },
+      "User": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AbstractUser"
+          },
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "gender",
+              "birthday"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "Max Mustermann"
+              },
+              "gender": {
+                "$ref": "#/components/schemas/Gender"
+              },
+              "birthday": {
+                "type": "string",
+                "example": "11-09-1994"
+              }
+            }
+          }
+        ]
+      },
+      "Gender": {
+        "type": "string",
+        "enum": [
+          "MALE",
+          "FEMALE"
+        ]
+      },
+      "MedicalInformation": {
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "image",
+          "tags"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": ""
+          },
+          "userId": {
+            "type": "string",
+            "example": ""
+          },
+          "title": {
+            "type": "string",
+            "example": "My disease"
+          },
+          "description": {
+            "type": "string",
+            "example": "It hurts quite bad"
+          },
+          "image": {
+            "type": "string",
+            "example": "base64 encoded image"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": "headache, diarrhea, dizziness"
+          }
+        }
+      },
+      "AnonymizedUserInformation": {
+        "type": "object",
+        "required": [
+          "id",
+          "medicalInformation",
+          "userId",
+          "birthday",
+          "gender"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": ""
+          },
+          "medicalInformation": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MedicalInformation"
+            }
+          },
+          "userId": {
+            "type": "string",
+            "example": "anonymizedUserId"
+          },
+          "birthday": {
+            "type": "string",
+            "example": "11-09-1994"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          }
+        }
+      },
+      "MedicalQuery": {
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "financialOffering",
+          "minAge",
+          "maxAge",
+          "gender",
+          "tags"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": ""
+          },
+          "researchFacilityId": {
+            "type": "string",
+            "example": ""
+          },
+          "name": {
+            "type": "string",
+            "example": "My Medical Query"
+          },
+          "description": {
+            "type": "string",
+            "example": "Some description about my medical query"
+          },
+          "financialOffering": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0,
+            "example": 5.5
+          },
+          "minAge": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 18
+          },
+          "maxAge": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 35
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": "headache, diarrhea, dizziness"
+          }
+        }
+      },
+      "RelevantQueryData": {
+        "type": "object",
+        "required": [
+          "queryId",
+          "queryName",
+          "queryDescription",
+          "queryInstituteName",
+          "queryPrice",
+          "medicalInfo"
+        ],
+        "properties": {
+          "queryId": {
+            "type": "string",
+            "example": ""
+          },
+          "queryName": {
+            "type": "string",
+            "example": "My Medical Query"
+          },
+          "queryDescription": {
+            "type": "string",
+            "example": "Description"
+          },
+          "queryInstituteName": {
+            "type": "string",
+            "example": "Bayer"
+          },
+          "queryPrice": {
+            "type": "number",
+            "format": "double",
+            "example": 5.5
+          },
+          "medicalInfo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Pair"
+            }
+          }
+        }
+      },
+      "Pair": {
+        "type": "object",
+        "required": [
+          "first",
+          "second"
+        ],
+        "properties": {
+          "first": {
+            "type": "string",
+            "example": "first"
+          },
+          "second": {
+            "type": "string",
+            "example": "second"
+          }
+        }
+      },
+      "SharingPermission": {
+        "type": "object",
+        "required": [
+          "information",
+          "queryId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": ""
+          },
+          "information": {
+            "type": "string",
+            "example": "medicalInformationId"
+          },
+          "queryId": {
+            "type": "string",
+            "example": "medicalQueryId"
+          }
+        }
+      },
+      "ListOfSharingPermission": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/SharingPermission"
         }
       }
     }
