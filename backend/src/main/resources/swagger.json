@@ -192,9 +192,19 @@
         "operationId": "getMedicalInfo",
         "responses": {
           "200": {
-            "description": "Information successfully retrieved",
+            "description": "Information successfully retrieved. Some note on the content-negotiation&#58; This is mainly a streaming endpoint which means you get different behaviour depending on the Accept-Header you provide. With application/json you will receive a JSON array of the object below. In contrast to that, application/stream+json separates the json objects, meaning it will flush each element. The third option is to accept a text/event-stream, which is well suited for browser clients. In this case the objects will be serialized as individual Server Sent Events and explicitly flushed after each element. The \"data\" key maps onto the json object.",
             "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedicalInformation"
+                }
+              },
               "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedicalInformation"
+                }
+              },
+              "application/stream+json": {
                 "schema": {
                   "$ref": "#/components/schemas/MedicalInformation"
                 }
@@ -233,9 +243,19 @@
         "operationId": "getSharedMedicalInfo",
         "responses": {
           "200": {
-            "description": "Information successfully retrieved",
+            "description": "Information successfully retrieved. Some note on the content-negotiation&#58; This is mainly a streaming endpoint which means you get different behaviour depending on the Accept-Header you provide. With application/json you will receive a JSON array of the object below. In contrast to that, application/stream+json separates the json objects, meaning it will flush each element. The third option is to accept a text/event-stream, which is well suited for browser clients. In this case the objects will be serialized as individual Server Sent Events and explicitly flushed after each element. The \"data\" key maps onto the json object.",
             "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnonymizedUserInformation"
+                }
+              },
               "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnonymizedUserInformation"
+                }
+              },
+              "application/stream+json": {
                 "schema": {
                   "$ref": "#/components/schemas/AnonymizedUserInformation"
                 }
@@ -327,9 +347,19 @@
         "operationId": "getMedicalQueries",
         "responses": {
           "200": {
-            "description": "Queries successfully retrieved",
+            "description": "Queries successfully retrieved. Some note on the content-negotiation&#58; This is mainly a streaming endpoint which means you get different behaviour depending on the Accept-Header you provide. With application/json you will receive a JSON array of the object below. In contrast to that, application/stream+json separates the json objects, meaning it will flush each element. The third option is to accept a text/event-stream, which is well suited for browser clients. In this case the objects will be serialized as individual Server Sent Events and explicitly flushed after each element. The \"data\" key maps onto the json object.",
             "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedicalQuery"
+                }
+              },
               "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedicalQuery"
+                }
+              },
+              "application/stream+json": {
                 "schema": {
                   "$ref": "#/components/schemas/MedicalQuery"
                 }
@@ -377,9 +407,19 @@
         "operationId": "getSharedInformationForQuery",
         "responses": {
           "200": {
-            "description": "Information successfully retrieved",
+            "description": "Information successfully retrieved. Some note on the content-negotiation&#58; This is mainly a streaming endpoint which means you get different behaviour depending on the Accept-Header you provide. With application/json you will receive a JSON array of the object below. In contrast to that, application/stream+json separates the json objects, meaning it will flush each element. The third option is to accept a text/event-stream, which is well suited for browser clients. In this case the objects will be serialized as individual Server Sent Events and explicitly flushed after each element. The \"data\" key maps onto the json object.",
             "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnonymizedUserInformation"
+                }
+              },
               "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnonymizedUserInformation"
+                }
+              },
+              "application/stream+json": {
                 "schema": {
                   "$ref": "#/components/schemas/AnonymizedUserInformation"
                 }
@@ -418,9 +458,19 @@
         "operationId": "getMatchingQueries",
         "responses": {
           "200": {
-            "description": "Queries successfully retrieved",
+            "description": "Queries successfully retrieved. Some note on the content-negotiation&#58; This is mainly a streaming endpoint which means you get different behaviour depending on the Accept-Header you provide. With application/json you will receive a JSON array of the object below. In contrast to that, application/stream+json separates the json objects, meaning it will flush each element. The third option is to accept a text/event-stream, which is well suited for browser clients. In this case the objects will be serialized as individual Server Sent Events and explicitly flushed after each element. The \"data\" key maps onto the json object.",
             "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelevantQueryData"
+                }
+              },
               "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelevantQueryData"
+                }
+              },
+              "application/stream+json": {
                 "schema": {
                   "$ref": "#/components/schemas/RelevantQueryData"
                 }
@@ -514,9 +564,19 @@
         "operationId": "postPermissions",
         "responses": {
           "200": {
-            "description": "Sharing permissions successfully stored",
+            "description": "Sharing permissions successfully stored. Some note on the content-negotiation&#58; This is mainly a streaming endpoint which means you get different behaviour depending on the Accept-Header you provide. With application/json you will receive a JSON array of the object below. In contrast to that, application/stream+json separates the json objects, meaning it will flush each element. The third option is to accept a text/event-stream, which is well suited for browser clients. In this case the objects will be serialized as individual Server Sent Events and explicitly flushed after each element. The \"data\" key maps onto the json object.",
             "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListOfSharingPermission"
+                }
+              },
               "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListOfSharingPermission"
+                }
+              },
+              "application/stream+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ListOfSharingPermission"
                 }
@@ -615,7 +675,8 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": ""
+            "nullable": true,
+            "example": "some generated ID (caller should leave it null)"
           },
           "email": {
             "type": "string",
@@ -673,11 +734,12 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": ""
+            "nullable": true,
+            "example": "some generated ID (caller should leave it null)"
           },
           "userId": {
             "type": "string",
-            "example": ""
+            "example": "ID of the user (or anonymized)"
           },
           "title": {
             "type": "string",
@@ -696,7 +758,11 @@
             "items": {
               "type": "string"
             },
-            "example": "headache, diarrhea, dizziness"
+            "example": [
+              "headache",
+              "diarrhea",
+              "dizziness"
+            ]
           }
         }
       },
@@ -712,7 +778,8 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": ""
+            "nullable": true,
+            "example": "some generated ID (caller should leave it null)"
           },
           "medicalInformation": {
             "type": "array",
@@ -747,11 +814,12 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": ""
+            "nullable": true,
+            "example": "some generated ID (caller should leave it null)"
           },
           "researchFacilityId": {
             "type": "string",
-            "example": ""
+            "example": "ID of the research facility"
           },
           "name": {
             "type": "string",
@@ -785,7 +853,11 @@
             "items": {
               "type": "string"
             },
-            "example": "headache, diarrhea, dizziness"
+            "example": [
+              "headache",
+              "diarrhea",
+              "dizziness"
+            ]
           }
         }
       },
@@ -802,7 +874,7 @@
         "properties": {
           "queryId": {
             "type": "string",
-            "example": ""
+            "example": "ID of the query that matches user"
           },
           "queryName": {
             "type": "string",
@@ -855,15 +927,16 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": ""
+            "nullable": true,
+            "example": "some generated ID (caller should leave it null)"
           },
           "information": {
             "type": "string",
-            "example": "medicalInformationId"
+            "example": "ID of the medical information"
           },
           "queryId": {
             "type": "string",
-            "example": "medicalQueryId"
+            "example": "ID of the medical query"
           }
         }
       },

@@ -27,13 +27,13 @@ class MedicalQueryController(private val medicalQueryService: MedicalQueryServic
     }
 
     @PreAuthorize("hasRole('ROLE_RESEARCH')")
-    @GetMapping(produces = ["text/event-stream"])
+    @GetMapping
     fun getAllMedicalInformationForUser(@PathVariable("id") id: String): Flux<MedicalQuery> {
         return medicalQueryService.findByResearchFacilityId(id)
     }
 
     @PreAuthorize("hasRole('ROLE_END_USER')")
-    @GetMapping(path = ["/matching"], produces = ["text/event-stream"])
+    @GetMapping(path = ["/matching"])
     fun getAllMatchingQueries(@PathVariable("id") id: String): Flux<RelevantQueryData> {
         return medicalQueryService.findMatchingQueries(id)
     }
@@ -53,7 +53,7 @@ class MedicalQueryController(private val medicalQueryService: MedicalQueryServic
     }
 
     @PreAuthorize("hasRole('ROLE_RESEARCH')")
-    @GetMapping(path = ["{queryid}/shared"], produces = ["text/event-stream"])
+    @GetMapping(path = ["{queryid}/shared"])
     fun getSharedInformationForQuery(@PathVariable("queryid") qid: String): Flux<AnonymizedUserInformation> {
         return medicalQueryService.findSharedInformationForQuery(qid)
     }

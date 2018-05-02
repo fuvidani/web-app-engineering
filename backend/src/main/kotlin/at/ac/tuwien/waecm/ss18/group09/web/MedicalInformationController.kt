@@ -37,13 +37,13 @@ class MedicalInformationController(
     }
 
     @PreAuthorize("hasRole('ROLE_END_USER')")
-    @GetMapping(produces = ["text/event-stream"])
+    @GetMapping
     fun getAllMedicalInformationForUser(@PathVariable("id") id: String): Flux<MedicalInformation> {
         return medicalInformationService.findByUserId(id)
     }
 
     @PreAuthorize("hasRole('ROLE_RESEARCH')")
-    @GetMapping(path = ["/shared"], produces = ["text/event-stream"])
+    @GetMapping(path = ["/shared"])
     fun getAllSharedMedicalInformation(@PathVariable("id") id: String): Flux<AnonymizedUserInformation> {
         return medicalQueryService.findAllSharedInformationOfResearchFacility(id)
     }
