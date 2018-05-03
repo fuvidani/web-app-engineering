@@ -44,7 +44,7 @@ The following docker images are used:
     - hash: sha256:fe947a8e7aadcf97dc84060d7aa0fd33a7009cbaf11094090850cc096b863f2f
 - **rasakul/waecm-2018-group-09-bsp-2-frontend**
     - based on "node:9"
-    - hash: sha256:cc8a0b7a1a9eb6812d006047d2b942d0cf0e6ef664f9dafc010144f5462ad306
+    - hash: sha256:82fd452e2084d1ee90e976567ed6fe863a1458614d1b7eea513aadbde070e658
 - **swaggerapi/swagger-ui**
     - [Link](https://hub.docker.com/r/swaggerapi/swagger-ui/)
     - hash: sha256:3a96c9da0b2fcb7a813821a0203f4a15cfebaad7d7549763d7840b865fcc9855  
