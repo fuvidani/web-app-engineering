@@ -1,29 +1,108 @@
-# Web Application Engineering and Content Management 
-[![Build Status](https://travis-ci.com/fuvidani/web-app-engineering.svg?token=nWakM5wh7rnyXAfUiELD&branch=master)](https://travis-ci.com/fuvidani/web-app-engineering)  [![codecov](https://codecov.io/gh/fuvidani/web-app-engineering/branch/master/graph/badge.svg?token=TjVLRsAmuK)](https://codecov.io/gh/fuvidani/web-app-engineering)  [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Healthbook [![Build Status](https://travis-ci.com/fuvidani/web-app-engineering.svg?token=nWakM5wh7rnyXAfUiELD&branch=master)](https://travis-ci.com/fuvidani/web-app-engineering)  [![codecov](https://codecov.io/gh/fuvidani/web-app-engineering/branch/master/graph/badge.svg?token=TjVLRsAmuK)](https://codecov.io/gh/fuvidani/web-app-engineering)  [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Web Application Engineering in 2018 with cutting-edge technologies.
+Healthbook is a modern web application that allows users to upload their medical information and
+to give access to certain research facilities that are interested in the data of target groups. 
 
-## Structure
-The project consists of 3 main components which are all containerized using Docker.
+## Scenario
+The application guarantees confidentiality of uploaded and shared medical information of end users 
+by anonymizing them. Research facilities are able to create medical queries targeting different groups of 
+patients. Once such a query has been added, users who previously shared certain datasets and now match the
+given query are automatically notified. The end user then can decide which (anonymized) dataset gets shared with the 
+research facility for which a financial compensation will be received. 
 
-## Backend
-Spring Boot 2 application featuring non-blocking reactive 
-[WebFlux](https://docs.spring.io/spring/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html#web-reactive) 
-endpoints.
+## Features
+* Registration & Login (End user)
+* Overview of one's own medical datasets and ability to persist new ones (End user)
+* Share own medical dataset with specific research facility (End user)
+* Login (Research facility)
+* Overview of anonymized datasets (Research facility)
+* Issue a new medical query (Research facility)
 
-## Frontend
-React web-application that communicates with the backend.
+## Technology stack
+* [Angular 5](https://angular.io/) with Material Design for the frontend
+* [Spring Boot 2](http://projects.spring.io/spring-boot/) for the backend featuring non-blocking 
+reactive [WebFlux](https://docs.spring.io/spring/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html#web-reactive) 
+REST-API; written in Kotlin
+* [MongoDB](https://www.mongodb.com/) for the persistence layer because of its great [reactive support](https://spring.io/blog/2016/11/28/going-reactive-with-spring-data)
+* [Docker](https://www.docker.com/) and docker-compose for deployment
 
-## Database
-For this task, the database is also separated and put into a container. The idea behind this 
-approach is to be able to easily scale the backend if needed. Scaling the database (data-replication,
-eventual consistency) remains unconsidered for this small project.
+## Deployment
+Assuming you have working Docker on your machine, simply navigate in your console
+to the project root folder (`web-app-engineering`) and start the docker-compose task: 
+ ```shell
+ docker-compose up
+ ```
+Note: In order to avoid console output, you may use the ``-d`` (detach) flag.
 
-We use MongoDB because it is fairly easy to work with plus it has a reactive behaviour support (in
-contrast to JDBC for example) so that it integrates well with Spring Data and WebFlux. 
+The following docker images are used:
 
-## Running locally through IDE (for development purposes)
-In order to start the backend successfully, a local mongo db has to be started and configured appropriately.
+- **rasakul/waecm-2018-group-09-bsp-2-backend**
+    - based on "java:8-jre"
+    - hash: sha256:711965b75a5f9af6a0460d6af34c0203c9af4815d138e3683171b0ad09d7cdbd
+- **rasakul/waecm-2018-group-09-bsp-2-mongo**
+    - based on "mongo:3"
+    - hash: sha256:fe947a8e7aadcf97dc84060d7aa0fd33a7009cbaf11094090850cc096b863f2f
+- **rasakul/waecm-2018-group-09-bsp-2-frontend**
+    - based on "node:9"
+    - hash: sha256:cc8a0b7a1a9eb6812d006047d2b942d0cf0e6ef664f9dafc010144f5462ad306
+- **swaggerapi/swagger-ui**
+    - [Link](https://hub.docker.com/r/swaggerapi/swagger-ui/)
+    - hash: sha256:3a96c9da0b2fcb7a813821a0203f4a15cfebaad7d7549763d7840b865fcc9855  
+
+## Usage
+After the application has been successfully deployed, the frontend can be accessed under
+https://localhost:8069 . Your browser might prompt a warning stating that the connection cannot
+be trusted. Simply whitelist the URL and frontend will load. 
+
+There are no end users registered, however you can log in with one
+of the following research facility accounts as a research facility:
+* **Facility 1**
+    * E-mail: `research@who.com`
+    * Password: `password`
+* **Facility 2**    
+    * E-mail: `research@bayer.com`
+    * Password: `password`  
+
+#### Home
+![](images/Home.png)
+
+#### Registration
+![](images/register.png)
+
+#### New health data (end user)
+![](images/new_health_data.png)
+
+#### Share health data (end user)
+![](images/share_health_data.png)
+
+#### Create medical query (research facility)
+![](images/create_medical_query.png)
+## API documentation
+The REST API of the backend is fully documented and can be accessed through http://localhost:8888. 
+The Swagger UI is hosted in a separate container, which queries the backend's documentation endpoint.
+
+**Important: Once you open Swagger UI it may prompt an error (see image below). This is due to the fact that
+the HTTPS certificate of the backend cannot be verified (since it is self-signed). The solution
+is to whitelist the https://localhost:8443 URL (address of the backend).**
+Solution on Firefox: open Settings -\> Privacy & Security -\> Certificates -\> Show certificates
+-\> Server (Tab) -\> Add exception. After whitelisting the backend's address the Swagger UI
+should be able to load the API documentation without any problems.
+
+![](images/HTTPS_error.png)
+
+## Security
+#### Auth Token
+The backend application uses JWT token based authorization to secure the different endpoints. 
+Authentication is carried out via basic username (= e-mail) and password input and the backend
+replies with a JWT token valid until the next day. The role of the user (end user or research facility)
+is encoded into the token so that the backend can also use it for role-based access control.
+
+#### HTTPS
+The backend's and the frontend's servers are secured via HTTPS. **Note however, that this is a proof of concept, therefore
+self-signed certificates are used.** This is not encouraged in production.
+
+## Development
+This section is only for development purposes. In order to start the backend successfully, a local mongo db has to be started and configured appropriately.
 
 The first step is to [install MongoDB](https://docs.mongodb.com/manual/administration/install-community/) on your preferred OS. 
 After that, start the database:
@@ -39,9 +118,25 @@ In the shell, switch to our database:
   use waecmDatabase
   ```
 This will create it if it doesn't exist yet and whenever you use ``db`` in the mongo shell this database
-will be referenced. We need to put an initial counter into the database:
+will be referenced. Now simply insert the two sample research facility users:
   ```shell
-  db.counters.save({"_id": "counter", "value": 0})
+  db.abstract_user.save(
+      {
+          "_id": ObjectId("5ac9e3e48a6d874b3da4b3f9"),
+          "email": "research@who.com",
+          "password": "$2a$15$8lEAUlhZagj4Egwt87Vq5ect2LBCwIzwHVFgFTugzKLS/jvebdiGu",
+          "_class": "at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility"
+      }
+  );
+  
+  db.abstract_user.save(
+      {
+          "_id": ObjectId("5ac9e3e48a6d874b3da4b3ff"),
+          "email": "research@bayer.com",
+          "password": "$2a$15$8lEAUlhZagj4Egwt87Vq5ect2LBCwIzwHVFgFTugzKLS/jvebdiGu",
+          "_class": "at.ac.tuwien.waecm.ss18.group09.dto.ResearchFacility"
+      }
+  );
   ```
 The last thing we need to do is add authentication to this database. Just like in production, we want to secure
 access to the database by protecting it with a username and password. In order to achieve this, we have to 
@@ -59,77 +154,11 @@ instance, however this time with authorization enabled:
 After this, the Spring Boot app should be able to connect to your local mongo db through
 `localhost:27017`. 
 
-**Development main endpoint: http://localhost:8080**
- 
-## Running locally through Docker
-Running the project using Docker saves you the trouble starting and setting up a local 
-mongo db. 
-Assuming you have working Docker on your machine, simply navigate in your console
-to the project root folder (`web-app-engineering`) and pull the images from dockerhub: 
- ```shell
- docker-compose pull
- ```
-In order to start the containers, use:
- ```shell
- docker-compose up -d
- ```
-
-**Note**: If you want to execute `docker-compose build` so that the images get built locally
-(instead of pulling them from registry), the jar file for the backend has to exist in `backend/build/libs/`.
-For this, simply execute `gradlew build` (or `./gradlew build`) and the jar will be built.
-
-For endpoints see next section.
-
 ## Endpoints
-
-- **Frontend**: http://localhost:8069
+Summary of the most important endpoints:
+- **Frontend**: https://localhost:8069
+- **Backend**: https://localhost:8443
 - **Swagger-UI**: http://localhost:8888
-- **Backend**: http://localhost:8182
-
-### Docker Images
-
-The following docker images are used:
-
-- rasakul/waecm-2018-group-09-bsp-1-backend
-    - based on "java:8-jre"
-    - hash: sha256:0b70798631d9df7b3281beb96d283c28db93634d5854cd8e1e82b92d1d42facc
-- rasakul/waecm-2018-group-09-bsp-1-mongo
-    - based on "mongo:3"
-    - hash: sha256:769a42386c7ed07c2d135265d179dcb2f5f5c9dc7a5c8dab6af0498239325cb8
-- rasakul/waecm-2018-group-09-bsp-1-frontend
-    - based on "node:9"
-    - hash: sha256:f76a107eafd89892627b7b7cc490f2c8e2664a3b8259d04a1a847904df642b1c
-- swaggerapi/swagger-ui
-    - [Link](https://hub.docker.com/r/swaggerapi/swagger-ui/)
-    - hash: 3a96c9da0b2fcb7a813821a0203f4a15cfebaad7d7549763d7840b865fcc9855    
-
-## Authentication and Authorization
-At this point, the backend exposes the four following endpoints:
-
-- `POST http://localhost:8182/auth`
-- `GET http://localhost:8182/counter` (gets counter)
-- `POST http://localhost:8182/counter` (increments counter)
-- `POST http://localhost:8182/reset` (resets the counter)
-
-The last three endpoints are protected by a `Bearer Token` authorization using [JWT](https://jwt.io/).
-This means that first the user has to authenticate themselves through the `/auth` endpoint. 
-The endpoint expects a username and a password and returns a token if these are valid.
-Example using `curl`:
- ```shell
- curl -H "Content-Type: application/json" -X POST -d '{"username":"user","password":"password"}' http://localhost:8182/auth
- ```
-Upon successful authentication, the result might look like this:
- ```shell
- {"token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE1MjE0ODExNTksImlhdCI6MTUyMTM5NDc1OX0.eDPMllIQoatJq657WEd6GMv-8I0UzsPY3CbRVVBJiOk"}
- ```
-The obtained token has to be provided on each subsequent invocation using the [Bearer schema](https://tools.ietf.org/html/rfc6750),
-like so:
- ```shell
- curl http://localhost:8182/counter -v -H "Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwicm9sZXMiOiJST0xFX1VTRVIiLCJleHAiOjE1MjE0ODExNTksImlhdCI6MTUyMTM5NDc1OX0.eDPMllIQoatJq657WEd6GMv-8I0UzsPY3CbRVVBJiOk"
- ```
-Should you forget to provide a valid token, the endpoints will return `401 Unauthorized`.
-
-**Important: In case of the non docker-based deployment, the API uses the port 8080 instead of 8182!!**
 
 ## Troubleshooting
 Contact one of the contributors or open an issue.

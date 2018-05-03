@@ -2,8 +2,7 @@ version: '3.1'
 
 services:
   backend:
-    build: ./backend
-    #image: rasakul/waecm-2018-group-09-bsp-1-backend
+    image: rasakul/waecm-2018-group-09-bsp-2-backend
     restart: always
     container_name: waecm-backend
     ports:
@@ -12,8 +11,7 @@ services:
       - mongo
 
   mongo:
-    build: ./database
-    #image:  rasakul/waecm-2018-group-09-bsp-1-mongo
+    image:  rasakul/waecm-2018-group-09-bsp-2-mongo
     container_name: waecm-mongo-db
     ports:
       - 27017:27017
@@ -35,8 +33,7 @@ services:
     restart: always
 
   frontend:
-    build: ./frontend
-  #  image:  rasakul/waecm-2018-group-09-bsp-1-frontend
+    image:  rasakul/waecm-2018-group-09-bsp-2-frontend
     restart: always
     container_name: waecm-frontend
     ports:
