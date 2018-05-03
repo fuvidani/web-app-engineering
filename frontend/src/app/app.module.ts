@@ -73,7 +73,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       config: {
         tokenGetter: tokenGetter,
         whitelistedDomains: [environment.domain],
-        blacklistedRoutes: ['localhost:8080/auth', 'localhost:8080/user/register']
+        blacklistedRoutes: [environment.domain + '/auth', environment.domain + '/user/register']
       }
     }),
     AppRoutingModule
