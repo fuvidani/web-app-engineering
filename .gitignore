@@ -18,7 +18,7 @@ syntax: glob
 logs/*
 .log
 archive/*
-images/*
+#images/*
 */out/*
 
 # Created by https://www.gitignore.io/api/windows,java,intellij,mercurial,maven,gradle,netbeans,eclipse
