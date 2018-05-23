@@ -8,6 +8,11 @@ import java.util.*
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
+import org.bouncycastle.jce.ECNamedCurveTable
+import org.bouncycastle.jce.provider.BouncyCastleProvider
+import org.bouncycastle.jce.spec.ECPublicKeySpec
+import java.security.KeyFactory
+import java.security.PublicKey
 
 /**
  * <h4>About this class</h4>
@@ -18,6 +23,35 @@ import javax.validation.constraints.NotNull
  * @version 1.0.0
  * @since 1.0.0
  */
+
+data class NotificationSubscription(
+    var endpoint: String,
+    var expirationTime: String?,
+    var keys: Keys
+) {
+    fun getAuthAsBytes(): ByteArray {
+        return Base64.getDecoder().decode(keys.auth)
+    }
+
+    fun getKeyAsBytes(): ByteArray {
+        return Base64.getDecoder().decode("BG2Mzbtauw9N4g3nw_juT82SO9DjJS83XEZfn3jFriqwLVfrXY4U7t1mvkq0pz4mnd-FHishTMzdIHjVng68xD4")
+    }
+
+    fun getUserPublicKey(): PublicKey {
+        val kf = KeyFactory.getInstance("ECDH", BouncyCastleProvider.PROVIDER_NAME)
+        val ecSpec = ECNamedCurveTable.getParameterSpec("secp256r1")
+        val point = ecSpec.getCurve().decodePoint(getKeyAsBytes())
+        val pubSpec = ECPublicKeySpec(point, ecSpec)
+
+        return kf.generatePublic(pubSpec)
+    }
+}
+
+data class Keys(
+    var p256dh: String,
+    var auth: String
+)
+
 data class AuthRequest(val email: String, val password: String)
 
 data class AuthResponse(val token: String)

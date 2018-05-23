@@ -1,7 +1,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
-
+import { ServiceWorkerModule } from '@angular/service-worker';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from './material.module';
@@ -29,6 +29,8 @@ import {MedicalqueryComponent} from './medicalquery/medicalquery.component';
 import {MedicalqueryService} from './service/medicalquery.service';
 import {SharedHealthdataComponent} from './medicalquery/shared-healthdata/shared-healthdata.component';
 import {environment} from '../environments/environment';
+import { NotificationService } from './service/notification.service';
+
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -51,6 +53,9 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   imports: [
     BrowserModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', {
+      enabled: true
+    }),
     BrowserAnimationsModule,
     MaterialModule,
     FormsModule,
@@ -85,7 +90,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MedicalqueryService,
     AuthGuard,
     UserGuard,
-    ResearchfacilityGuard
+    ResearchfacilityGuard,
+    NotificationService
   ],
   bootstrap: [AppComponent]
 })
