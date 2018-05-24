@@ -30,6 +30,8 @@ import {MedicalqueryService} from './service/medicalquery.service';
 import {SharedHealthdataComponent} from './medicalquery/shared-healthdata/shared-healthdata.component';
 import {environment} from '../environments/environment';
 import { NotificationService } from './service/notification.service';
+import {WindowRef} from './windowref';
+import { BrowsersupportService } from './service/browsersupport.service';
 
 
 export function tokenGetter() {
@@ -91,7 +93,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     AuthGuard,
     UserGuard,
     ResearchfacilityGuard,
-    NotificationService
+    NotificationService,
+    WindowRef,
+    BrowsersupportService,
   ],
   bootstrap: [AppComponent]
 })
