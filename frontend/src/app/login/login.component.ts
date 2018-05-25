@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {Authentication} from '../model/authentication';
 import {AuthService} from '../service/auth.service';
 import {AccessToken} from '../model/accesstoken';
@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
 
   authentication: Authentication;
   error: boolean = false;
-
+  authorizing = false;
   loginForm: FormGroup;
   email: FormControl;
   password: FormControl;
@@ -43,7 +43,9 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     if (this.loginForm.valid) {
+
       this.authentication = this.loginForm.value;
+      this.handleAuthorizing();
       this.authService.authenticate(this.authentication).subscribe(
         accessToken => {
           this.handleSuccessFullAuthentication(accessToken);
@@ -72,10 +74,34 @@ export class LoginComponent implements OnInit {
   handleFailedAuthentication(errorResponse: HttpErrorResponse) {
     console.error(errorResponse);
     this.error = true;
+    this.handleAuthorizationFinished();
   }
 
   handleFinishedAuthentication() {
     console.log('Successfully logged in.');
+    this.handleAuthorizationFinished();
+  }
+
+  private handleAuthorizing() {
+    this.enableDisableField('email', false);
+    this.enableDisableField('password', false);
+    this.authorizing = true;
+    this.error=false;
+  }
+
+  private handleAuthorizationFinished(){
+    this.enableDisableField('email', true);
+    this.enableDisableField('password', true);
+    this.authorizing = false;
+  }
+
+
+  private enableDisableField(fieldName: string, enabled) {
+    if(enabled){
+      this.loginForm.get(fieldName).enable()
+    }else{
+      this.loginForm.get(fieldName).disable()
+    }
   }
 
 }

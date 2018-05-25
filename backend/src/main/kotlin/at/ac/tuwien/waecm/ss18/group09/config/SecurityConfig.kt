@@ -56,7 +56,7 @@ class SecurityConfig {
         val jwtReactiveAuthenticationManager = JwtReactiveAuthenticationManager(jwtService())
         val jwtAuthWebFilter = JwtAuthWebFilter(jwtReactiveAuthenticationManager)
 
-        http.authorizeExchange().pathMatchers("/auth", "/user/register").permitAll()
+        http.authorizeExchange().pathMatchers("/auth", "/user/register", "/logoutUser").permitAll()
             .and()
             .authorizeExchange()
             .pathMatchers("/swagger")

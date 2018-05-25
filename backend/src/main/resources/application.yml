@@ -24,3 +24,7 @@ server:
     key-alias: waecm
     key-store-type: PKCS12
     key-store-password: password
+webPush:
+  publicVAPID: BNkxKA_p1WbqxxWIfHu1QU58MUjdY35V5h2XjgdiLykyQ2y8xujAYPd7855BiCwcwvjeQ1CYg4AUQIvXLy-5FWA
+  privateVAPID: no_key_here
+  subject: subject

@@ -1,21 +1,25 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {HealthdataService} from '../service/healthdata.service';
 import {HealthData} from '../model/healthdata';
 import {AuthService} from '../service/auth.service';
 import {Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ENTER} from '@angular/cdk/keycodes';
-import {MatChipInputEvent, MatTableDataSource} from '@angular/material';
-import {HealthDataShare} from '../model/healthdatashare';
-import {SelectionModel} from '@angular/cdk/collections';
+import {MatChipInputEvent} from '@angular/material';
 import {HealthDataQuery} from '../model/healthdataquery';
+import {SwPush} from "@angular/service-worker";
+import {NotificationService} from "../service/notification.service";
 
 @Component({
   selector: 'app-healthdata',
   templateUrl: './healthdata.component.html',
   styleUrls: ['./healthdata.component.css']
 })
-export class HealthdataComponent implements OnInit {
+export class HealthdataComponent implements OnInit,AfterViewInit {
+
+  readonly VAPID_PUBLIC_KEY = "BNkxKA_p1WbqxxWIfHu1QU58MUjdY35V5h2XjgdiLykyQ2y8xujAYPd7855BiCwcwvjeQ1CYg4AUQIvXLy-5FWA";
+
+
   healthData = [];
   queries = [];
   email = '';
@@ -37,8 +41,11 @@ export class HealthdataComponent implements OnInit {
   fileToUpload: File = null;
 
 
-  constructor(private healthdataService: HealthdataService, private authService: AuthService, private router: Router) {
+
+  constructor(private healthdataService: HealthdataService, private authService: AuthService, private router: Router,private swPush: SwPush, private notificationService: NotificationService) {
+
   }
+
 
   ngOnInit() {
     this.healthdataService.fetchHeathData().subscribe(response => {
@@ -85,6 +92,18 @@ export class HealthdataComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    this.addPushSubscription()
+  }
+
+  private addPushSubscription(){
+    this.swPush.requestSubscription({
+      serverPublicKey: this.VAPID_PUBLIC_KEY
+    })
+      .then(sub => this.notificationService.addPushSubscriber(sub).subscribe())
+      .catch(err => console.error("Could not subscribe to notifications", err));
+  }
+
   addHealthData() {
     const tagArray = [];
     this.tags.forEach(tag => tagArray.push(tag.name));
@@ -99,8 +118,7 @@ export class HealthdataComponent implements OnInit {
   }
 
   logOut() {
-    this.authService.clearAccessToken();
-    const promise = this.router.navigate(['/']);
+    this.authService.handleLogout(this.router)
   }
 
   navigateToQueries() {

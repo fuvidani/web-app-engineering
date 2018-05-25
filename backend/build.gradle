@@ -51,6 +51,7 @@ dependencies {
     compile group: 'org.glassfish', name: 'javax.el', version: '3.0.0'
     compile group: 'javax.el', name: 'javax.el-api', version: '3.0.0'
     compile group: 'io.projectreactor', name: 'reactor-test', version: '3.1.6.RELEASE'
+    compile group: 'nl.martijndwars', name: 'web-push', version: '3.1.0'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile group: 'org.springframework.security', name: 'spring-security-test', version: '5.0.4.RELEASE'
     testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.0.3'

@@ -23,7 +23,7 @@ export class RegisterComponent implements OnInit {
     new Gender('2', 'register.gender-female', 'FEMALE')
   ];
   error: boolean = false;
-
+  registering = false;
   registerForm: FormGroup;
   email: FormControl;
   password: FormControl;
@@ -61,7 +61,7 @@ export class RegisterComponent implements OnInit {
     );
     this.name = new FormControl(
       '',
-      [Validators.required, Validators.minLength(4)]
+      [Validators.required, Validators.minLength(1)]
     );
     this.gender = new FormControl(
       '',
@@ -95,6 +95,7 @@ export class RegisterComponent implements OnInit {
 
   onSubmit() {
     if (this.registerForm.valid) {
+      this.handleRegistering();
       let user: User = this.registerForm.value;
       user.birthday = this.datePipe.transform(user.birthday, 'dd-MM-yyyy');
       this.http.post<User>(this.baseUrl + '/user/register', user).subscribe(
@@ -119,10 +120,39 @@ export class RegisterComponent implements OnInit {
   handleFailedRegistration(errorResponse: HttpErrorResponse) {
     console.error(errorResponse);
     this.error = true;
+    this.handleRegistrationFinished();
   }
 
   handleFinishedRegistration() {
     console.log('Finished user registration');
+    this.handleRegistrationFinished();
   }
 
+  private handleRegistering() {
+    this.enableDisableField('email', false);
+    this.enableDisableField('password', false);
+    this.enableDisableField('name', false);
+    this.enableDisableField('gender', false);
+    this.enableDisableField('birthday', false);
+    this.registering = true;
+    this.error=false;
+  }
+
+  private handleRegistrationFinished(){
+    this.enableDisableField('email', true);
+    this.enableDisableField('password', true);
+    this.enableDisableField('name', true);
+    this.enableDisableField('gender', true);
+    this.enableDisableField('birthday', true);
+    this.registering = false;
+  }
+
+
+  private enableDisableField(fieldName: string, enabled) {
+    if(enabled){
+      this.registerForm.get(fieldName).enable()
+    }else{
+      this.registerForm.get(fieldName).disable()
+    }
+  }
 }

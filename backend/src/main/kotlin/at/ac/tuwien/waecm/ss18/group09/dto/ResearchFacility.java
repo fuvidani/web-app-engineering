@@ -37,4 +37,9 @@ public class ResearchFacility extends AbstractUser {
   public boolean isEnabled() {
     return true;
   }
+
+  @Override
+  public int compareTo(@org.jetbrains.annotations.NotNull final AbstractUser abstractUser) {
+    return this.getUsername().compareTo(abstractUser.getUsername());
+  }
 }

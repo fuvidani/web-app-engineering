@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull
  */
 data class AuthRequest(val email: String, val password: String)
 
-data class AuthResponse(val token: String)
+data class AuthResponse(val token: String, val userId: String)
 
 enum class Gender {
     MALE, FEMALE
@@ -139,3 +139,55 @@ data class AnonymizedUserInformation(
     var birthday: LocalDate?,
     var gender: Gender?
 )
+
+@Document(collection = "notificationSubscriptions")
+data class NotificationSubscriptionRequest(
+    @Id
+    var email: String,
+    var subscription: NotificationSubscription
+)
+
+data class NotificationSubscription(
+    var endpoint: String,
+    var expirationTime: String?,
+    var keys: Keys
+)
+
+data class Keys(
+    var p256dh: String,
+    var auth: String
+)
+
+data class NotificationPayload(
+    var notification: Payload
+)
+
+data class Payload(
+    var title: String,
+    var body: String,
+    var icon: String = "",
+    var vibrate: Array<Int> = emptyArray(),
+    var data: Map<String, String> = emptyMap()
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Payload
+
+        if (title != other.title) return false
+        if (body != other.body) return false
+        if (icon != other.icon) return false
+        if (!Arrays.equals(vibrate, other.vibrate)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = title.hashCode()
+        result = 31 * result + body.hashCode()
+        result = 31 * result + icon.hashCode()
+        result = 31 * result + Arrays.hashCode(vibrate)
+        return result
+    }
+}

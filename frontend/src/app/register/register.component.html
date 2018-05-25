@@ -89,11 +89,15 @@
               </td>
             </tr>
           </table>
-          <button mat-raised-button color="primary" type="submit">
+          <button mat-raised-button color="primary" type="submit" [disabled]="registering">
             {{ "register.submit-button-text" | translate }}
           </button>
           <div *ngIf="error" class="error">
             {{ "register.register-error" | translate }}
+          </div>
+          <div *ngIf="registering">
+            <p>Registering</p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
           </div>
         </form>
       </mat-card-content>

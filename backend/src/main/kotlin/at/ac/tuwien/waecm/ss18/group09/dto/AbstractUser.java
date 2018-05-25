@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Document(collection = "abstract_user")
-public abstract class AbstractUser implements UserDetails {
+public abstract class AbstractUser implements UserDetails, Comparable<AbstractUser> {
 
   @Id private String id;
 

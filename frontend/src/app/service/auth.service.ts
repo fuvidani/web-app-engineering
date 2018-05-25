@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {Authentication} from '../model/authentication';
 import {AccessToken} from '../model/accesstoken';
@@ -76,6 +76,13 @@ export class AuthService {
   authenticate(auth: Authentication) {
     console.log('Trying to authenticate(' + auth.email + ').');
     return this.http.post<AccessToken>(this.baseUrl + '/auth', auth);
+  }
+
+  handleLogout(router: any) {
+    console.log("logging out at backend");
+    this.http.post(this.baseUrl + '/logoutUser', this.getPrincipal().email).subscribe();
+    this.clearAccessToken();
+    router.navigate(['/']);
   }
 
 }

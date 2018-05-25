@@ -5,6 +5,7 @@ import at.ac.tuwien.waecm.ss18.group09.auth.IJwtService
 import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
 import at.ac.tuwien.waecm.ss18.group09.dto.AuthRequest
 import at.ac.tuwien.waecm.ss18.group09.dto.AuthResponse
+import at.ac.tuwien.waecm.ss18.group09.service.ISecurityService
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -25,7 +26,8 @@ import reactor.core.publisher.Mono
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
 class AuthController(
     private val jwtService: IJwtService,
-    private val userDetailsRepositoryReactiveAuthenticationManager: ReactiveAuthenticationManager
+    private val userDetailsRepositoryReactiveAuthenticationManager: ReactiveAuthenticationManager,
+    private val securityService: ISecurityService
 ) {
     @CrossOrigin
     @PostMapping("/auth")
@@ -33,7 +35,10 @@ class AuthController(
         val authenticationToken = UsernamePasswordAuthenticationToken(authRequest.email, authRequest.password)
         val auth = userDetailsRepositoryReactiveAuthenticationManager.authenticate(authenticationToken)
         return auth
-            .map { authentication -> authentication.principal as AbstractUser }
-            .map { user -> AuthResponse(jwtService.generateJwt(user)) }
+                .map { authentication -> authentication.principal as AbstractUser }
+                .map { user -> securityService.loginUser(user) }
+                .map { user ->
+                    AuthResponse(jwtService.generateJwt(user), user.id)
+                }
     }
 }
