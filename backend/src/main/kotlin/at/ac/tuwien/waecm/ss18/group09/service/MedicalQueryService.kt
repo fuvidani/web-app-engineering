@@ -40,13 +40,15 @@ class MedicalQueryService(
     private val sharingPermissionRepository: SharingPermissionRepository,
     private val medicalInformationService: IMedicalInformationService,
     private val userService: UserService,
-    private val mongoTemplate: ReactiveMongoTemplate
+    private val mongoTemplate: ReactiveMongoTemplate,
+    private val notificationService: INotificationService
 ) : IMedicalQueryService {
 
     @Throws(ValidationException::class)
     override fun create(medicalQuery: MedicalQuery): Mono<MedicalQuery> {
         validate(medicalQuery)
         return queryRepository.save(medicalQuery)
+                .map { notificationService.informPossibleUsers(it, this) }
     }
 
     override fun findByResearchFacilityId(id: String): Flux<MedicalQuery> {
@@ -68,10 +70,6 @@ class MedicalQueryService(
                 val mongoQuery = Query()
                 mongoQuery.addCriteria(
                     Criteria().andOperator(
-                        Criteria().orOperator(
-                            Criteria.where("gender").`is`(null),
-                            Criteria.where("gender").`is`(tuple.t2.gender)
-                        ),
                         Criteria().orOperator(
                             Criteria.where("gender").`is`(null),
                             Criteria.where("gender").`is`(tuple.t2.gender)

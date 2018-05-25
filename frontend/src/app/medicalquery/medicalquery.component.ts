@@ -92,8 +92,7 @@ export class MedicalqueryComponent implements OnInit {
   }
 
   logOut() {
-    this.authService.clearAccessToken();
-    const promise = this.router.navigate(['/']);
+    this.authService.handleLogout(this.router)
   }
 
   navigateToSharedHealthdata(qid: string) {

@@ -22,8 +22,8 @@
           <table class="full-width">
             <tr>
               <td>
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="E-mail address" formControlName="email" required>
+                <mat-form-field class="full-width" >
+                  <input matInput placeholder="E-mail address" formControlName="email" required />
                 </mat-form-field>
               </td>
             </tr>
@@ -35,9 +35,13 @@
               </td>
             </tr>
           </table>
-          <button mat-raised-button color="primary" type="submit">Login</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="authorizing">Login</button>
           <div *ngIf="error" class="error">
             Wrong username or password.
+          </div>
+          <div *ngIf="authorizing">
+            <p>Logging in</p>
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
           </div>
         </form>
       </mat-card-content>

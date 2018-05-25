@@ -24,14 +24,12 @@ import {HealthdataService} from './service/healthdata.service';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {QueriesComponent} from './healthdata/queries/queries.component';
 import {MatChipsModule} from '@angular/material/chips';
-import {MatTableModule, MatInputModule, MatCommonModule, MatCheckboxModule} from '@angular/material';
+import {MatTableModule, MatInputModule, MatCommonModule, MatCheckboxModule, MatProgressBarModule} from '@angular/material';
 import {MedicalqueryComponent} from './medicalquery/medicalquery.component';
 import {MedicalqueryService} from './service/medicalquery.service';
 import {SharedHealthdataComponent} from './medicalquery/shared-healthdata/shared-healthdata.component';
 import {environment} from '../environments/environment';
 import { NotificationService } from './service/notification.service';
-import {WindowRef} from './windowref';
-import { BrowsersupportService } from './service/browsersupport.service';
 
 
 export function tokenGetter() {
@@ -68,6 +66,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatInputModule,
     MatCommonModule,
     MatCheckboxModule,
+    MatProgressBarModule,
     MatTableModule,
     TranslateModule.forRoot({
       loader: {
@@ -94,8 +93,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     UserGuard,
     ResearchfacilityGuard,
     NotificationService,
-    WindowRef,
-    BrowsersupportService,
   ],
   bootstrap: [AppComponent]
 })

@@ -17,7 +17,7 @@ import {NotificationService} from "../service/notification.service";
 })
 export class HealthdataComponent implements OnInit,AfterViewInit {
 
-  readonly VAPID_PUBLIC_KEY = "no-for-display";
+  readonly VAPID_PUBLIC_KEY = "BNkxKA_p1WbqxxWIfHu1QU58MUjdY35V5h2XjgdiLykyQ2y8xujAYPd7855BiCwcwvjeQ1CYg4AUQIvXLy-5FWA";
 
 
   healthData = [];
@@ -41,8 +41,11 @@ export class HealthdataComponent implements OnInit,AfterViewInit {
   fileToUpload: File = null;
 
 
+
   constructor(private healthdataService: HealthdataService, private authService: AuthService, private router: Router,private swPush: SwPush, private notificationService: NotificationService) {
+
   }
+
 
   ngOnInit() {
     this.healthdataService.fetchHeathData().subscribe(response => {
@@ -93,10 +96,6 @@ export class HealthdataComponent implements OnInit,AfterViewInit {
     this.addPushSubscription()
   }
 
-  subscripeToPush(){
-    this.addPushSubscription()
-  }
-
   private addPushSubscription(){
     this.swPush.requestSubscription({
       serverPublicKey: this.VAPID_PUBLIC_KEY
@@ -119,8 +118,7 @@ export class HealthdataComponent implements OnInit,AfterViewInit {
   }
 
   logOut() {
-    this.authService.clearAccessToken();
-    const promise = this.router.navigate(['/']);
+    this.authService.handleLogout(this.router)
   }
 
   navigateToQueries() {

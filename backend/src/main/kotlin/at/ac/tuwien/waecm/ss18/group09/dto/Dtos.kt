@@ -8,11 +8,6 @@ import java.util.*
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
-import org.bouncycastle.jce.ECNamedCurveTable
-import org.bouncycastle.jce.provider.BouncyCastleProvider
-import org.bouncycastle.jce.spec.ECPublicKeySpec
-import java.security.KeyFactory
-import java.security.PublicKey
 
 /**
  * <h4>About this class</h4>
@@ -23,38 +18,9 @@ import java.security.PublicKey
  * @version 1.0.0
  * @since 1.0.0
  */
-
-data class NotificationSubscription(
-    var endpoint: String,
-    var expirationTime: String?,
-    var keys: Keys
-) {
-    fun getAuthAsBytes(): ByteArray {
-        return Base64.getDecoder().decode(keys.auth)
-    }
-
-    fun getKeyAsBytes(): ByteArray {
-        return Base64.getDecoder().decode("BG2Mzbtauw9N4g3nw_juT82SO9DjJS83XEZfn3jFriqwLVfrXY4U7t1mvkq0pz4mnd-FHishTMzdIHjVng68xD4")
-    }
-
-    fun getUserPublicKey(): PublicKey {
-        val kf = KeyFactory.getInstance("ECDH", BouncyCastleProvider.PROVIDER_NAME)
-        val ecSpec = ECNamedCurveTable.getParameterSpec("secp256r1")
-        val point = ecSpec.getCurve().decodePoint(getKeyAsBytes())
-        val pubSpec = ECPublicKeySpec(point, ecSpec)
-
-        return kf.generatePublic(pubSpec)
-    }
-}
-
-data class Keys(
-    var p256dh: String,
-    var auth: String
-)
-
 data class AuthRequest(val email: String, val password: String)
 
-data class AuthResponse(val token: String)
+data class AuthResponse(val token: String, val userId: String)
 
 enum class Gender {
     MALE, FEMALE
@@ -173,3 +139,55 @@ data class AnonymizedUserInformation(
     var birthday: LocalDate?,
     var gender: Gender?
 )
+
+@Document(collection = "notificationSubscriptions")
+data class NotificationSubscriptionRequest(
+    @Id
+    var email: String,
+    var subscription: NotificationSubscription
+)
+
+data class NotificationSubscription(
+    var endpoint: String,
+    var expirationTime: String?,
+    var keys: Keys
+)
+
+data class Keys(
+    var p256dh: String,
+    var auth: String
+)
+
+data class NotificationPayload(
+    var notification: Payload
+)
+
+data class Payload(
+    var title: String,
+    var body: String,
+    var icon: String = "",
+    var vibrate: Array<Int> = emptyArray(),
+    var data: Map<String, String> = emptyMap()
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Payload
+
+        if (title != other.title) return false
+        if (body != other.body) return false
+        if (icon != other.icon) return false
+        if (!Arrays.equals(vibrate, other.vibrate)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = title.hashCode()
+        result = 31 * result + body.hashCode()
+        result = 31 * result + icon.hashCode()
+        result = 31 * result + Arrays.hashCode(vibrate)
+        return result
+    }
+}

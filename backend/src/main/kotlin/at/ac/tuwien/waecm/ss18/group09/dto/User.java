@@ -99,4 +99,9 @@ public class User extends AbstractUser {
     String rolesStr = "ROLE_END_USER";
     return AuthorityUtils.commaSeparatedStringToAuthorityList(rolesStr);
   }
+
+  @Override
+  public int compareTo(@org.jetbrains.annotations.NotNull final AbstractUser abstractUser) {
+    return this.getUsername().compareTo(abstractUser.getUsername());
+  }
 }
