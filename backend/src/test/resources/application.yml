@@ -10,3 +10,7 @@ spring:
     name: Web Application Engineering Backend
   profiles:
     active: test
+webPush:
+  publicVAPID: some_public_key
+  privateVAPID: no_key_here
+  subject: test_subject
