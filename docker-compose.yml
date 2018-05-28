@@ -35,7 +35,8 @@ services:
     restart: always
 
   frontend:
-    image:  rasakul/waecm-2018-group-09-bsp-2-frontend
+#    image:  rasakul/waecm-2018-group-09-bsp-2-frontend
+    build: ./frontend
     restart: always
     container_name: waecm-frontend
     ports:
