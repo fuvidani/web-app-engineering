@@ -58,7 +58,7 @@ class MedicalQueryServiceTest : AbstractTest() {
     }
 
     @Test
-    fun findMatchingQueries_shouldReturn() {
+    fun findMatchingQueriesWithoutShared_shouldReturn() {
         val user = testDataProvider.getDummyUser()
         userService.create(user).block()
 
@@ -69,7 +69,40 @@ class MedicalQueryServiceTest : AbstractTest() {
         val medicalQuery = getMedicalQueryWithResearchReference()
         medicalQueryService.create(medicalQuery).block()
 
-        val list = medicalQueryService.findMatchingQueries(userId = user.id)
+        createPermission(info.id, medicalQuery.id)
+
+        val list = medicalQueryService.findMatchingQueries(user.id, false)
+
+        val relevantQueryData = RelevantQueryData(
+            medicalQuery.id!!,
+            medicalQuery.name,
+            medicalQuery.description,
+            testDataProvider.getDummyResearcher().username,
+            medicalQuery.financialOffering,
+            emptyList()
+        )
+
+        StepVerifier.create(list)
+            .expectNext(relevantQueryData)
+            .expectComplete()
+            .verify(Duration.ofSeconds(10))
+    }
+
+    @Test
+    fun findMatchingQueriesIncludingShared_shouldReturn() {
+        val user = testDataProvider.getDummyUser()
+        userService.create(user).block()
+
+        val info = testDataProvider.getValidMedicalInformation()
+        info.userId = user.id
+        medicalInformationService.create(info).block()
+
+        val medicalQuery = getMedicalQueryWithResearchReference()
+        medicalQueryService.create(medicalQuery).block()
+
+        createPermission(info.id, medicalQuery.id)
+
+        val list = medicalQueryService.findMatchingQueries(user.id, true)
 
         val relevantQueryData = RelevantQueryData(
             medicalQuery.id!!,

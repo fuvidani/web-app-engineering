@@ -4,10 +4,12 @@ import at.ac.tuwien.waecm.ss18.group09.AbstractTest
 import at.ac.tuwien.waecm.ss18.group09.TestDataProvider
 import at.ac.tuwien.waecm.ss18.group09.dto.AbstractUser
 import at.ac.tuwien.waecm.ss18.group09.dto.MedicalQuery
+import at.ac.tuwien.waecm.ss18.group09.dto.RelevantQueryData
 import at.ac.tuwien.waecm.ss18.group09.dto.SharingPermission
 import at.ac.tuwien.waecm.ss18.group09.service.IMedicalInformationService
 import at.ac.tuwien.waecm.ss18.group09.service.IMedicalQueryService
 import at.ac.tuwien.waecm.ss18.group09.service.IUserService
+import com.google.gson.Gson
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,6 +41,8 @@ internal class MedicalQueryControllerTest : AbstractTest() {
 
     @Autowired
     lateinit var medicalInformationService: IMedicalInformationService
+
+    var gson: Gson = Gson()
 
     @Autowired
     lateinit var mongoTemplate: MongoTemplate
@@ -104,6 +108,67 @@ internal class MedicalQueryControllerTest : AbstractTest() {
             .exchange().expectStatus().isOk
             .expectBody()
             .jsonPath("$.id").isNotEmpty
+    }
+
+    @Test
+    @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
+    fun validGetAllMatchingQueries_withoutShared_shouldReturn() {
+        val info = testDataProvider.getValidMedicalInformation()
+        info.userId = user.id
+        medicalInformationService.create(info).block()
+
+        val medicalQuery = getMedicalQueryWithResearchReference()
+        medicalQueryService.create(medicalQuery).block()
+
+        createPermission(info.id, medicalQuery.id)
+
+        val relevantQueryData = RelevantQueryData(
+            medicalQuery.id!!,
+            medicalQuery.name,
+            medicalQuery.description,
+            testDataProvider.getDummyResearcher().username,
+            medicalQuery.financialOffering,
+            emptyList()
+        )
+
+        client.get()
+            .uri("/user/${user.id}/medicalQuery/matching")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .exchange().expectStatus().isOk
+            .expectBody().json(gson.toJson(listOf(relevantQueryData)))
+    }
+
+    @Test
+    @WithMockUser(username = "kalu@gmx.at", roles = arrayOf("END_USER"))
+    fun validGetAllMatchingQueries_withShared_shouldReturn() {
+        val info = testDataProvider.getValidMedicalInformation()
+        info.userId = user.id
+        medicalInformationService.create(info).block()
+
+        val medicalQuery = getMedicalQueryWithResearchReference()
+        medicalQueryService.create(medicalQuery).block()
+
+        createPermission(info.id, medicalQuery.id)
+
+        val relevantQueryData = RelevantQueryData(
+            medicalQuery.id!!,
+            medicalQuery.name,
+            medicalQuery.description,
+            testDataProvider.getDummyResearcher().username,
+            medicalQuery.financialOffering,
+            listOf(Pair(info.id!!, info.title))
+        )
+
+        val result = client.get()
+            .uri("/user/${user.id}/medicalQuery/matching?includeAlreadyShared=true")
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .exchange().expectStatus().isOk
+            .expectBody().json(gson.toJson(listOf(relevantQueryData)))
+    }
+
+    private fun createPermission(infoId: String?, queryId: String?): SharingPermission {
+        val permission = SharingPermission(null, infoId!!, queryId!!)
+        return medicalQueryService.createSharingPermission(permission).block()!!
     }
 
     private fun createTestDummyData() {

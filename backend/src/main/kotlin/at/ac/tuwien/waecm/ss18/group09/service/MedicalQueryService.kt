@@ -23,7 +23,7 @@ interface IMedicalQueryService {
 
     fun findAll(): Flux<MedicalQuery>
 
-    fun findMatchingQueries(userId: String): Flux<RelevantQueryData>
+    fun findMatchingQueries(userId: String, includeAlreadyShared: Boolean): Flux<RelevantQueryData>
 
     fun createSharingPermission(sharingPermission: SharingPermission): Mono<SharingPermission>
 
@@ -48,7 +48,7 @@ class MedicalQueryService(
     override fun create(medicalQuery: MedicalQuery): Mono<MedicalQuery> {
         validate(medicalQuery)
         return queryRepository.save(medicalQuery)
-                .map { notificationService.informPossibleUsers(it, this) }
+            .map { notificationService.informPossibleUsers(it, this) }
     }
 
     override fun findByResearchFacilityId(id: String): Flux<MedicalQuery> {
@@ -59,7 +59,7 @@ class MedicalQueryService(
         return queryRepository.findAll()
     }
 
-    override fun findMatchingQueries(userId: String): Flux<RelevantQueryData> {
+    override fun findMatchingQueries(userId: String, includeAlreadyShared: Boolean): Flux<RelevantQueryData> {
 
         val infos = medicalInformationService.findByUserId(userId)
         val user = userService.findById(userId).cast(User::class.java).repeat()
@@ -89,25 +89,40 @@ class MedicalQueryService(
                         query.tags.isEmpty()
                                 || query.tags.any { qTag -> tuple.t1.tags.contains(qTag) }
                     }
-                    .map { q ->
+                    .map { query ->
                         val data = medicalInformationService
-                            .findInfoForQuery(q, userId)
-                            .map { info -> Pair(info.id!!, info.title) }
+                            .findInfoForQuery(query, userId)
+                            //filter already for this query shared infos
+                            .map { info ->
+                                sharingPermissionRepository.findByQueryIdAndInformation(query.id!!, info.id!!)
+                                    .hasElement()
+                                    .map { exists -> Pair(info, exists) }
+                            }.flatMap { it }
+                            .log()
+                            .filter { pair -> includeAlreadyShared || !pair.second }
+                            //create RelevantQueryData
+                            .map { pair -> Pair(pair.first.id!!, pair.first.title) }
                             .collectList()
                             .map { info ->
                                 RelevantQueryData(
-                                    q.id!!, q.name, q.description, q.researchFacilityId, q.financialOffering,
+                                    query.id!!,
+                                    query.name,
+                                    query.description,
+                                    query.researchFacilityId,
+                                    query.financialOffering,
                                     info
                                 )
                             }
-                        userService.findById(q.researchFacilityId)
+                        //add user infos
+                        userService.findById(query.researchFacilityId)
                             .zipWith(data)
                             .map { tuple ->
                                 tuple.t2.queryInstituteName = tuple.t1.username
                                 tuple.t2
                             }
                     }.flatMap { it }
-            }.flatMap { it }.distinct()
+            }.flatMap { it }
+            .distinct()
     }
 
     override fun createSharingPermission(sharingPermission: SharingPermission): Mono<SharingPermission> {

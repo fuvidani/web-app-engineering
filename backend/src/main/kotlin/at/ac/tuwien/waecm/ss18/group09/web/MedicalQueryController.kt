@@ -34,8 +34,11 @@ class MedicalQueryController(private val medicalQueryService: MedicalQueryServic
 
     @PreAuthorize("hasRole('ROLE_END_USER')")
     @GetMapping(path = ["/matching"])
-    fun getAllMatchingQueries(@PathVariable("id") id: String): Flux<RelevantQueryData> {
-        return medicalQueryService.findMatchingQueries(id)
+    fun getAllMatchingQueries(
+        @PathVariable("id") id: String,
+        @RequestParam(required = false) includeAlreadyShared: Boolean?
+    ): Flux<RelevantQueryData> {
+        return medicalQueryService.findMatchingQueries(id, includeAlreadyShared ?: false)
     }
 
     @PreAuthorize("hasRole('ROLE_END_USER')")
