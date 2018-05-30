@@ -123,6 +123,7 @@ class MedicalQueryService(
                     }.flatMap { it }
             }.flatMap { it }
             .distinct()
+            .filter { data -> data.medicalInfo.isNotEmpty() }
     }
 
     override fun createSharingPermission(sharingPermission: SharingPermission): Mono<SharingPermission> {
