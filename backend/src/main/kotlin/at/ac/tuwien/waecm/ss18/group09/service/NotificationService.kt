@@ -32,7 +32,7 @@ class NotificationService(
         securityService.getAllLoggedInUsers().forEach { user ->
             if (user is User) {
                 val info = medicalQueryService
-                        .findMatchingQueries(user.id)
+                    .findMatchingQueries(user.id, false)
                         .filter {
                             it.queryId == medicalQuery.id
                         }
