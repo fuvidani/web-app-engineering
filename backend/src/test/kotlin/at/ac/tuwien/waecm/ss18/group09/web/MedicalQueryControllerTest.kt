@@ -122,20 +122,11 @@ internal class MedicalQueryControllerTest : AbstractTest() {
 
         createPermission(info.id, medicalQuery.id)
 
-        val relevantQueryData = RelevantQueryData(
-            medicalQuery.id!!,
-            medicalQuery.name,
-            medicalQuery.description,
-            testDataProvider.getDummyResearcher().username,
-            medicalQuery.financialOffering,
-            emptyList()
-        )
-
         client.get()
             .uri("/user/${user.id}/medicalQuery/matching")
             .accept(MediaType.APPLICATION_JSON_UTF8)
             .exchange().expectStatus().isOk
-            .expectBody().json(gson.toJson(listOf(relevantQueryData)))
+            .expectBody().json("[]")
     }
 
     @Test

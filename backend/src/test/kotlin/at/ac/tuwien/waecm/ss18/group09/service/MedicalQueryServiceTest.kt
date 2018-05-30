@@ -73,17 +73,7 @@ class MedicalQueryServiceTest : AbstractTest() {
 
         val list = medicalQueryService.findMatchingQueries(user.id, false)
 
-        val relevantQueryData = RelevantQueryData(
-            medicalQuery.id!!,
-            medicalQuery.name,
-            medicalQuery.description,
-            testDataProvider.getDummyResearcher().username,
-            medicalQuery.financialOffering,
-            emptyList()
-        )
-
         StepVerifier.create(list)
-            .expectNext(relevantQueryData)
             .expectComplete()
             .verify(Duration.ofSeconds(10))
     }
