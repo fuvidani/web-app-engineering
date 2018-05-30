@@ -54,7 +54,7 @@ After the application has been successfully deployed, the frontend can be access
 https://localhost:8069 . Your browser might prompt a warning stating that the connection cannot
 be trusted. Simply whitelist the URL and frontend will load. 
 
-**Note 1:** If you get _504 (Gateway Timeout)_ error, you should clear your cookies.
+**Note 1:** If you get _504 (Gateway Timeout)_ error, you should clear your browser's cache.
 
 **Note 2:** If you are using Chrome, you may get _SecurityError: Failed to register a ServiceWorker_ error, which is
 due to the self-signed certificate. To overcome this issue please enable the following option: _chrome://flags/#allow-insecure-localhost_.
