@@ -120,7 +120,33 @@ data class RelevantQueryData(
     var queryInstituteName: String,
     var queryPrice: Double,
     var medicalInfo: List<Pair<String, String>>
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RelevantQueryData
+
+        if (queryId != other.queryId) return false
+        if (queryName != other.queryName) return false
+        if (queryDescription != other.queryDescription) return false
+        if (queryInstituteName != other.queryInstituteName) return false
+        if (queryPrice != other.queryPrice) return false
+        if (!medicalInfo.containsAll(other.medicalInfo)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = queryId.hashCode()
+        result = 31 * result + queryName.hashCode()
+        result = 31 * result + queryDescription.hashCode()
+        result = 31 * result + queryInstituteName.hashCode()
+        result = 31 * result + queryPrice.hashCode()
+
+        return result
+    }
+}
 
 @Document(collection = "sharingPermission")
 data class SharingPermission(

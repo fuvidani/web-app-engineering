@@ -98,7 +98,6 @@ class MedicalQueryService(
                                     .hasElement()
                                     .map { exists -> Pair(info, exists) }
                             }.flatMap { it }
-                            .log()
                             .filter { pair -> includeAlreadyShared || !pair.second }
                             //create RelevantQueryData
                             .map { pair -> Pair(pair.first.id!!, pair.first.title) }

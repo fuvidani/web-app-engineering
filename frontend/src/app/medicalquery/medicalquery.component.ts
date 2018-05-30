@@ -141,7 +141,7 @@ export class MedicalqueryComponent implements OnInit {
 
   atLeastOneCriteria(medicalQuery: MedicalQuery): boolean {
     return !(medicalQuery.tags.length > 0) &&
-      (!medicalQuery.minAge || !medicalQuery.maxAge) &&
+      (medicalQuery.minAge === null || medicalQuery.maxAge === null) &&
       (medicalQuery.gender === null);
   }
 
