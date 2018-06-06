@@ -36,15 +36,15 @@ Note: In order to avoid console output, you may use the ``-d`` (detach) flag.
 
 The following docker images are used:
 
-- **rasakul/waecm-2018-group-09-bsp-2-backend**
+- **rasakul/waecm-2018-group-09-bsp-3-backend**
     - based on "java:8-jre"
-    - hash: sha256:711965b75a5f9af6a0460d6af34c0203c9af4815d138e3683171b0ad09d7cdbd
-- **rasakul/waecm-2018-group-09-bsp-2-mongo**
+    - hash: sha256:0efc41bd21d1d89bbd5a2a071c04dd14403b1dc65a1f6938be285b411ebaa56c
+- **rasakul/waecm-2018-group-09-bsp-3-mongo**
     - based on "mongo:3"
-    - hash: sha256:fe947a8e7aadcf97dc84060d7aa0fd33a7009cbaf11094090850cc096b863f2f
-- **rasakul/waecm-2018-group-09-bsp-2-frontend**
+    - hash: sha256:5613d54cacbc8242a278cdd990d30316555da383be32fa34132db8c84158ec1e
+- **rasakul/waecm-2018-group-09-bsp-3-frontend**
     - based on "node:9"
-    - hash: sha256:82fd452e2084d1ee90e976567ed6fe863a1458614d1b7eea513aadbde070e658
+    - hash: sha256:1e313545534d2f70f0995501507f00bf726bdde3db5be0500d9e57fb8b321cb8
 - **swaggerapi/swagger-ui**
     - [Link](https://hub.docker.com/r/swaggerapi/swagger-ui/)
     - hash: sha256:3a96c9da0b2fcb7a813821a0203f4a15cfebaad7d7549763d7840b865fcc9855  
