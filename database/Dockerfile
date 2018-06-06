@@ -14,7 +14,7 @@ RUN \
  dos2unix /init.sh && apt-get --purge remove -y dos2unix && \
  rm -rf /var/cache/* && rm -rf /var/lib/apt/lists/*
 
-
+VOLUME /data/db
 EXPOSE 27017
 
 ENTRYPOINT ["/init.sh"]

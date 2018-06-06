@@ -17,9 +17,6 @@ services:
     container_name: waecm-mongo-db
     ports:
       - 27017:27017
-    volumes:
-      - $HOME/data/db:/data/db
-      - $HOME/data/bkp:/data/bkp
     restart: always
 
   swagger:
