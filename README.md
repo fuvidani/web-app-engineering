@@ -38,13 +38,13 @@ The following docker images are used:
 
 - **rasakul/waecm-2018-group-09-bsp-3-backend**
     - based on "java:8-jre"
-    - hash: sha256:0efc41bd21d1d89bbd5a2a071c04dd14403b1dc65a1f6938be285b411ebaa56c
+    - hash: sha256:321753cf8cb7f30b40db5f2de00d60cb833f09fcaf3e0163041bf7d1e1ee7ae2
 - **rasakul/waecm-2018-group-09-bsp-3-mongo**
     - based on "mongo:3"
-    - hash: sha256:5613d54cacbc8242a278cdd990d30316555da383be32fa34132db8c84158ec1e
+    - hash: sha256:2ac2b0f7f9b18f0979bd6a344ff56ac8ffa289cd2ca0165cfe022554811aa100
 - **rasakul/waecm-2018-group-09-bsp-3-frontend**
     - based on "node:9"
-    - hash: sha256:1e313545534d2f70f0995501507f00bf726bdde3db5be0500d9e57fb8b321cb8
+    - hash: sha256:c8da9b2aef79af5fe23ef72f9e75cc22a68cbc3fe5a5026bba0524072f1a9421
 - **swaggerapi/swagger-ui**
     - [Link](https://hub.docker.com/r/swaggerapi/swagger-ui/)
     - hash: sha256:3a96c9da0b2fcb7a813821a0203f4a15cfebaad7d7549763d7840b865fcc9855  
