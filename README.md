@@ -59,8 +59,10 @@ be trusted. Simply whitelist the URL and frontend will load.
 **Note 2:** If you are using Chrome, you may get _SecurityError: Failed to register a ServiceWorker_ error, which is
 due to the self-signed certificate. To overcome this issue please enable the following option: _chrome://flags/#allow-insecure-localhost_.
 
-There are no end users registered, however you can log in with one
-of the following research facility accounts as a research facility:
+There is one end user already registered in the database, with a couple of sample medical data and queries matching these. You can also log in with two research facility accounts:
+* **End user (John Doe)**
+    * E-mail: `test.user@gmail.com`
+    * Password: `password`
 * **Facility 1**
     * E-mail: `research@who.com`
     * Password: `password`
