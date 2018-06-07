@@ -17,6 +17,7 @@ research facility for which a financial compensation will be received.
 * Login (Research facility)
 * Overview of anonymized datasets (Research facility)
 * Issue a new medical query (Research facility)
+* Pushed browser notifications if there is a new medical query matching one (or more) dataset(s) of the end user
 
 ## Technology stack
 * [Angular 5](https://angular.io/) with Material Design for the frontend
@@ -52,12 +53,14 @@ The following docker images are used:
 ## Usage
 After the application has been successfully deployed, the frontend can be accessed under
 https://localhost:8069 . Your browser might prompt a warning stating that the connection cannot
-be trusted. Simply whitelist the URL and frontend will load. 
+be trusted. Simply whitelist the URL and frontend will load. Furthermore, the backend's certificate must also be whitelisted. If the Swagger UI at http://localhost:8888 doesn't show an error, you're good to go, otherwise you need to whitelist the https://localhost:8443 URL as well.
 
 **Note 1:** If you get _504 (Gateway Timeout)_ error, you should clear your browser's cache.
 
 **Note 2:** If you are using Chrome, you may get _SecurityError: Failed to register a ServiceWorker_ error, which is
 due to the self-signed certificate. To overcome this issue please enable the following option: _chrome://flags/#allow-insecure-localhost_.
+
+**Note 3:** If you don't get any Browser-notifications, the cookies for localhost must be deleted. Simply log out and delete the cookies stored in the browser for the frontend.
 
 There is one end user already registered in the database, with a couple of sample medical data and queries matching these. You can also log in with two research facility accounts:
 * **End user (John Doe)**
