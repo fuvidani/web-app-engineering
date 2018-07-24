@@ -170,6 +170,16 @@ Summary of the most important endpoints:
 - **Backend**: https://localhost:8443
 - **Swagger-UI**: http://localhost:8888
 
+## Contributors
+
+Thanks goes to these wonderful people:
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+| [<img src="https://avatars3.githubusercontent.com/u/16260193?s=400&v=4" width="100px;"/><br /><sub><b>David Molnar</b></sub>](https://github.com/dmolnar99)<br />[💻](https://github.com/fuvidani/web-app-engineering/commits?author=dmolnar99 "Code") [🎨](#design-dmolnar99 "Design") | [<img src="https://avatars3.githubusercontent.com/u/11620189?s=400&v=4" width="100px;"/><br /><sub><b>Lukas Kathrein</b></sub>](https://github.com/lucniner)<br />[💻](https://github.com/fuvidani/web-app-engineering/commits?author=lucniner "Code") [⚠️](https://github.com/fuvidani/web-app-engineering/commits?author=lucniner "Tests") | [<img src="https://avatars3.githubusercontent.com/u/9295857?s=400&v=4" width="100px;"/><br /><sub><b>Lukas Baronyai</b></sub>](https://github.com/Rasakul)<br />[💻](https://github.com/fuvidani/web-app-engineering/commits?author=Rasakul "Code") [⚠️](https://github.com/fuvidani/web-app-engineering/commits?author=Rasakul "Tests") | [<img src="https://avatars1.githubusercontent.com/u/12175134?s=400&v=4" width="100px;"/><br /><sub><b>Michael Sober</b></sub>](https://github.com/soberm)<br />[💻](https://github.com/fuvidani/web-app-engineering/commits?author=soberm "Code") [⚠️](https://github.com/fuvidani/web-app-engineering/commits?author=soberm "Tests") | 
+| :---: | :---: | :---: | :---: | 
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 ## Troubleshooting
 Contact one of the contributors or open an issue.
 
